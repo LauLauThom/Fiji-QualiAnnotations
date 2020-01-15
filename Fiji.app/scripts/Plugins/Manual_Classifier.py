@@ -29,21 +29,28 @@ class ButtonAction(ActionListener): # extends action listener
 	def actionPerformed(self,event):
 		'''Called when Button are clicked'''
 
-		imp = IJ.getImage()
-
-		# recover the image or slice name (getTitle return the name for single image but not for stacks. Hence generic solution is to use Stack object works in bopth cases)
-		Stack = imp.getStack()
-		SliceName = Stack.getSliceLabel(imp.currentSlice)	  
+		imp = IJ.getImage() # get current image
+		infos = imp.getOriginalFileInfo()
 		
-		if SliceName is None: # the slice label can be empty sometime
-			SliceName = 'Slice' + str(imp.currentSlice)	  
-		
-		else : 
-			SliceName = SliceName.split('\n',1)[0]
+		# Recover image name
+		if imp.getStackSize()==1: 
+			filename = infos.fileName
+		else:
+			Stack = imp.getStack()
+			filename = Stack.getSliceLabel(imp.currentSlice)
+			
+			
+			if filename is None: # the slice label can be empty sometimes
+				filename = 'Slice' + str(imp.currentSlice)	
+			'''		
+			else : 
+				filename = SliceName.split('\n',1)[0] # can be useful when ImagesToStack was used
+			'''
 		
 		# Fill the result table
 		Table.incrementCounter() # Add one additional row before filling it
-		Table.addValue("Image", SliceName)	
+		Table.addValue("Folder", infos.directory)
+		Table.addValue("Image", filename)	
 		Table.addValue("Category", self.cat)
 		Table.show("Classification") # Update table	  
 		#Table.updateResults() # only for result table but then addValue does not work !
@@ -51,7 +58,7 @@ class ButtonAction(ActionListener): # extends action listener
 		# Go to next slice
 		if imp.getStackSize() != 1 and imp.currentSlice != imp.getStackSize(): # if We have a stack and the current slice is not the last slice
 			imp.setSlice(imp.currentSlice+1)
-			imp.updateStatusbarValue() # update Z-position and pixel value (called by next slice so we should do it too ?)
+			imp.updateStatusbarValue() # update Z and pixel value (called by next slice so we should do it too ?)
 		
 		# Bring back the focus to the button window (otherwise the table is in the front)
 		WindowManager.setWindow(WinButton)
