@@ -110,6 +110,7 @@ if (Win.wasOKed()):
 		
 		# Add a button to the gui for this category
 		WinButton.add(button)
-		
+	
+	WinButton.hideCancelButton()
 	WinButton.setLayout(Layout)
 	WinButton.showDialog()
