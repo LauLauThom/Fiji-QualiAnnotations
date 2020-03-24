@@ -49,8 +49,11 @@ class ButtonAction(ActionListener): # extends action listener
 		
 		# Fill the result table
 		Table.incrementCounter() # Add one additional row before filling it
+		
+		Table.addValue("Index", Table.getCounter() )
 		Table.addValue("Folder", infos.directory)
 		Table.addValue("Image", filename)
+		
 		for cat in listCat:
 			if cat == self.cat:
 				Table.addValue(cat, 1)
