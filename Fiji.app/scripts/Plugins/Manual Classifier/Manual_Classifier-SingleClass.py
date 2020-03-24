@@ -50,8 +50,13 @@ class ButtonAction(ActionListener): # extends action listener
 		# Fill the result table
 		Table.incrementCounter() # Add one additional row before filling it
 		Table.addValue("Folder", infos.directory)
-		Table.addValue("Image", filename)	
-		Table.addValue("Category", self.cat)
+		Table.addValue("Image", filename)
+		for cat in listCat:
+			if cat == self.cat:
+				Table.addValue(cat, 1)
+			else:
+				Table.addValue(cat, 0)
+		
 		Table.show("Classification") # Update table	  
 		#Table.updateResults() # only for result table but then addValue does not work !
 		
@@ -82,28 +87,28 @@ Win.showDialog()
 # Recover fields from the formular
 if (Win.wasOKed()): 
 	
-	# Initialise result table that will contain slice name and category
+	# Initialize result table that will contain slice name and category
 	Table = ResultsTable()
 
-	# Initialise GUI with category buttons
+	# Initialize GUI with category buttons
 	WinButton = NonBlockingGenericDialog("Click to assign an image to a category")
 	
-	# initialise Layout
+	# initialize Layout
 	Layout = GridLayout(N_category+1,1) # +1 for OK/Cancel (1 extra row)
-		
+	
+	listCat = []
 	# Loop over categories
 	for i in range(N_category):
 		
 		# Recover the category name
 		Cat = Win.getNextString()
+		listCat.append(Cat)
 
 		# Create an instance of button action for this category
 		Action = ButtonAction(Cat)
 
-		
 		# Create a Button
 		button = Button(Cat)
-		
 		
 		# Bind action to button
 		button.addActionListener(Action)
