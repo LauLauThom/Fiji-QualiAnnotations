@@ -42,10 +42,10 @@ class ButtonAction(ActionListener): # extends action listener
 			
 			if filename is None: # the slice label can be empty sometimes
 				filename = 'Slice' + str(imp.currentSlice)	
-			'''		
+					
 			else : 
-				filename = SliceName.split('\n',1)[0] # can be useful when ImagesToStack was used
-			'''
+				filename = filename.split('\n',1)[0] # can be useful when ImagesToStack/Import Sequence was used 
+			
 		
 		# Fill the result table
 		Table.incrementCounter() # Add one additional row before filling it
