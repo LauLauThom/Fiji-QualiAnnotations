@@ -1,4 +1,4 @@
-# @int (Label = "Number of categories") N_category
+#@ int (Label = "Number of categories") N_category
 #@ PrefService pref
 #@ ImageJ ij
 '''
@@ -62,6 +62,10 @@ class ButtonAction(ActionListener): # extends action listener
 			else:
 				Table.addValue(cat, 0)
 		
+		# Read comment
+		stringField = WinButton.getStringFields()[0]
+		Table.addValue("Comment", stringField.text)
+		
 		Table.show("Classification") # Update table	  
 		#Table.updateResults() # only for result table but then addValue does not work !
 		
@@ -107,7 +111,7 @@ if (Win.wasOKed()):
 	WinButton = NonBlockingGenericDialog("Click to assign an image to a category")
 	
 	# initialize Layout
-	Layout = GridLayout(N_category+1,1) # +1 for OK/Cancel (1 extra row)
+	#Layout = GridLayout(N_category+1,1) # +1 for OK/Cancel (1 extra row)
 	
 	listCat = []
 	# Loop over categories
@@ -132,6 +136,10 @@ if (Win.wasOKed()):
 	# Save categories in memory
 	pref.put(ij.class, "listCat", listCat)
 
+	# Add comment field
+	WinButton.addMessage("") # skip one line
+	WinButton.addStringField("Comments", "")
+
 	WinButton.hideCancelButton()
-	WinButton.setLayout(Layout)
+	#WinButton.setLayout(Layout)
 	WinButton.showDialog()

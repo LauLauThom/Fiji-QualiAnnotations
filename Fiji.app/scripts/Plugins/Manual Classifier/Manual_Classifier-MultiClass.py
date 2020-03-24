@@ -52,9 +52,14 @@ class ButtonAction(ActionListener): # extends action listener
 		Table.addValue("Folder", infos.directory)
 		Table.addValue("Image", filename)	
 		
+		# Read categories
 		for i, checkbox in enumerate( WinButton.getCheckboxes() ):
 			Table.addValue(listCat[i], checkbox.getState() ) # getNextBoolean would keep growing the index, check only index 0 to N
-			
+
+		# Read comment
+		stringField = WinButton.getStringFields()[0]
+		Table.addValue("Comment", stringField.text)
+		
 		Table.show("Classification (multi)") # Update table	  
 		#Table.updateResults() # only for result table but then addValue does not work !
 		
@@ -110,18 +115,23 @@ if (Win.wasOKed()):
 	# Save categories in memory
 	pref.put(ij.class, "listCat_", listCat)
 	
-	# Create a Button
+	# Add comment field
+	WinButton.addMessage("") # skip line
+	WinButton.addStringField("Comments", "")
+	
+	# Create the Add Button
 	ButtonAdd = Button("Add")
 		
 	# Bind action to Button
 	ButtonAdd.addActionListener(ButtonAction())
 	
 	# Add button to window
+	WinButton.addMessage("") # skip line
 	WinButton.add(ButtonAdd)
 	WinButton.hideCancelButton()
 	
 	# initialise Layout
-	Layout = GridLayout(N_category_+1,1) # +1 for OK/Cancel (1 extra row)
-	WinButton.setLayout(Layout)
+	#Layout = GridLayout(N_category_+2,1) # +2 for OK/Cancel and comment (1 extra row)
+	#WinButton.setLayout(Layout)
 	
 	WinButton.showDialog()
