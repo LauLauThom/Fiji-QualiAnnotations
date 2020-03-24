@@ -49,7 +49,7 @@ class ButtonAction(ActionListener): # extends action listener
 		Table.addValue("Image", filename)	
 		
 		for i, checkbox in enumerate( WinButton.getCheckboxes() ):
-			Table.addValue(listCategories[i], checkbox.getState() ) # getNextBoolean keeps growing its index, I should check only index 0 to N
+			Table.addValue(listCategories[i], checkbox.getState() ) # getNextBoolean would keep growing the index, check only index 0 to N
 			
 		Table.show("Classification (multi)") # Update table	  
 		#Table.updateResults() # only for result table but then addValue does not work !
