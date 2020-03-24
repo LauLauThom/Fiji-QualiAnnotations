@@ -1,4 +1,4 @@
-# @int (Label = "Number of categories") N_category
+# @int (Label = "Number of categories") N_category_
 '''
 This script can be used to manually classify full images from a stack into N user-defined categories.
 A first window pops up to request the number of categories.
@@ -68,7 +68,7 @@ class ButtonAction(ActionListener): # extends action listener
 Win = GenericDialog("Categories names")
 
 # Add N string field to get class names
-for i in range(N_category):
+for i in range(N_category_):
 	Win.addStringField("Category: ","Category_"+str(i))
 	Win.addMessage("") # skip one line
 	
@@ -87,7 +87,7 @@ if (Win.wasOKed()):
 	
 	listCategories = []
 	# Loop over categories
-	for i in range(N_category):
+	for i in range(N_category_):
 		
 		# Recover the category name
 		category = Win.getNextString()
@@ -107,7 +107,7 @@ if (Win.wasOKed()):
 	WinButton.hideCancelButton()
 	
 	# initialise Layout
-	Layout = GridLayout(N_category+1,1) # +1 for OK/Cancel (1 extra row)
+	Layout = GridLayout(N_category_+1,1) # +1 for OK/Cancel (1 extra row)
 	WinButton.setLayout(Layout)
 	
 	WinButton.showDialog()
