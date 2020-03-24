@@ -1,4 +1,6 @@
-# @int (Label = "Number of categories") N_category_
+#@ int (Label = "Number of categories") N_category_
+#@ PrefService pref
+#@ ImageJ ij
 '''
 This script can be used to manually classify full images from a stack into N user-defined categories.
 A first window pops up to request the number of categories.
@@ -51,7 +53,7 @@ class ButtonAction(ActionListener): # extends action listener
 		Table.addValue("Image", filename)	
 		
 		for i, checkbox in enumerate( WinButton.getCheckboxes() ):
-			Table.addValue(listCategories[i], checkbox.getState() ) # getNextBoolean would keep growing the index, check only index 0 to N
+			Table.addValue(listCat[i], checkbox.getState() ) # getNextBoolean would keep growing the index, check only index 0 to N
 			
 		Table.show("Classification (multi)") # Update table	  
 		#Table.updateResults() # only for result table but then addValue does not work !
@@ -69,9 +71,16 @@ class ButtonAction(ActionListener): # extends action listener
 ############### GUI - CATEGORY DIALOG - collect N classes names (N define at first line)  #############
 Win = GenericDialog("Categories names")
 
-# Add N string field to get class names
+# Add N string fields for class names
 for i in range(N_category_):
-	Win.addStringField("Category: ","Category_"+str(i))
+	listCat = pref.getList(ij.class, "listCat_")            # try to retrieve the list of categories from the persistence, if not return [] - ij.class workaround see https://forum.image.sc/t/store-a-list-using-the-persistence-prefservice/26449
+	
+	if listCat and i<=len(listCat)-1:
+		catName = listCat[i]
+	else:
+		catName = "Category_" + str(i+1)
+	
+	Win.addStringField("Category: ", catName)
 	Win.addMessage("") # skip one line
 	
 Win.showDialog()
@@ -87,17 +96,20 @@ if (Win.wasOKed()):
 	# Initialise GUI with category buttons
 	WinButton = NonBlockingGenericDialog("Tick categories, then Add")
 	
-	listCategories = []
+	listCat = []
 	# Loop over categories
 	for i in range(N_category_):
 		
 		# Recover the category name
 		category = Win.getNextString()
-		listCategories.append(category)
+		listCat.append(category)
 		
 		# Add a button to the gui for this category
 		WinButton.addCheckbox(category, False)
-
+	
+	# Save categories in memory
+	pref.put(ij.class, "listCat_", listCat)
+	
 	# Create a Button
 	ButtonAdd = Button("Add")
 		

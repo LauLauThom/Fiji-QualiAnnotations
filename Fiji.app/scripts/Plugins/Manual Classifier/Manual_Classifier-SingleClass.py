@@ -1,4 +1,6 @@
 # @int (Label = "Number of categories") N_category
+#@ PrefService pref
+#@ ImageJ ij
 '''
 This script can be used to manually classify full images from a stack into N user-defined categories.
 A first window pops up to request the number of categories.
@@ -79,7 +81,15 @@ Win = GenericDialog("Categories names")
 
 # Add N string field to get class names
 for i in range(N_category):
-	Win.addStringField("Category: ","Category_"+str(i))
+	listCat = pref.getList(ij.class, "listCat")            # try to retrieve the list of categories from the persistence, if not return [] - ij.class workaround see https://forum.image.sc/t/store-a-list-using-the-persistence-prefservice/26449
+	
+	if listCat and i<=len(listCat)-1:
+		catName = listCat[i]
+	else:
+		catName = "Category_" + str(i+1)
+	
+	Win.addStringField("Category: ", catName)
+	
 	Win.addMessage("") # skip one line
 	
 Win.showDialog()
@@ -119,6 +129,9 @@ if (Win.wasOKed()):
 		# Add a button to the gui for this category
 		WinButton.add(button)
 	
+	# Save categories in memory
+	pref.put(ij.class, "listCat", listCat)
+
 	WinButton.hideCancelButton()
 	WinButton.setLayout(Layout)
 	WinButton.showDialog()
