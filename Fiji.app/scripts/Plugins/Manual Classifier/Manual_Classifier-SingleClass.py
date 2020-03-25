@@ -15,7 +15,7 @@ from ij	            import IJ,WindowManager
 from ij.measure 	import ResultsTable
 from ij.gui		    import GenericDialog, NonBlockingGenericDialog
 from java.awt.event import ActionListener
-from java.awt 		import GridLayout,Button
+from java.awt 		import GridLayout, Button, Panel
 
 
 class ButtonAction(ActionListener): # extends action listener 
@@ -110,11 +110,11 @@ if (Win.wasOKed()):
 	# Initialize GUI with category buttons
 	WinButton = NonBlockingGenericDialog("Click to assign an image to a category")
 	
-	# initialize Layout
-	#Layout = GridLayout(N_category+1,1) # +1 for OK/Cancel (1 extra row)
-	
+		
+	# Loop over categories and add a button to the panel for each
 	listCat = []
-	# Loop over categories
+	catPanel = Panel(GridLayout(0,4)) # Unlimited number of rows - fix to 4 columns
+	
 	for i in range(N_category):
 		
 		# Recover the category name
@@ -131,15 +131,16 @@ if (Win.wasOKed()):
 		button.addActionListener(Action)
 		
 		# Add a button to the gui for this category
-		WinButton.add(button)
+		catPanel.add(button)
 	
 	# Save categories in memory
 	pref.put(ij.class, "listCat", listCat)
 
+	# Add Panel to WinButton
+	WinButton.addPanel(catPanel)
+
 	# Add comment field
-	WinButton.addMessage("") # skip one line
 	WinButton.addStringField("Comments", "")
 
 	WinButton.hideCancelButton()
-	#WinButton.setLayout(Layout)
 	WinButton.showDialog()
