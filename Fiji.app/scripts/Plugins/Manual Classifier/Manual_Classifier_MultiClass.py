@@ -13,7 +13,8 @@ TO DO : Add measurement possibility ? The addValue was not working so well in th
 '''
 from ij	            import IJ,WindowManager 
 from ij.measure 	import ResultsTable 
-from ij.gui		    import GenericDialog, NonBlockingGenericDialog 
+from ij.gui		    import GenericDialog 
+from fiji.util.gui  import GenericDialogPlus
 from java.awt.event import ActionListener 
 from java.awt 		import GridLayout, Button, Panel , Checkbox
  
@@ -99,7 +100,8 @@ if (Win.wasOKed()):
 	Table = ResultsTable() 
  
 	# Initialise GUI with category buttons 
-	WinButton = NonBlockingGenericDialog("Manual classifier - multi-class per image") 
+	WinButton = GenericDialogPlus("Manual classifier - multi-class per image")
+	WinButton.setModalityType(None) # like non-blocking generic dialog
 	WinButton.addMessage("Tick the categories corresponding to the current image, then click Add")
 	
 	# Loop over categories, adding a tickbox to the panel for each
@@ -124,16 +126,9 @@ if (Win.wasOKed()):
 	# Add comment field
 	WinButton.addMessage("") # skip line
 	WinButton.addStringField("Comments", "")
-	
-	# Create the Add Button 
-	ButtonAdd = Button("Add") 
-		 
-	# Bind action to Button 
-	ButtonAdd.addActionListener(ButtonAction()) 
-	 
+		 
 	# Add button to window 
-	#WinButton.addMessage("") # skip line
-	WinButton.add(ButtonAdd) 
+	WinButton.addButton("Add", ButtonAction()) 
 	WinButton.hideCancelButton() 
 	 
 	# initialise Layout 
