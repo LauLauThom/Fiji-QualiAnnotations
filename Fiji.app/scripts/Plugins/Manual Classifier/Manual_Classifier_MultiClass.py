@@ -124,15 +124,10 @@ if (Win.wasOKed()):
 	WinButton.addPanel(catPanel)
 	
 	# Add comment field
-	WinButton.addMessage("") # skip line
 	WinButton.addStringField("Comments", "")
 		 
 	# Add button to window 
 	WinButton.addButton("Add", ButtonAction()) 
 	WinButton.hideCancelButton() 
-	 
-	# initialise Layout 
-	#Layout = GridLayout(N_category_+2,1) # +2 for OK/Cancel and comment (1 extra row) 
-	#WinButton.setLayout(Layout) 
 	 
 	WinButton.showDialog() 
