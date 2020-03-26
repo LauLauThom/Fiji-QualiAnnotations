@@ -99,8 +99,9 @@ if (Win.wasOKed()):
 	Table = ResultsTable() 
  
 	# Initialise GUI with category buttons 
-	WinButton = NonBlockingGenericDialog("Tick categories, then Add") 
-	 
+	WinButton = NonBlockingGenericDialog("Manual classifier - multi-class per image") 
+	WinButton.addMessage("Tick the categories corresponding to the current image, then click Add")
+	
 	# Loop over categories, adding a tickbox to the panel for each
 	listBox  = [] 
 	catPanel = Panel(GridLayout(0,4)) # Unlimited number of rows - fix to 4 columns
