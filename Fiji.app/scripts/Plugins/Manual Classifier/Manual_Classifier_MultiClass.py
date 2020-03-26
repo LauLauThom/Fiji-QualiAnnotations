@@ -53,8 +53,8 @@ class ButtonAction(ActionListener): # extends action listener
 		Table.addValue("Image", filename)	 
 		 
 		# Read categories
-		for box in listBox: 
-			Table.addValue(box.getLabel(), box.getState() ) # getNextBoolean would keep growing the index, check only index 0 to N 
+		for cat, box in dicoBox.iteritems(): 
+			Table.addValue(cat, box.getState() ) # getNextBoolean would keep growing the index, check only index 0 to N 
 
 		# Read comment
 		stringField = WinButton.getStringFields()[0]
@@ -103,20 +103,20 @@ if (Win.wasOKed()):
 	WinButton.addMessage("Tick the categories corresponding to the current image, then click Add")
 	
 	# Loop over categories, adding a tickbox to the panel for each
-	listBox  = [] 
+	dicoBox  = {} # need a list for the categories names for persistence
 	catPanel = Panel(GridLayout(0,4)) # Unlimited number of rows - fix to 4 columns
 	for i in range(N_category_): 
 		 
 		# Recover the category name 
 		category = Win.getNextString() 
 		box = Checkbox(category, False)
-		listBox.append(box)
+		dicoBox[category] = box
 		 
 		# Add a button to the gui for this category 
 		catPanel.add(box) 
 	 
 	# Save categories in memory 
-	pref.put(ij.class, "listCat_", listCat) 
+	pref.put(ij.class, "listCat_", dicoBox.keys() ) 
 	 
 	# Add Panel to WinButton
 	WinButton.addPanel(catPanel)
@@ -140,4 +140,4 @@ if (Win.wasOKed()):
 	#Layout = GridLayout(N_category_+2,1) # +2 for OK/Cancel and comment (1 extra row) 
 	#WinButton.setLayout(Layout) 
 	 
-	WinButton.showDialog() 
+	WinButton.showDialog() 
