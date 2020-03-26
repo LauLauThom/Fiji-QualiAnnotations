@@ -111,7 +111,7 @@ if (Win.wasOKed()):
 	WinButton = NonBlockingGenericDialog("Manual classifier - Single class per image") 
 	WinButton.addMessage("Click the category of the current image")
 		
-	# Loop over categories and add a button to the panel for each 
+	# Loop over categories and add a button to the panel for each
 	listCat = [] 
 	catPanel = Panel(GridLayout(0,4)) # Unlimited number of rows - fix to 4 columns
 	
