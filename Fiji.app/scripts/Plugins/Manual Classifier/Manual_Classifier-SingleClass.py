@@ -55,12 +55,16 @@ class ButtonAction(ActionListener): # extends action listener
 		Table.addValue("Index", Table.getCounter() ) 
 		Table.addValue("Folder", infos.directory) 
 		Table.addValue("Image", filename) 
-		 
-		for cat in listCat: 
-			if cat == self.cat: 
-				Table.addValue(cat, 1) 
-			else: 
-				Table.addValue(cat, 0) 
+
+		if choiceIndex==0: # single category column
+			Table.addValue("Category", self.cat)
+
+		else: # 1 column/category with 0/1
+			for cat in listCat: 
+				if cat == self.cat: 
+					Table.addValue(cat, 1) 
+				else: 
+					Table.addValue(cat, 0)
 		 
 		# Read comment
 		stringField = WinButton.getStringFields()[0]
@@ -81,7 +85,13 @@ class ButtonAction(ActionListener): # extends action listener
 		 
 ############### GUI - CATEGORY DIALOG - collect N classes names (N define at first line)  ############# 
  
-Win = GenericDialog("Categories names") 
+Win = GenericDialog("Categories names")
+
+choice = ["a single category column", "1 column per category"]
+indexDefault = pref.getInt("table_style", 0)
+Win.addChoice("Classification table shoud have", 
+				choice, 
+				choice[indexDefault] )
  
 # Add N string field to get class names
 for i in range(N_category):
@@ -96,14 +106,18 @@ for i in range(N_category):
 	
 	Win.addMessage("") # skip one line 
 	 
-Win.showDialog() 
+Win.showDialog()
  
  
 ################# After OK clicking ########### 
  
 # Recover fields from the formular 
 if (Win.wasOKed()):  
-	 
+
+	# get Choice single/multi column
+	choiceIndex = Win.getNextChoiceIndex()
+	pref.put("table_style", choiceIndex)
+	
 	# Initialize result table that will contain slice name and category 
 	Table = ResultsTable() 
  
