@@ -17,7 +17,7 @@ from ij.gui		    import GenericDialog
 from fiji.util.gui  import GenericDialogPlus
 from java.awt.event import ActionListener 
 from java.awt 		import GridLayout, Button, Panel , Checkbox
- 
+from collections 	import OrderedDict
  
 class ButtonAction(ActionListener): # extends action listener  
 	'''The function actionPerformed contains code executed upon click of the associated button(s)''' 
@@ -118,7 +118,7 @@ if (Win.wasOKed()):
 	WinButton.addMessage("Tick the categories corresponding to the current image, then click Add")
 	
 	# Loop over categories, adding a tickbox to the panel for each
-	dicoBox  = {} # need a list for the categories names for persistence
+	dicoBox  = OrderedDict() # contains (categoryName: CheckBox)
 	catPanel = Panel(GridLayout(0,4)) # Unlimited number of rows - fix to 4 columns
 	for i in range(N_category_): 
 		 
