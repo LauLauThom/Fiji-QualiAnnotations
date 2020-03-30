@@ -11,7 +11,7 @@ It will also skip to the next slice for stacks.
  
 TO DO : Add measurement possibility ? The addValue was not working so well in this case. Duplicate to another code to try with the result table 
 '''
-from ij	            import IJ,WindowManager 
+from ij	            import IJ, WindowManager
 from ij.measure 	import ResultsTable 
 from ij.gui		    import GenericDialog, NonBlockingGenericDialog 
 from java.awt.event import ActionListener 
@@ -70,7 +70,7 @@ class ButtonAction(ActionListener): # extends action listener
 		stringField = WinButton.getStringFields()[0]
 		Table.addValue("Comment", stringField.text)
 		
-		Table.show("Classification") # Update table	   
+		Table.show(tableTitle) # Update table	   
 		#Table.updateResults() # only for result table but then addValue does not work ! 
 		 
 		# Go to next slice 
@@ -118,8 +118,21 @@ if (Win.wasOKed()):
 	choiceIndex = Win.getNextChoiceIndex()
 	pref.put("table_style", choiceIndex)
 	
-	# Initialize result table that will contain slice name and category 
-	Table = ResultsTable() 
+	# Check if a table called Classification or Classification.csv exists otherwise open a new one
+	win  = WindowManager.getWindow("Classification")
+	win2 = WindowManager.getWindow("Classification.csv")
+	
+	if win: # different of None
+		Table = win.getResultsTable()
+		tableTitle = "Classification"
+		
+	elif win2 : # different of None
+		Table = win2.getResultsTable()
+		tableTitle = "Classification.csv"
+		
+	else:
+		Table = ResultsTable()
+		tableTitle = "Classification"
  
 	# Initialize GUI with category buttons 
 	WinButton = NonBlockingGenericDialog("Manual classifier - Single class per image") 
