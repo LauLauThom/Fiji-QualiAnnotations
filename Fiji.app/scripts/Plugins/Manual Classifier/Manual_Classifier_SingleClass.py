@@ -16,7 +16,7 @@ from ij.measure 	import ResultsTable
 from ij.gui		    import GenericDialog, NonBlockingGenericDialog 
 from java.awt.event import ActionListener 
 from java.awt 		import GridLayout, Button, Panel
- 
+import os 
  
 class ButtonAction(ActionListener): # extends action listener  
 	 
@@ -53,7 +53,7 @@ class ButtonAction(ActionListener): # extends action listener
 		Table.incrementCounter() # Add one additional row before filling it 
 		 
 		Table.addValue("Index", Table.getCounter() ) 
-		Table.addValue("Folder", infos.directory) 
+		Table.addValue("Folder", infos.directory.rstrip(os.path.sep) )
 		Table.addValue("Image", filename) 
 
 		if choiceIndex==0: # single category column

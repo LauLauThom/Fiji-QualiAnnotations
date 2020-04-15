@@ -18,7 +18,8 @@ from fiji.util.gui  import GenericDialogPlus
 from java.awt.event import ActionListener 
 from java.awt 		import GridLayout, Button, Panel , Checkbox
 from collections 	import OrderedDict
- 
+import os
+
 class ButtonAction(ActionListener): # extends action listener  
 	'''The function actionPerformed contains code executed upon click of the associated button(s)''' 
 	 
@@ -50,7 +51,7 @@ class ButtonAction(ActionListener): # extends action listener
 		Table.incrementCounter() # Add one additional row before filling it 
  
 		Table.addValue("Index", Table.getCounter() ) 
-		Table.addValue("Folder", infos.directory) 
+		Table.addValue("Folder", infos.directory.rstrip(os.path.sep) )
 		Table.addValue("Image", filename)	 
 		 
 		# Read categories
