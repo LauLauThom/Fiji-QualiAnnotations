@@ -1,3 +1,14 @@
+'''
+This plugin takes a csv as input that defines the structure of the classification GUI
+The CSV should contain one column per dropdown choice menu
+The first line of the CSV contains the label of the category and the following lines the possible choice
+example
+
+Tail, Morphology
+Straight, Gross
+Bent, Slim
+Broken, , 
+'''
 #@ File (label="CSV file for category and choice", style="extension:csv") csvpath
 from java.awt.event import ActionListener 
 from fiji.util.gui  import GenericDialogPlus
@@ -20,7 +31,7 @@ with open(csvPath, "r") as csvFile:
 	
 	for row in csvIterator:
 		for i, entry in enumerate(row): # row is a list
-			dropdown[i].append(entry) # dropdown[i] is the list of choices
+			if entry: dropdown[i].append(entry) # dropdown[i] is the list of choices # if necessary since all columns might not have the same length
 
 
 ## Check if a table called Classification or Classification.csv exists otherwise open a new one
