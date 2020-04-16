@@ -1,4 +1,4 @@
-#@ int (Label = "Number of categories") N_category 
+#@ int (Label = "Number of categories", min=1) N_category 
 #@ PrefService pref
 #@ ImageJ ij
 '''
@@ -20,15 +20,15 @@ import os
  
 class ButtonAction(ActionListener): # extends action listener  
 	 
-	def __init__(self,cat): # cat is the category name as a string 
+	def __init__(self, cat): # cat is the category name as a string 
 		# use mother class constructor 
-		ActionListener.__init__(self) 
-		 
+		ActionListener.__init__(self)
+		
 		# add the category as attribute 
-		self.cat = cat 
+		self.cat = cat
 		 
 	 
-	def actionPerformed(self,event): 
+	def actionPerformed(self, event): 
 		'''Called when Button are clicked''' 
  
 		imp = IJ.getImage() # get current image 
