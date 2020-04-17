@@ -31,6 +31,8 @@ The result table contains 1 column per category with 0 if the image is not in th
 | 1     | C:/    | test1.jpg | 1      | 0      | blurry   |
 | 2     | C:/    | test2.jpg | 0      | 1      |          |
 
+This generates so-called 1-hot encoding and is typically what you need to train a multi-class classifier.  
+
 - Multiple classes per image
 
 | Index | Folder | Image     | Fruit | Red | Yellow | Comments |
