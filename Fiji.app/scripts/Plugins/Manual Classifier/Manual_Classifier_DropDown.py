@@ -117,6 +117,13 @@ win.addStringField("Comments", "")
  
 # Add button to window 
 win.addButton("Add", ButtonAction()) 
-win.hideCancelButton() 
 
+# Add message about citation and doc
+win.addMessage("If you use this plugin, please cite : ***")
+win.addMessage("Documentation and generic analysis workflows available on the GitHub repo (click Help)")
+
+# Add Help button pointing to the github
+win.addHelp(r"https://github.com/LauLauThom/ImageJ-ManualClassifier")
+
+win.hideCancelButton() 
 win.showDialog()

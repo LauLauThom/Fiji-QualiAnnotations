@@ -168,6 +168,13 @@ if (Win.wasOKed()):
 
 	# Add comment field
 	WinButton.addStringField("Comments", "")
+	
+	# Add message about citation and doc
+	WinButton.addMessage("If you use this plugin, please cite : ***")
+	WinButton.addMessage("Documentation and generic analysis workflows available on the GitHub repo (click Help)")
+	
+	# Add Help button pointing to the github
+	WinButton.addHelp(r"https://github.com/LauLauThom/ImageJ-ManualClassifier")
 
 	WinButton.hideCancelButton() 
 	WinButton.showDialog() 
