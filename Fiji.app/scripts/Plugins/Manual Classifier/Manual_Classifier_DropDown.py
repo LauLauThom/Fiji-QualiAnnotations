@@ -1,6 +1,6 @@
 '''
 This plugin takes a csv as input that defines the structure of the classification GUI
-The CSV should contain one column per dropdown choice menu
+The CSV should contain one column per dropdowns choice menu
 The first line of the CSV contains the label of the category and the following lines the possible choice
 example
 
@@ -10,6 +10,7 @@ Bent, Slim
 Broken, , 
 '''
 #@ File (label="CSV file for category and choice", style="extension:csv") csvpath
+from java.awt 		import Panel, Choice, Label, GridLayout
 from java.awt.event import ActionListener 
 from fiji.util.gui  import GenericDialogPlus
 from ij.measure 	import ResultsTable 
@@ -29,11 +30,11 @@ with open(csvPath, "r") as csvFile:
 	headers = csvIterator.next() # read first header line 
 	n = len(headers)
 	
-	dropdown = [ [] for i in range(n)] # [[], [], [], [], []] such that dropdown[i] contains the list of choices for dropdown i
+	dropdowns = [ [] for i in range(n)] # [[], [], [], [], []] such that dropdowns[i] contains the list of choices for dropdowns i
 	
 	for row in csvIterator:
 		for i, entry in enumerate(row): # row is a list
-			if entry: dropdown[i].append(entry) # dropdown[i] is the list of choices # if necessary since all columns might not have the same length
+			if entry: dropdowns[i].append(entry) # dropdown[i] is the list of choices # if necessary since all columns might not have the same length
 
 #print dropdown
 
@@ -85,8 +86,8 @@ class ButtonAction(ActionListener): # extends action listener
 		Table.addValue("Image", filename)	 
 		 
 		# Read choices 
-		for i, choice in enumerate( win.getChoices() ):
-			Table.addValue(headers[i], choice.getSelectedItem() ) 
+		for dropdown in ( panel.getComponents()[n:] ):
+			Table.addValue(dropdown.getName(), dropdown.getSelectedItem() ) 
 
 		# Read comment
 		stringField = win.getStringFields()[0]
@@ -103,15 +104,35 @@ class ButtonAction(ActionListener): # extends action listener
 		# Bring back the focus to the button window (otherwise the table is in the front) 
 		WindowManager.setWindow(win) 
 
+# Create horizontal panel for dropdowns
+panel = Panel( GridLayout(0, n) )
 
+# First row in GUI = label
+for header in headers:
+	panel.add( Label(header) )
+
+# Second row -> dropdown
+for i in range(n):
+	label = headers[i] 
+	
+	chooser = Choice()
+	chooser.setName(label)
+	
+	dropdown = dropdowns[i]
+	for option in dropdown:
+		chooser.add(option) 
+	
+	panel.add(chooser)
 
 # Initialize classification GUI
 win = GenericDialogPlus("Multi-dropdown Classification") # GenericDialogPlus needed for builtin Button support
 win.setModalityType(None) # like non-blocking generic dialog
 
-for i in range(n):
-	win.addChoice(headers[i], dropdown[i], dropdown[i][0])
-
+win.addPanel(panel)
+'''
+for i in range(n): # loop over columns
+	win.addChoice(headers[i], dropdowns[i], dropdowns[i][0])
+'''
 # Add comment field
 win.addStringField("Comments", "")
  
