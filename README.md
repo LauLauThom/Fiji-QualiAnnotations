@@ -1,5 +1,7 @@
 # Personal note
 Currently drag and drop the code on Fiji window for testing purposes.
+- Mention heartbeat was for image sequence
+- Option annotate full stack or slices independently
 
 # Installation
 - Activate the *** update site in Fiji
