@@ -8,3 +8,21 @@ Coupling a pre-trained base with custom classification layers is called "transfe
 
 The new fresh dense layers will be trained by the workflow for the prediction of custom image-classes, the VGG16 based is not further trained (frozen).  
 The VGG16 base could also be fine-tuned to be more specific to the new set of images, but only once the classification layers have been trained for a number of epochs. This is not proposed here to simplify the workflow.  
+
+# Training
+__The explanations in this section are valid for both the binary and multi-class classifier.__
+
+The workflows expect single grayscale images (no stack), and takes care of image pre-processing (resizing, intensity normalization, RGB conversion).  
+The parameters for the training (number of epochs, batch size, learning rate...) can be adjusted in the Keras Network Learner node.  
+The progress of the training can be monitored live.  
+After the training has completed, the trained model can be saved as a h5 file to use for prediction of image-categories on new images.  
+A text file containing the categories names is also saved along the trained model (YourModelFile-classes.txt).  
+
+__Nota Bene__ : Both the trained model and the text file with categories names are necessary for the prediction of image-category for new images using the prediction workflow.
+
+
+# Prediction
+__The explanation in this section are valid for both the binary and multi-class classifier.__
+
+The workflows take as input a list of grayscale images for which one wants to predict the image-categories thanks to a model trained using the training workflow.  
+They also take as input the trained model as a h5 file, and the text file containing the image-categories.
