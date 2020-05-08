@@ -12,7 +12,10 @@ The VGG16 base could also be fine-tuned to be more specific to the new set of im
 # Training
 __The explanations in this section are valid for both the binary and multi-class classifier.__
 
-The workflows expect single grayscale images (no stack), and takes care of image pre-processing (resizing, intensity normalization, RGB conversion).  
+The workflows expect single grayscale images (no stack), and takes care of image pre-processing (resizing, intensity normalization, RGB conversion).    
+The trained model is a hybrid model made of a pre-trained VGG16 base, and new dense layers appended on top.  
+Only the dense layers are trained, the base is frozen.  
+The base could also be further trained to have features more specific to the new images (fine tuning), but only once the dense layers have been trained for a number of epochs.  This is not proposed in the workflow for simplicity.    
 The parameters for the training (number of epochs, batch size, learning rate...) can be adjusted in the Keras Network Learner node.  
 The progress of the training can be monitored live.  
 After the training has completed, the trained model can be saved as a h5 file to use for prediction of image-categories on new images.  
