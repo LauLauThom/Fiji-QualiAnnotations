@@ -1,6 +1,10 @@
 # Personal note
 Currently drag and drop the code on Fiji window for testing purposes.
 
+# Installation
+- Activate the *** update site in Fiji
+- The plugins appear in the `Plugins > `menu
+
 # Plugins for manual classification of full images
 The plugin allow to associate images to 1 or a set of user-defined categories (also called classes).  
 It can be used to classifiy images in group suitable for the training of a classifier, or simply to describe the content of an image with defined criterium.  
