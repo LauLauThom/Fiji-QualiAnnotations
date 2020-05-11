@@ -33,14 +33,17 @@ class ButtonAction(ActionListener): # extends action listener
  
 		imp = IJ.getImage() # get current image 
 		infos = imp.getOriginalFileInfo() 
+		
+		# Get stack mode
+		stackChoice = WinButton.getChoices()[0]
+		stackMode = stackChoice.getSelectedItem()
 		 
 		# Recover image name 
-		if imp.getStackSize()==1:  
+		if imp.getStackSize()==1 or stackMode == "stack":  # single image or 1 entry/stack
 			filename = infos.fileName 
 		else: 
 			Stack = imp.getStack() 
 			filename = Stack.getSliceLabel(imp.currentSlice) 
-			 
 			 
 			if filename is None: # the slice label can be empty sometimes 
 				filename = 'Slice' + str(imp.currentSlice)	 
@@ -74,9 +77,11 @@ class ButtonAction(ActionListener): # extends action listener
 		#Table.updateResults() # only for result table but then addValue does not work ! 
 		 
 		# Go to next slice 
-		if imp.getStackSize() != 1 and imp.currentSlice != imp.getStackSize(): # if We have a stack and the current slice is not the last slice 
+		if (stackMode == "slice" 
+		and imp.getStackSize() != 1 
+		and imp.currentSlice != imp.getStackSize() ): # if We have a stack and the current slice is not the last slice
 			imp.setSlice(imp.currentSlice+1) 
-			imp.updateStatusbarValue() # update Z and pixel value (called by next slice so we should do it too ?) 
+			
 		 
 		# Bring back the focus to the button window (otherwise the table is in the front) 
 		WindowManager.setWindow(WinButton) 
@@ -168,6 +173,10 @@ if (Win.wasOKed()):
 
 	# Add comment field
 	WinButton.addStringField("Comments", "")
+	
+	# Add mode for stacks
+	choice = ["slice", "stack"]
+	WinButton.addChoice("Stack mode : 1 table entry per", choice, choice[0])
 	
 	# Add message about citation and doc
 	WinButton.addMessage("If you use this plugin, please cite : ***")
