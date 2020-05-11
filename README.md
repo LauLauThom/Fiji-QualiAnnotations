@@ -1,7 +1,8 @@
 # Personal note
 Currently drag and drop the code on Fiji window for testing purposes.
 - Mention heartbeat was for image sequence
-- Option annotate full stack or slices independently
+- Mention possibility to extract image features in KNIME
+- How to get what is selected in "Measure" Fiji ?
 
 # Installation
 - Activate the *** update site in Fiji
