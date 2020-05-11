@@ -28,7 +28,6 @@ class ButtonAction(ActionListener): # extends action listener
 		'''Called when associated buttons are clicked'''  
   
 		imp = IJ.getImage() # get current image  
-		infos = imp.getOriginalFileInfo()  
 		
 		# Get stack mode
 		stackChoice = WinButton.getChoices()[0]

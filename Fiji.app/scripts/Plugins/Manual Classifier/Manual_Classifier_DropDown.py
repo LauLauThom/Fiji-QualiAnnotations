@@ -50,7 +50,6 @@ class ButtonAction(ActionListener): # extends action listener
 		'''Called when associated buttons are clicked''' 
  
 		imp = IJ.getImage() # get current image
-		infos = imp.getOriginalFileInfo() 
 
 		# Get stack mode
 		stackChoice = win.getChoices()[-1] # last dropdown is the stackmode
