@@ -14,7 +14,7 @@ from java.awt.event import ActionListener
 from fiji.util.gui  import GenericDialogPlus
 from ij.measure 	import ResultsTable 
 from ij             import IJ, WindowManager
-from QualiAnnotations import addDefaultOptions, getTable, nextSlice
+from QualiAnnotations import addDefaultOptions, getTable, nextSlice, getImageDirAndName
 import os, csv, codecs
 
 ### Read CSV to get categories and choices
@@ -54,26 +54,15 @@ class ButtonAction(ActionListener): # extends action listener
 
 		# Get stack mode
 		stackChoice = win.getChoices()[-1] # last dropdown is the stackmode
-		stackMode = stackChoice.getSelectedItem()
-
-		# Recover image name 
-		if imp.getStackSize()==1 or stackMode=="stack":  
-			filename = infos.fileName 
-		else: 
-			Stack = imp.getStack() 
-			filename = Stack.getSliceLabel(imp.currentSlice) 
-			 
-			if filename is None: # the slice label can be empty sometimes 
-				filename = 'Slice' + str(imp.currentSlice)	 
-					 
-			else :  
-				filename = filename.split('\n',1)[0] # can be useful when ImagesToStack/Import sequence was used 
+		stackMode = stackChoice.getSelectedItem() 
 					 
 		# Fill the result table 
 		Table.incrementCounter() # Add one additional row before filling it 
- 
+		
+		# Recover image name  
+		directory, filename = getImageDirAndName(imp, stackMode)
 		Table.addValue("Index", Table.getCounter() ) 
-		Table.addValue("Folder", infos.directory.rstrip(os.path.sep) )
+		Table.addValue("Folder", directory)
 		Table.addValue("Image", filename)	 
 		 
 		# Read choices 

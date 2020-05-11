@@ -18,7 +18,7 @@ from fiji.util.gui  import GenericDialogPlus
 from java.awt.event import ActionListener  
 from java.awt 		import GridLayout, Button, Panel , Checkbox 
 from collections 	import OrderedDict
-from QualiAnnotations import addDefaultOptions, getTable, nextSlice
+from QualiAnnotations import addDefaultOptions, getTable, nextSlice, getImageDirAndName
 import os
 
 class ButtonAction(ActionListener): # extends action listener   
@@ -33,25 +33,14 @@ class ButtonAction(ActionListener): # extends action listener
 		# Get stack mode
 		stackChoice = WinButton.getChoices()[0]
 		stackMode = stackChoice.getSelectedItem()
-		
-		# Recover image name  
-		if imp.getStackSize()==1 or stackMode=="stack" :   
-			filename = infos.fileName  
-		else:  
-			Stack = imp.getStack()  
-			filename = Stack.getSliceLabel(imp.currentSlice)  
-			  
-			if filename is None: # the slice label can be empty sometimes  
-				filename = 'Slice' + str(imp.currentSlice)	  
-					  
-			else :   
-				filename = filename.split('\n',1)[0] # can be useful when ImagesToStack/Import sequence was used  
 					  
 		# Fill the result table  
 		Table.incrementCounter() # Add one additional row before filling it  
-  
+		
+		# Recover image name  
+		directory, filename = getImageDirAndName(imp, stackMode)
 		Table.addValue("Index", Table.getCounter() )  
-		Table.addValue("Folder", infos.directory.rstrip(os.path.sep) ) 
+		Table.addValue("Folder", directory) 
 		Table.addValue("Image", filename)	  
 		  
 		# Read categories 

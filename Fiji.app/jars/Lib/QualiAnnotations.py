@@ -1,5 +1,6 @@
 from ij 			import WindowManager 
 from ij.measure 	import ResultsTable 
+import os
 
 def addDefaultOptions(dialog):
 	'''Add stack mode choice, message and help button'''
@@ -42,3 +43,26 @@ def nextSlice(imp, stackMode):
 	if (stackMode=="slice" and imp.getStackSize()!=1 and imp.currentSlice!=imp.getStackSize() ): # if We have a stack and the current slice is not the last slice
 		imp.setSlice(imp.currentSlice+1) 
 	
+
+def getImageDirAndName(imp, stackMode):
+	
+	fileInfo = imp.getOriginalFileInfo()
+	
+	# Recover image directory
+	directory = fileInfo.directory.rstrip(os.path.sep) 
+	
+	# Recover image name 
+	if imp.getStackSize()==1 or stackMode == "stack":  # single image or 1 entry/stack
+		filename = fileInfo.fileName
+	
+	else: 
+		Stack = imp.getStack() 
+		filename = Stack.getSliceLabel(imp.currentSlice) 
+		 
+		if filename is None: # the slice label can be empty sometimes 
+			filename = 'Slice' + str(imp.currentSlice)	 
+				 
+		else :  
+			filename = filename.split('\n',1)[0] # can be useful when ImagesToStack/Import Sequence was used
+	
+	return directory, filename

@@ -16,7 +16,7 @@ from ij.measure 	import ResultsTable
 from ij.gui		    import GenericDialog, NonBlockingGenericDialog 
 from java.awt.event import ActionListener 
 from java.awt 		import GridLayout, Button, Panel
-from QualiAnnotations import addDefaultOptions, getTable, nextSlice
+from QualiAnnotations import addDefaultOptions, getTable, nextSlice, getImageDirAndName
 import os 
  
 class ButtonAction(ActionListener): # extends action listener  
@@ -39,25 +39,12 @@ class ButtonAction(ActionListener): # extends action listener
 		stackChoice = WinButton.getChoices()[0]
 		stackMode = stackChoice.getSelectedItem()
 		 
-		# Recover image name 
-		if imp.getStackSize()==1 or stackMode == "stack":  # single image or 1 entry/stack
-			filename = infos.fileName 
-		else: 
-			Stack = imp.getStack() 
-			filename = Stack.getSliceLabel(imp.currentSlice) 
-			 
-			if filename is None: # the slice label can be empty sometimes 
-				filename = 'Slice' + str(imp.currentSlice)	 
-					 
-			else :  
-				filename = filename.split('\n',1)[0] # can be useful when ImagesToStack/Import Sequence was used  
-			 
-		 
 		# Fill the result table 
 		Table.incrementCounter() # Add one additional row before filling it 
-		 
+		
+		directory, filename = getImageDirAndName(imp, stackMode)
 		Table.addValue("Index", Table.getCounter() ) 
-		Table.addValue("Folder", infos.directory.rstrip(os.path.sep) )
+		Table.addValue("Folder", directory)
 		Table.addValue("Image", filename) 
 
 		if choiceIndex==0: # single category column
