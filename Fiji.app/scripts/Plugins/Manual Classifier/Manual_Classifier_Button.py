@@ -16,6 +16,7 @@ from ij.measure 	import ResultsTable
 from ij.gui		    import GenericDialog, NonBlockingGenericDialog 
 from java.awt.event import ActionListener 
 from java.awt 		import GridLayout, Button, Panel
+from QualiAnnotations import addDefaultOptions, getTable, nextSlice
 import os 
  
 class ButtonAction(ActionListener): # extends action listener  
@@ -75,14 +76,10 @@ class ButtonAction(ActionListener): # extends action listener
 		
 		Table.show(tableTitle) # Update table	   
 		#Table.updateResults() # only for result table but then addValue does not work ! 
-		 
-		# Go to next slice 
-		if (stackMode == "slice" 
-		and imp.getStackSize() != 1 
-		and imp.currentSlice != imp.getStackSize() ): # if We have a stack and the current slice is not the last slice
-			imp.setSlice(imp.currentSlice+1) 
-			
-		 
+		
+		# Go to next slice
+		nextSlice(imp, stackMode)
+		
 		# Bring back the focus to the button window (otherwise the table is in the front) 
 		WindowManager.setWindow(WinButton) 
 		 
@@ -123,22 +120,8 @@ if (Win.wasOKed()):
 	choiceIndex = Win.getNextChoiceIndex()
 	pref.put("table_style", choiceIndex)
 	
-	# Check if a table called Classification or Classification.csv exists otherwise open a new one
-	win  = WindowManager.getWindow("Classification")
-	win2 = WindowManager.getWindow("Classification.csv")
-	
-	if win: # different of None
-		Table = win.getResultsTable()
-		tableTitle = "Classification"
-		
-	elif win2 : # different of None
-		Table = win2.getResultsTable()
-		tableTitle = "Classification.csv"
-		
-	else:
-		Table = ResultsTable()
-		tableTitle = "Classification"
- 
+	tableTitle, Table = getTable()
+	 
 	# Initialize GUI with category buttons 
 	WinButton = NonBlockingGenericDialog("Manual classifier - Single class per image") 
 	WinButton.addMessage("Click the category of the current image")
@@ -170,20 +153,11 @@ if (Win.wasOKed()):
 
 	# Add Panel to WinButton
 	WinButton.addPanel(catPanel)
-
-	# Add comment field
-	WinButton.addStringField("Comments", "")
 	
-	# Add mode for stacks
-	choice = ["slice", "stack"]
-	WinButton.addChoice("Stack mode : 1 table entry per", choice, choice[0])
+	# Add comment field 
+	WinButton.addStringField("Comments", "") 
 	
-	# Add message about citation and doc
-	WinButton.addMessage("If you use this plugin, please cite : ***")
-	WinButton.addMessage("Documentation and generic analysis workflows available on the GitHub repo (click Help)")
+	# Add default fields
+	addDefaultOptions(WinButton)
 	
-	# Add Help button pointing to the github
-	WinButton.addHelp(r"https://github.com/LauLauThom/ImageJ-ManualClassifier")
-
-	WinButton.hideCancelButton() 
 	WinButton.showDialog() 

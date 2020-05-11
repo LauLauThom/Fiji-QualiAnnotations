@@ -14,6 +14,7 @@ from java.awt.event import ActionListener
 from fiji.util.gui  import GenericDialogPlus
 from ij.measure 	import ResultsTable 
 from ij             import IJ, WindowManager
+from QualiAnnotations import addDefaultOptions, getTable, nextSlice
 import os, csv, codecs
 
 ### Read CSV to get categories and choices
@@ -38,20 +39,7 @@ with open(csvPath, "r") as csvFile:
 #print dropdown
 
 ## Check if a table called Classification or Classification.csv exists otherwise open a new one
-table1 = WindowManager.getWindow("Classification")
-table2 = WindowManager.getWindow("Classification.csv")
-
-if table1: # different of None
-	Table = table1.getResultsTable()
-	tableTitle = "Classification"
-	
-elif table2 : # different of None
-	Table = table2.getResultsTable()
-	tableTitle = "Classification.csv"
-	
-else:
-	Table = ResultsTable()
-	tableTitle = "Classification"
+tableTitle, Table = getTable()
 
 
 ## Button action for "Add" Button
@@ -63,9 +51,13 @@ class ButtonAction(ActionListener): # extends action listener
  
 		imp = IJ.getImage() # get current image
 		infos = imp.getOriginalFileInfo() 
-		 
+
+		# Get stack mode
+		stackChoice = win.getChoices()[-1] # last dropdown is the stackmode
+		stackMode = stackChoice.getSelectedItem()
+
 		# Recover image name 
-		if imp.getStackSize()==1:  
+		if imp.getStackSize()==1 or stackMode=="stack":  
 			filename = infos.fileName 
 		else: 
 			Stack = imp.getStack() 
@@ -85,7 +77,7 @@ class ButtonAction(ActionListener): # extends action listener
 		Table.addValue("Image", filename)	 
 		 
 		# Read choices 
-		for i, choice in enumerate( win.getChoices() ):
+		for i, choice in enumerate( win.getChoices()[:-1] ): # Does not take last dropdown (stackMode)
 			Table.addValue(headers[i], choice.getSelectedItem() ) 
 
 		# Read comment
@@ -96,9 +88,7 @@ class ButtonAction(ActionListener): # extends action listener
 		#Table.updateResults() # only for result table but then addValue does not work ! 
 		 
 		# Go to next slice 
-		if imp.getStackSize() != 1 and imp.currentSlice != imp.getStackSize(): # if We have a stack and the current slice is not the last slice 
-			imp.setSlice(imp.currentSlice+1) 
-			imp.updateStatusbarValue() # update Z and pixel value (called by next slice so we should do it too ?) 
+		nextSlice(imp, stackMode)
 		 
 		# Bring back the focus to the button window (otherwise the table is in the front) 
 		WindowManager.setWindow(win) 
@@ -118,12 +108,7 @@ win.addStringField("Comments", "")
 # Add button to window 
 win.addButton("Add", ButtonAction()) 
 
-# Add message about citation and doc
-win.addMessage("If you use this plugin, please cite : ***")
-win.addMessage("Documentation and generic analysis workflows available on the GitHub repo (click Help)")
+# Add defaults
+addDefaultOptions(win)
 
-# Add Help button pointing to the github
-win.addHelp(r"https://github.com/LauLauThom/ImageJ-ManualClassifier")
-
-win.hideCancelButton() 
 win.showDialog()
