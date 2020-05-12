@@ -77,15 +77,30 @@ def getImageDirAndName(imp, stackMode):
 	
 
 class ButtonAction(ActionListener): # extends action listener   
-	'''Class defining what happened when the Add button is clicked'''  
+	'''
+	Generic class used to defined button actions
+	In particular it contains 2 key functions
+	- actionPerformed : Call when the button is clicked, this method does the default action + a custom action define in fillFunction
+	- fillFunction(Table) : Allows to perform custom action on the table, it is called by actionPErformed and thus executed on button-clicks
+	'''  
 	
-	def __init__(self, dialog, fillFunction):
-		super(ButtonAction, self).__init__()
+	def __init__(self, dialog):
+		ActionListener.__init__(self)
 		self.dialog = dialog
-		self.fillFunction = fillFunction
+	
+	def fillFunction(self, Table):
+		'''
+		Function to overwrite in descendant classes, used to add custom item to table.
+		It is called by action performed and thus executed when button is clicked
+		'''
+		pass
 	
 	def actionPerformed(self, event):  
-		'''Called when button Add is clicked'''  
+		'''
+		Called when button is clicked, no need to overwrite
+		It adds default column contents (image path + measures)
+		It also calls FillFunction
+		'''  
   
 		imp = IJ.getImage() # get current image  				
 		
@@ -141,3 +156,14 @@ class ButtonAction(ActionListener): # extends action listener
 		  
 		# Bring back the focus to the button window (otherwise the table is in the front)  
 		WindowManager.setWindow(self.dialog)  
+
+
+class AddButtonAction(ButtonAction):
+	'''Class for Add button used by checkbox and dropdown plugin'''
+	
+	def __init__(self, dialog, function):
+		ButtonAction.__init__(self, dialog)
+		self.function = function
+	
+	def fillFunction(self, Table):
+		self.function(Table)

@@ -17,50 +17,18 @@ from ij.plugin.filter import Analyzer
 from ij.gui		    import GenericDialog, NonBlockingGenericDialog 
 from java.awt.event import ActionListener 
 from java.awt 		import GridLayout, Button, Panel
-from QualiAnnotations import addDefaultOptions, getTable, getImageDirAndName
+from QualiAnnotations import addDefaultOptions, getTable, getImageDirAndName, ButtonAction
 import os 
- 
-class ButtonAction(ActionListener): # extends action listener  
-	 
-	def __init__(self, cat): # cat is the category name as a string 
-		# use mother class constructor 
-		ActionListener.__init__(self)
-		
-		# add the category as attribute 
-		self.cat = cat
-		 
-	 
-	def actionPerformed(self, event): 
-		'''Called when Button are clicked''' 
- 
-		imp = IJ.getImage() # get current image 
-		
-		# Get stack mode
-		stackChoice = WinButton.getChoices()[0]
-		stackMode = stackChoice.getSelectedItem()
-		
-		# Check options
-		checkboxes  = WinButton.getCheckboxes()
-		doNext      = checkboxes[-2].getState() # 1 before last
-		doMeasure   = checkboxes[-1].getState() # last
-		
-		# Get current table
-		tableTitle, Table = getTable()
-		Table.showRowNumbers(True)
-		
-		if doMeasure: # Automatically increment counter
-			analyzer = Analyzer(imp, Table)
-			analyzer.setMeasurement(Measurements.LABELS, False) # dont add label to table
-			analyzer.measure() # as selected in Set Measurements
 
-		else:
-			Table.incrementCounter() # Automatically done if doMeasure 
-		
-		directory, filename = getImageDirAndName(imp, stackMode)
-		#Table.addValue("Index", Table.getCounter() ) 
-		Table.addValue("Folder", directory)
-		Table.addValue("Image", filename) 
 
+
+class CustomAction(ButtonAction): # extend ButtonAction to inherit the actionPerformed method
+	
+	def __init__(self, dialog, cat):
+		ButtonAction.__init__(self, dialog)
+		self.cat=cat
+	
+	def fillFunction(self, Table):
 		if choiceIndex==0: # single category column
 			Table.addValue("Category", self.cat)
 
@@ -70,21 +38,6 @@ class ButtonAction(ActionListener): # extends action listener
 					Table.addValue(cat, 1) 
 				else: 
 					Table.addValue(cat, 0)
-		 
-		# Read comment
-		stringField = WinButton.getStringFields()[0]
-		Table.addValue("Comment", stringField.text)
-		
-		Table.show(tableTitle) # Update table	   
-		#Table.updateResults() # only for result table but then addValue does not work ! 
-		
-		# Go to next slice
-		if doNext: imp.setSlice(imp.currentSlice+1) 
-		
-		# Bring back the focus to the button window (otherwise the table is in the front) 
-		WindowManager.setWindow(WinButton) 
-		 
-		 
 		 
 ############### GUI - CATEGORY DIALOG - collect N classes names (N define at first line)  ############# 
  
@@ -138,7 +91,8 @@ if (Win.wasOKed()):
 		listCat.append(Cat) 
  
 		# Create an instance of button action for this category 
-		Action = ButtonAction(Cat) 
+		#Action = ButtonAction(Cat) 
+		Action = CustomAction(WinButton, Cat)
  
 		# Create a Button 
 		button = Button(Cat) 
