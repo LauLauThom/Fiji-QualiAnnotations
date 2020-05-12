@@ -15,59 +15,12 @@ from ij	            import IJ, WindowManager
 from ij.measure 	import ResultsTable  
 from ij.gui		    import GenericDialog  
 from fiji.util.gui  import GenericDialogPlus
-from java.awt.event import ActionListener  
 from java.awt 		import GridLayout, Button, Panel , Checkbox 
 from collections 	import OrderedDict
-from QualiAnnotations import addDefaultOptions, getTable, nextSlice, getImageDirAndName
+from QualiAnnotations import addDefaultOptions, getTable, nextSlice, getImageDirAndName, ButtonAction
 import os
 
-class ButtonAction(ActionListener): # extends action listener   
-	'''The function actionPerformed contains code executed upon click of the associated button(s)'''  
-	
-	def __init__(self, dialog, fillFunction):
-		super(ButtonAction, self).__init__()
-		self.dialog = dialog
-		self.fillFunction = fillFunction
-	
-	def actionPerformed(self, event):  
-		'''Called when associated buttons are clicked'''  
-  
-		imp = IJ.getImage() # get current image  
-		
-		# Get stack mode
-		stackChoice = self.dialog.getChoices()[0]
-		stackMode = stackChoice.getSelectedItem()
-		
-		# Get current table
-		tableTitle, Table = getTable()
 
-		# Fill the result table  
-		Table.incrementCounter() # Add one additional row before filling it  
-		
-		# Recover image name  
-		directory, filename = getImageDirAndName(imp, stackMode)
-		Table.addValue("Index", Table.getCounter() )  
-		Table.addValue("Folder", directory) 
-		Table.addValue("Image", filename)
-
-		# Add selected items
-		self.fillFunction(Table)
- 
-		# Read comment 
-		stringField = self.dialog.getStringFields()[0] 
-		Table.addValue("Comment", stringField.text) 
-		 
-		Table.show(tableTitle) # Update table	    
-		#Table.updateResults() # only for result table but then addValue does not work !  
-		  
-		# Go to next slice  
-		nextSlice(imp, stackMode)
-		  
-		# Bring back the focus to the button window (otherwise the table is in the front)  
-		WindowManager.setWindow(self.dialog)  
-		  
-		  
-		  
 ############### GUI - CATEGORY DIALOG - collect N classes names (N define at first line)  #############  
 Win = GenericDialog("Categories names")  
   
