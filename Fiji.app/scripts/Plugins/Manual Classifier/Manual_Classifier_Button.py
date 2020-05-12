@@ -17,7 +17,7 @@ from ij.plugin.filter import Analyzer
 from ij.gui		    import GenericDialog, NonBlockingGenericDialog 
 from java.awt.event import ActionListener 
 from java.awt 		import GridLayout, Button, Panel
-from QualiAnnotations import addDefaultOptions, getTable, nextSlice, getImageDirAndName
+from QualiAnnotations import addDefaultOptions, getTable, getImageDirAndName
 import os 
  
 class ButtonAction(ActionListener): # extends action listener  
@@ -79,7 +79,7 @@ class ButtonAction(ActionListener): # extends action listener
 		#Table.updateResults() # only for result table but then addValue does not work ! 
 		
 		# Go to next slice
-		nextSlice(imp, stackMode, doNext)
+		if doNext: imp.setSlice(imp.currentSlice+1) 
 		
 		# Bring back the focus to the button window (otherwise the table is in the front) 
 		WindowManager.setWindow(WinButton) 

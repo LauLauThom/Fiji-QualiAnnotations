@@ -44,11 +44,6 @@ def getTable():
 		tableTitle = "Classification"
 	
 	return tableTitle, Table
-		
-def nextSlice(imp, stackMode, doNext=True):
-	'''Go to next slice if stackMode=slice''' 
-	if stackMode=="slice" and doNext: # if We have a stack and the current slice is not the last slice
-		imp.setSlice(imp.currentSlice+1) 
 	
 
 def getImageDirAndName(imp, stackMode):
@@ -126,7 +121,7 @@ class ButtonAction(ActionListener): # extends action listener
 		#Table.updateResults() # only for result table but then addValue does not work !  
 		  
 		# Go to next slice  
-		nextSlice(imp, stackMode, doNext)
+		if doNext: imp.setSlice(imp.currentSlice+1)
 		  
 		# Bring back the focus to the button window (otherwise the table is in the front)  
 		WindowManager.setWindow(self.dialog)  
