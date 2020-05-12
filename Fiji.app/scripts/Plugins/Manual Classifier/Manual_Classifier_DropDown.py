@@ -36,10 +36,6 @@ with open(csvPath, "r") as csvFile:
 			if entry: dropdown[i].append(entry) # dropdown[i] is the list of choices # if necessary since all columns might not have the same length
 
 
-# Function called when filling the table
-def fillTable(Table):
-	for i, choice in enumerate( win.getChoices()[:-1] ): # Does not take last dropdown (stackMode)
-		Table.addValue(headers[i], choice.getSelectedItem() ) 
 
 
 # Initialize classification GUI
@@ -52,7 +48,12 @@ for i in range(n):
 # Add comment field 
 win.addStringField("Comments", "") 
 	  
-# Add button to window  
+# Add button to window 
+def fillTable(Table):
+	'''Called when Add is clicked'''
+	for i, choice in enumerate( win.getChoices()[:-1] ): # Does not take last dropdown (stackMode)
+		Table.addValue(headers[i], choice.getSelectedItem() ) 
+
 win.addButton("Add", ButtonAction(win, fillTable))
 
 # Add defaults
