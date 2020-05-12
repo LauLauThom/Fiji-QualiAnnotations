@@ -17,7 +17,7 @@ from ij.gui		    import GenericDialog
 from fiji.util.gui  import GenericDialogPlus
 from java.awt 		import GridLayout, Button, Panel , Checkbox 
 from collections 	import OrderedDict
-from QualiAnnotations import addDefaultOptions, getTable, nextSlice, getImageDirAndName, ButtonAction
+from QualiAnnotations import addDefaultOptions, ButtonAction
 import os
 
 

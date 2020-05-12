@@ -4,7 +4,8 @@ import os
 from java.awt.event import ActionListener
 
 def addDefaultOptions(dialog):
-	'''Add stack mode choice, message and help button'''
+	'''Add stack mode choice, message and help button''' 
+	
 	# Add mode for stacks
 	choice = ["slice", "stack"]
 	dialog.addChoice("Stack mode : 1 table entry per", choice, choice[0])
@@ -70,7 +71,7 @@ def getImageDirAndName(imp, stackMode):
 	
 
 class ButtonAction(ActionListener): # extends action listener   
-	'''The function actionPerformed contains code executed upon click of the associated button(s)'''  
+	'''Class defining what happened when the Add button is clicked'''  
 	
 	def __init__(self, dialog, fillFunction):
 		super(ButtonAction, self).__init__()
@@ -78,12 +79,12 @@ class ButtonAction(ActionListener): # extends action listener
 		self.fillFunction = fillFunction
 	
 	def actionPerformed(self, event):  
-		'''Called when associated buttons are clicked'''  
+		'''Called when button Add is clicked'''  
   
 		imp = IJ.getImage() # get current image  
 		
 		# Get stack mode
-		stackChoice = self.dialog.getChoices()[-1]
+		stackChoice = self.dialog.getChoices()[-1] # last dropdown
 		stackMode   = stackChoice.getSelectedItem()
 		
 		# Get current table
