@@ -1,5 +1,6 @@
 from ij 			  import IJ, WindowManager 
 from ij.plugin.filter import Analyzer
+from ij.plugin.frame  import RoiManager
 from ij.measure 	  import ResultsTable, Measurements
 import os
 from java.awt.event import ActionListener
@@ -12,8 +13,9 @@ def addDefaultOptions(dialog):
 	dialog.addChoice("Stack mode : 1 table entry per", choice, choice[0])
 	
 	# Checkbox next slice and run Measure 
-	dialog.addCheckbox("Auto next slice", True)
+	dialog.addCheckbox("Add ROI to Manager", True)
 	dialog.addCheckbox("run 'Measure'", False)
+	dialog.addCheckbox("Auto next slice", True)
 	
 	# Add message about citation and doc
 	dialog.addMessage("If you use this plugin, please cite : ***")
@@ -44,7 +46,11 @@ def getTable():
 		tableTitle = "Classification"
 	
 	return tableTitle, Table
-	
+
+def getRoiManager():
+	rm = RoiManager.getInstance()
+	if not rm: rm = RoiManager() # create a new instance
+	return rm
 
 def getImageDirAndName(imp, stackMode):
 	
@@ -89,8 +95,9 @@ class ButtonAction(ActionListener): # extends action listener
 		
 		# Check options
 		checkboxes  = self.dialog.getCheckboxes()
-		doNext      = checkboxes[-2].getState() # 1 before last
-		doMeasure   = checkboxes[-1].getState() # last				
+		addRoi      = checkboxes[-3].getState()
+		doMeasure   = checkboxes[-2].getState()
+		doNext      = checkboxes[-1].getState()
 		
 		# Get current table
 		tableTitle, Table = getTable()
@@ -103,6 +110,15 @@ class ButtonAction(ActionListener): # extends action listener
 
 		else:
 			Table.incrementCounter() # Automatically done if doMeasure 
+		
+		if addRoi:
+			roi = imp.getRoi()
+			if roi: 
+				rm = getRoiManager()
+				rm.addRoi(roi)
+				roiName = rm.getRoi(rm.getCount()-1).getName()
+				Table.addValue("Roi", roiName)
+			
 				
 		# Recover image name  
 		directory, filename = getImageDirAndName(imp, stackMode)
