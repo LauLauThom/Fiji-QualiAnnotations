@@ -10,6 +10,10 @@ def addDefaultOptions(dialog):
 	choice = ["slice", "stack"]
 	dialog.addChoice("Stack mode : 1 table entry per", choice, choice[0])
 	
+	# Checkbox next slice and run Measure 
+	dialog.addCheckbox("Auto next slice", True)
+	dialog.addCheckbox("run 'Measure'", False)
+	
 	# Add message about citation and doc
 	dialog.addMessage("If you use this plugin, please cite : ***")
 	dialog.addMessage("Documentation and generic analysis workflows available on the GitHub repo (click Help)")
@@ -40,9 +44,9 @@ def getTable():
 	
 	return tableTitle, Table
 		
-def nextSlice(imp, stackMode):
+def nextSlice(imp, stackMode, doNext=True):
 	'''Go to next slice if stackMode=slice''' 
-	if (stackMode=="slice" and imp.getStackSize()!=1 and imp.currentSlice!=imp.getStackSize() ): # if We have a stack and the current slice is not the last slice
+	if stackMode=="slice" and doNext: # if We have a stack and the current slice is not the last slice
 		imp.setSlice(imp.currentSlice+1) 
 	
 
@@ -81,12 +85,17 @@ class ButtonAction(ActionListener): # extends action listener
 	def actionPerformed(self, event):  
 		'''Called when button Add is clicked'''  
   
-		imp = IJ.getImage() # get current image  
+		imp = IJ.getImage() # get current image  				
 		
 		# Get stack mode
 		stackChoice = self.dialog.getChoices()[-1] # last dropdown
 		stackMode   = stackChoice.getSelectedItem()
 		
+		# Check options
+		checkboxes  = self.dialog.getCheckboxes()
+		doNext      = checkboxes[-2].getState() # 1 before last
+		doMeasure   = checkboxes[-1].getState() # last		
+
 		# Get current table
 		tableTitle, Table = getTable()
 
@@ -110,7 +119,7 @@ class ButtonAction(ActionListener): # extends action listener
 		#Table.updateResults() # only for result table but then addValue does not work !  
 		  
 		# Go to next slice  
-		nextSlice(imp, stackMode)
+		nextSlice(imp, stackMode, doNext)
 		  
 		# Bring back the focus to the button window (otherwise the table is in the front)  
 		WindowManager.setWindow(self.dialog)  
