@@ -17,7 +17,7 @@ from ij.gui		    import GenericDialog
 from fiji.util.gui  import GenericDialogPlus
 from java.awt 		import GridLayout, Button, Panel , Checkbox 
 from collections 	import OrderedDict
-from QualiAnnotations import addDefaultOptions, ButtonAction
+from QualiAnnotations import addDefaultOptions, AddButtonAction
 import os
 
 
@@ -76,7 +76,7 @@ if Win.wasOKed():
 	WinButton.addStringField("Comments", "") 
 	 	  
 	# Add button to window  
-	WinButton.addButton("Add", ButtonAction(WinButton, fillTable))  
+	WinButton.addButton("Add", AddButtonAction(WinButton, fillTable))  
 	
 	# Add defaults
 	addDefaultOptions(WinButton)

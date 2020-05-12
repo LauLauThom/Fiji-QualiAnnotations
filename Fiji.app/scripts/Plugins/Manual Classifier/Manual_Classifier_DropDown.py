@@ -13,7 +13,7 @@ Broken, ,
 from fiji.util.gui  import GenericDialogPlus
 from ij.measure 	import ResultsTable 
 from ij             import IJ, WindowManager
-from QualiAnnotations import addDefaultOptions, ButtonAction
+from QualiAnnotations import addDefaultOptions, AddButtonAction
 import os, csv, codecs
 
 ### Read CSV to get categories and choices
@@ -54,7 +54,7 @@ def fillTable(Table):
 	for i, choice in enumerate( win.getChoices()[:-1] ): # Does not take last dropdown (stackMode)
 		Table.addValue(headers[i], choice.getSelectedItem() ) 
 
-win.addButton("Add", ButtonAction(win, fillTable))
+win.addButton("Add", AddButtonAction(win, fillTable))
 
 # Add defaults
 addDefaultOptions(win)

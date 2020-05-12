@@ -25,8 +25,7 @@ import os
 class CustomAction(ButtonAction): # extend ButtonAction to inherit the actionPerformed method
 	
 	def __init__(self, dialog, cat):
-		ActionListener.__init__(self)
-		self.dialog = dialog
+		ButtonAction.__init__(self, dialog)
 		self.cat=cat
 	
 	def fillFunction(self, Table):
