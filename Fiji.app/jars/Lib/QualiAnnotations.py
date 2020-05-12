@@ -1,9 +1,11 @@
-from ij 			import WindowManager 
+from ij 			import IJ, WindowManager 
 from ij.measure 	import ResultsTable 
 import os
+from java.awt.event import ActionListener
 
 def addDefaultOptions(dialog):
-	'''Add stack mode choice, message and help button'''
+	'''Add stack mode choice, message and help button''' 
+	
 	# Add mode for stacks
 	choice = ["slice", "stack"]
 	dialog.addChoice("Stack mode : 1 table entry per", choice, choice[0])
@@ -66,3 +68,49 @@ def getImageDirAndName(imp, stackMode):
 			filename = filename.split('\n',1)[0] # can be useful when ImagesToStack/Import Sequence was used
 	
 	return directory, filename
+	
+
+class ButtonAction(ActionListener): # extends action listener   
+	'''Class defining what happened when the Add button is clicked'''  
+	
+	def __init__(self, dialog, fillFunction):
+		super(ButtonAction, self).__init__()
+		self.dialog = dialog
+		self.fillFunction = fillFunction
+	
+	def actionPerformed(self, event):  
+		'''Called when button Add is clicked'''  
+  
+		imp = IJ.getImage() # get current image  
+		
+		# Get stack mode
+		stackChoice = self.dialog.getChoices()[-1] # last dropdown
+		stackMode   = stackChoice.getSelectedItem()
+		
+		# Get current table
+		tableTitle, Table = getTable()
+
+		# Fill the result table  
+		Table.incrementCounter() # Add one additional row before filling it  
+		
+		# Recover image name  
+		directory, filename = getImageDirAndName(imp, stackMode)
+		Table.addValue("Index", Table.getCounter() )  
+		Table.addValue("Folder", directory) 
+		Table.addValue("Image", filename)
+
+		# Add selected items (implementation-specific)
+		self.fillFunction(Table)
+ 
+		# Read comment 
+		stringField = self.dialog.getStringFields()[0] 
+		Table.addValue("Comment", stringField.text) 
+		 
+		Table.show(tableTitle) # Update table	    
+		#Table.updateResults() # only for result table but then addValue does not work !  
+		  
+		# Go to next slice  
+		nextSlice(imp, stackMode)
+		  
+		# Bring back the focus to the button window (otherwise the table is in the front)  
+		WindowManager.setWindow(self.dialog)  

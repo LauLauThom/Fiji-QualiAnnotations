@@ -15,52 +15,12 @@ from ij	            import IJ, WindowManager
 from ij.measure 	import ResultsTable  
 from ij.gui		    import GenericDialog  
 from fiji.util.gui  import GenericDialogPlus
-from java.awt.event import ActionListener  
 from java.awt 		import GridLayout, Button, Panel , Checkbox 
 from collections 	import OrderedDict
-from QualiAnnotations import addDefaultOptions, getTable, nextSlice, getImageDirAndName
+from QualiAnnotations import addDefaultOptions, ButtonAction
 import os
 
-class ButtonAction(ActionListener): # extends action listener   
-	'''The function actionPerformed contains code executed upon click of the associated button(s)'''  
-		  
-	def actionPerformed(self,event):  
-		'''Called when associated buttons are clicked'''  
-  
-		imp = IJ.getImage() # get current image  
-		
-		# Get stack mode
-		stackChoice = WinButton.getChoices()[0]
-		stackMode = stackChoice.getSelectedItem()
-					  
-		# Fill the result table  
-		Table.incrementCounter() # Add one additional row before filling it  
-		
-		# Recover image name  
-		directory, filename = getImageDirAndName(imp, stackMode)
-		Table.addValue("Index", Table.getCounter() )  
-		Table.addValue("Folder", directory) 
-		Table.addValue("Image", filename)	  
-		  
-		# Read categories 
-		for cat, box in dicoBox.iteritems():  
-			Table.addValue(cat, box.getState() ) # getNextBoolean would keep growing the index, check only index 0 to N  
- 
-		# Read comment 
-		stringField = WinButton.getStringFields()[0] 
-		Table.addValue("Comment", stringField.text) 
-		 
-		Table.show(tableTitle) # Update table	    
-		#Table.updateResults() # only for result table but then addValue does not work !  
-		  
-		# Go to next slice  
-		nextSlice(imp, stackMode)
-		  
-		# Bring back the focus to the button window (otherwise the table is in the front)  
-		WindowManager.setWindow(WinButton)  
-		  
-		  
-		  
+
 ############### GUI - CATEGORY DIALOG - collect N classes names (N define at first line)  #############  
 Win = GenericDialog("Categories names")  
   
@@ -80,11 +40,14 @@ Win.showDialog()
   
   
 ################# After OK clicking ###########  
+def fillTable(Table):
+	'''Read checkbox state and update table''' 
+	for cat, box in dicoBox.iteritems():  
+		Table.addValue(cat, box.getState() ) # getNextBoolean would keep growing the index, check only index 0 to N
+
 # Recover fields from the formular  
 if Win.wasOKed():   
-	  
-	tableTitle, Table = getTable()
-  
+	    
 	# Initialise GUI with category buttons  
 	WinButton = GenericDialogPlus("Manual classifier - multi-class per image") # GenericDialogPlus needed for builtin Button support
 	WinButton.setModalityType(None) # like non-blocking generic dialog 
@@ -113,8 +76,11 @@ if Win.wasOKed():
 	WinButton.addStringField("Comments", "") 
 	 	  
 	# Add button to window  
-	WinButton.addButton("Add", ButtonAction())  
+	WinButton.addButton("Add", ButtonAction(WinButton, fillTable))  
 	
 	# Add defaults
 	addDefaultOptions(WinButton)
 	WinButton.showDialog()  
+
+
+  
