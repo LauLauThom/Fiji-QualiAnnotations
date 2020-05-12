@@ -12,7 +12,8 @@ It will also skip to the next slice for stacks.
 TO DO : Add measurement possibility ? The addValue was not working so well in this case. Duplicate to another code to try with the result table 
 '''
 from ij	            import IJ, WindowManager
-from ij.measure 	import ResultsTable 
+from ij.measure 	import ResultsTable, Measurements
+from ij.plugin.filter import Analyzer
 from ij.gui		    import GenericDialog, NonBlockingGenericDialog 
 from java.awt.event import ActionListener 
 from java.awt 		import GridLayout, Button, Panel
@@ -37,12 +38,26 @@ class ButtonAction(ActionListener): # extends action listener
 		# Get stack mode
 		stackChoice = WinButton.getChoices()[0]
 		stackMode = stackChoice.getSelectedItem()
-		 
-		# Fill the result table 
-		Table.incrementCounter() # Add one additional row before filling it 
+		
+		# Check options
+		checkboxes  = WinButton.getCheckboxes()
+		doNext      = checkboxes[-2].getState() # 1 before last
+		doMeasure   = checkboxes[-1].getState() # last
+		
+		# Get current table
+		tableTitle, Table = getTable()
+		Table.showRowNumbers(True)
+		
+		if doMeasure: # Automatically increment counter
+			analyzer = Analyzer(imp, Table)
+			analyzer.setMeasurement(Measurements.LABELS, False) # dont add label to table
+			analyzer.measure() # as selected in Set Measurements
+
+		else:
+			Table.incrementCounter() # Automatically done if doMeasure 
 		
 		directory, filename = getImageDirAndName(imp, stackMode)
-		Table.addValue("Index", Table.getCounter() ) 
+		#Table.addValue("Index", Table.getCounter() ) 
 		Table.addValue("Folder", directory)
 		Table.addValue("Image", filename) 
 
@@ -64,7 +79,7 @@ class ButtonAction(ActionListener): # extends action listener
 		#Table.updateResults() # only for result table but then addValue does not work ! 
 		
 		# Go to next slice
-		nextSlice(imp, stackMode)
+		nextSlice(imp, stackMode, doNext)
 		
 		# Bring back the focus to the button window (otherwise the table is in the front) 
 		WindowManager.setWindow(WinButton) 
