@@ -1,5 +1,6 @@
-from ij 			import IJ, WindowManager 
-from ij.measure 	import ResultsTable 
+from ij 			  import IJ, WindowManager 
+from ij.plugin.filter import Analyzer
+from ij.measure 	  import ResultsTable, Measurements
 import os
 from java.awt.event import ActionListener
 
@@ -94,17 +95,23 @@ class ButtonAction(ActionListener): # extends action listener
 		# Check options
 		checkboxes  = self.dialog.getCheckboxes()
 		doNext      = checkboxes[-2].getState() # 1 before last
-		doMeasure   = checkboxes[-1].getState() # last		
-
+		doMeasure   = checkboxes[-1].getState() # last				
+		
 		# Get current table
 		tableTitle, Table = getTable()
-
-		# Fill the result table  
-		Table.incrementCounter() # Add one additional row before filling it  
+		Table.showRowNumbers(True)
 		
+		if doMeasure: # Automatically increment counter
+			analyzer = Analyzer(imp, Table)
+			analyzer.setMeasurement(Measurements.LABELS, False) # dont add label to table
+			analyzer.measure() # as selected in Set Measurements
+
+		else:
+			Table.incrementCounter() # Automatically done if doMeasure 
+				
 		# Recover image name  
 		directory, filename = getImageDirAndName(imp, stackMode)
-		Table.addValue("Index", Table.getCounter() )  
+		#Table.addValue("Index", Table.getCounter() )  
 		Table.addValue("Folder", directory) 
 		Table.addValue("Image", filename)
 
