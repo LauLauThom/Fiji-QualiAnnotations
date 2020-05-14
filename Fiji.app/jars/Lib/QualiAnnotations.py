@@ -126,15 +126,6 @@ class ButtonAction(ActionListener): # extends action listener
 		else:
 			Table.incrementCounter() # Automatically done if doMeasure 
 		
-		if addRoi:
-			roi = imp.getRoi()
-			if roi: 
-				rm = getRoiManager()
-				rm.addRoi(roi)
-				roiName = rm.getRoi(rm.getCount()-1).getName()
-				Table.addValue("Roi", roiName)
-			
-				
 		# Recover image name  
 		directory, filename = getImageDirAndName(imp, stackMode)
 		#Table.addValue("Index", Table.getCounter() )  
@@ -147,6 +138,18 @@ class ButtonAction(ActionListener): # extends action listener
 		# Read comment 
 		stringField = self.dialog.getStringFields()[0] 
 		Table.addValue("Comment", stringField.text) 
+		
+		# Add Roi to RoiManager + set its properties
+		if addRoi:
+			roi = imp.getRoi()
+			if roi: 
+				# Add to Manager
+				rm = getRoiManager()
+				rm.addRoi(roi)
+				
+				# Add roi name to table
+				roiName = rm.getRoi(rm.getCount()-1).getName()
+				Table.addValue("Roi", roiName)
 		 
 		Table.show(tableTitle) # Update table	    
 		#Table.updateResults() # only for result table but then addValue does not work !  
