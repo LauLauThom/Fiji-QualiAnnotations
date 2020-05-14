@@ -48,12 +48,13 @@ for i in range(n):
 # Add comment field 
 win.addStringField("Comments", "") 
 	  
-# Add button to window 
+# Define custom action on button click (in addition to default)
 def fillTable(Table):
 	'''Called when Add is clicked'''
 	for i, choice in enumerate( win.getChoices()[:-1] ): # Does not take last dropdown (stackMode)
 		Table.addValue(headers[i], choice.getSelectedItem() ) 
 
+# Add button to window 
 win.addButton("Add", AddButtonAction(win, fillTable))
 
 # Add defaults
