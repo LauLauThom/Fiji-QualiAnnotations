@@ -143,6 +143,12 @@ class ButtonAction(ActionListener): # extends action listener
 		if addRoi:
 			roi = imp.getRoi()
 			if roi: 
+				
+				# Set properties of roi with new row
+				for heading in Table.getHeadings():
+					value = Table.getStringValue(heading, Table.size()-1)
+					roi.setProperty(heading, value)
+				
 				# Add to Manager
 				rm = getRoiManager()
 				rm.addRoi(roi)
