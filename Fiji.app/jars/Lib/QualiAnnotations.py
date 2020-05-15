@@ -61,15 +61,17 @@ def getImageDirAndName(imp, stackMode):
 	directory = fileInfo.directory.rstrip(os.path.sep) 
 	
 	# Recover image name 
-	if imp.getStackSize()==1 or stackMode == "stack":  # single image or 1 entry/stack
+	if not imp.isStack() or stackMode == "stack":  # single image or 1 entry/stack
 		filename = fileInfo.fileName
 	
-	else: 
+	else: # Stack + mode Slice
 		Stack = imp.getStack() 
 		filename = Stack.getSliceLabel(imp.currentSlice) 
 		 
 		if filename is None: # the slice label can be empty sometimes 
-			filename = 'Slice' + str(imp.currentSlice)	 
+			if imp.isHyperStack(): filename = "C:{},Z:{},T:{}".format(imp.getC(), imp.getZ(), imp.getT() )
+			else: # 1D stack
+				filename = 'Slice ' + str(imp.currentSlice)	 
 				 
 		else :  
 			filename = filename.split('\n',1)[0] # can be useful when ImagesToStack/Import Sequence was used
