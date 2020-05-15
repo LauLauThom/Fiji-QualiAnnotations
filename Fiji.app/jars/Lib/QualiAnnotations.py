@@ -55,6 +55,7 @@ def getRoiManager():
 def getImageDirAndName(imp, stackMode):
 	
 	fileInfo = imp.getOriginalFileInfo()
+	if not fileInfo: return "", ""
 	
 	# Recover image directory
 	directory = fileInfo.directory.rstrip(os.path.sep) 
