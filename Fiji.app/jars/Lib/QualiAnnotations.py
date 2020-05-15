@@ -75,6 +75,12 @@ def getImageDirAndName(imp, stackMode):
 			filename = filename.split('\n',1)[0] # can be useful when ImagesToStack/Import Sequence was used
 	
 	return directory, filename
+
+def nextSlice(imp):
+	if imp.isHyperStack(): imp.setT(imp.getT()+1)        # increment the time slider
+	elif imp.isStack(): imp.setSlice(imp.currentSlice+1) # increment unique slider
+	else:pass
+		
 	
 
 class ButtonAction(ActionListener): # extends action listener   
@@ -162,7 +168,7 @@ class ButtonAction(ActionListener): # extends action listener
 		#Table.updateResults() # only for result table but then addValue does not work !  
 		  
 		# Go to next slice  
-		if doNext: imp.setSlice(imp.currentSlice+1)
+		if doNext: nextSlice(imp)
 		  
 		# Bring back the focus to the button window (otherwise the table is in the front)  
 		WindowManager.setWindow(self.dialog)  
