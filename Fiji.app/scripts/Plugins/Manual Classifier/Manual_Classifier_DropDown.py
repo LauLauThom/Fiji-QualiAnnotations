@@ -41,6 +41,8 @@ with open(csvPath, "r") as csvFile:
 # Initialize classification GUI
 win = GenericDialogPlus("Multi-dropdown Classification") # GenericDialogPlus needed for builtin Button support
 win.setModalityType(None) # like non-blocking generic dialog
+win.addMessage("""Select the descriptors corresponding to the current image, then click Add.
+To annotate ROI, draw or select a ROI before clicking Add.""") 
 
 for i in range(n):
 	win.addChoice(headers[i], dropdown[i], dropdown[i][0])

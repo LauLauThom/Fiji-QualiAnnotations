@@ -8,8 +8,6 @@ A second window follows asking for the name to use for those categories.
 Finally a third window will show up with one button per category.  
 Clicking on the button will generate a new entry in a table with the image name and the category.  
 It will also skip to the next slice for stacks.  
-  
-TO DO : Add measurement possibility ? The addValue was not working so well in this case. Duplicate to another code to try with the result table  
 '''
 from ij	            import IJ, WindowManager  
 from ij.measure 	import ResultsTable  
@@ -51,7 +49,8 @@ if Win.wasOKed():
 	# Initialise GUI with category buttons  
 	WinButton = GenericDialogPlus("Manual classifier - multi-class per image") # GenericDialogPlus needed for builtin Button support
 	WinButton.setModalityType(None) # like non-blocking generic dialog 
-	WinButton.addMessage("Tick the categories corresponding to the current image, then click Add") 
+	WinButton.addMessage("""Tick the categories corresponding to the current image, then click Add.
+	To annotate ROI, draw or select a ROI before clicking Add.""") 
 	 
 	# Loop over categories, adding a tickbox to the panel for each 
 	dicoBox  = OrderedDict()  # contains (categoryName: CheckBox)
