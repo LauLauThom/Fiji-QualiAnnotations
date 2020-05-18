@@ -66,6 +66,8 @@ def getImageDirAndName(imp, stackMode):
 	# Recover image name 
 	if not imp.isStack() or stackMode == "stack":  # single image or 1 entry/stack
 		filename = fileInfo.fileName
+		
+		if not filename: filename = imp.getWindow().getTitle()
 	
 	else: # Stack + mode Slice
 		Stack = imp.getStack() 
