@@ -58,7 +58,10 @@ def getImageDirAndName(imp, stackMode):
 	if not fileInfo: return "", ""
 	
 	# Recover image directory
-	directory = fileInfo.directory.rstrip(os.path.sep) 
+	if fileInfo.directory:
+		directory = fileInfo.directory.rstrip(os.path.sep) 
+	else:
+		directory = ""
 	
 	# Recover image name 
 	if not imp.isStack() or stackMode == "stack":  # single image or 1 entry/stack
