@@ -106,14 +106,17 @@ class CustomDialog(GenericDialogPlus):
 	def keyPressed(self, event):
 		'''
 		This function should be overwritten in descendant classes
-		code = keyEvent.getKeyCode()
-		if code == keyEvent.VK_ADD or code==keyEvent.VK_PLUS: 
-			self.doAction()
+		but it should call self.doAction()
 		'''
 		pass
 	
 	def doAction(self):
-		'''called if button clicked or shortcut called'''
+		'''
+		Main function called if a button is clicked or shortcut called
+		It does the default stuff (adding imageName...)
+		+ it also calls the function fillTable which is implemented in descendant classes
+		DO NOT OVERWRITE
+		'''
 		imp = IJ.getImage() # get current image  				
 		
 		# Get stack mode
@@ -180,7 +183,10 @@ class CustomDialog(GenericDialogPlus):
 
 
 class AddDialog(CustomDialog):
-	'''Descendant class for dialog of Checkbox and Dropdown plugins with a Add button'''
+	'''
+	Descendant class for dialog of Checkbox and Dropdown plugins with a Add button
+	The particularity is that the fillFunction is passed via the constructor
+	'''
 	
 	def __init__(self, title, fillFunction):
 		CustomDialog.__init__(self, title)
@@ -199,6 +205,7 @@ class AddDialog(CustomDialog):
 class ButtonAction(ActionListener): # extends action listener   
 	'''
 	Generic class used to defined button actions
+	The action is initialized with the dialog to be able to do stuff with it
 	- actionPerformed : Call when the button is clicked, here it calls the Action.main() passed to the constructor 
 	'''  
 	
