@@ -43,8 +43,8 @@ def fillTable(Table):
 
 # Initialize classification GUI
 win = AddDialog("Multi-dropdown Classification", fillTable)
-win.addMessage("""Select the descriptors corresponding to the current image, then click Add.
-To annotate ROI, draw or select a ROI before clicking Add.""") 
+win.addMessage("""Select the descriptors corresponding to the current image, then click Add or press the + key.
+To annotate ROI, draw or select a ROI before validating.""") 
 
 for i in range(n):
 	win.addChoice(headers[i], dropdown[i], dropdown[i][0])

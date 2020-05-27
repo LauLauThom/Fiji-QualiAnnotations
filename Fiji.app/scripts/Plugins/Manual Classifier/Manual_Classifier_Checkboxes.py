@@ -48,8 +48,8 @@ if Win.wasOKed():
 	     
 	# Initialise GUI with category buttons   
 	winButton = AddDialog("Manual classifier - multi-class per image", fillTable)
-	winButton.addMessage("""Tick the categories corresponding to the current image, then click Add.
-	To annotate ROI, draw or select a ROI before clicking Add.""") 
+	winButton.addMessage("""Tick the categories corresponding to the current image, then click Add or press the + key.
+	To annotate ROI, draw or select a ROI before validating.""") 
 	  
 	# Loop over categories, adding a tickbox to the panel for each  
 	dicoBox  = OrderedDict()          # contains (categoryName: CheckBox) 
