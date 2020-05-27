@@ -47,10 +47,17 @@ class ButtonDialog(CustomDialog):
 					table.addValue(cat, 0) 
 	 
 	def keyPressed(self, keyEvent): 
-		'''Check if the key pressed match any of the category''' 
-		 
-		if keyEvent.getKeyCode in listCode: 
-			self.selectedCategory = "theNewCat" 
+		'''
+		Map button to keyboard shortcuts (use F1..F12)
+		ie one can press F1 to assign to the first category instead of clicking the button
+		Not working for some reason
+		'''		 
+		code = keyEvent.getKeyCode()
+		print "hello", code
+		
+		if code in listShortcut: 
+			index = listShortcut.index(code)
+			self.selectedCategory = listCat[index] 
 			self.doAction() 
 			 
 	 
@@ -96,13 +103,14 @@ if (Win.wasOKed()):
 	winButton = ButtonDialog("Manual classifier - Single class per image", choiceIndex)  
 	winButton.addMessage("Click the category of the current image or ROI.\nTo annotate ROI, draw a ROI or activate one before clicking the category button.") 
 		 
-	# Loop over categories and add a button to the panel for each 
-	listCat = []  
+	# Loop over categories and add a button to the panel for each  
 	catPanel = Panel(GridLayout(0,4)) # Unlimited number of rows - fix to 4 columns 
 	 
 	# Define actionListener for buttons: they share the same one, associated to the dialog
 	action = CatButtonAction(winButton)  
-	 
+
+	listCat = []
+	listShortcut = range(112, 112+N_category)
 	for i in range(N_category):  
 		  
 		# Recover the category name  
