@@ -178,7 +178,7 @@ class ButtonAction(ActionListener): # extends action listener
 		if doNext: nextSlice(imp)
 		  
 		# Bring back the focus to the button window (otherwise the table is in the front)  
-		WindowManager.setWindow(self.dialog)  
+		WindowManager.toFront(self.dialog)  
 
 
 class AddButtonAction(ButtonAction):
