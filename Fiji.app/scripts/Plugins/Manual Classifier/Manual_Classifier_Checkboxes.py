@@ -9,10 +9,9 @@ Finally a third window will show up with one button per category.
 Clicking on the button will generate a new entry in a table with the image name and the category.   
 It will also skip to the next slice for stacks.   
 '''
-from ij	            import IJ, WindowManager   
+from ij	            import IJ   
 from ij.measure 	import ResultsTable   
 from ij.gui		    import GenericDialog   
-from fiji.util.gui  import GenericDialogPlus 
 from java.awt 		import GridLayout, Button, Panel , Checkbox  
 from collections 	import OrderedDict 
 from QualiAnnotations import AddDialog, ButtonAction
@@ -48,7 +47,7 @@ if Win.wasOKed():
 			Table.addValue(cat, box.getState() ) 
 	     
 	# Initialise GUI with category buttons   
-	winButton = AddDialog("Manual classifier - multi-class per image", fillTable) # GenericDialogPlus needed for builtin Button support 
+	winButton = AddDialog("Manual classifier - multi-class per image", fillTable)
 	winButton.addMessage("""Tick the categories corresponding to the current image, then click Add.
 	To annotate ROI, draw or select a ROI before clicking Add.""") 
 	  
