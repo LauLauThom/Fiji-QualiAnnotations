@@ -15,7 +15,7 @@ from ij.plugin.filter import Analyzer
 from ij.gui		    import GenericDialog, NonBlockingGenericDialog 
 from java.awt.event import ActionListener 
 from java.awt 		import GridLayout, Button, Panel
-from QualiAnnotations import addDefaultOptions, getTable, ButtonAction
+from QualiAnnotations import CustomDialog, getTable, ButtonAction
 import os 
 
 
@@ -111,6 +111,6 @@ if (Win.wasOKed()):
 	WinButton.addStringField("Comments", "") 
 	
 	# Add default fields
-	addDefaultOptions(WinButton)
+	WinButton.addDefaultOptions()
 	
 	WinButton.showDialog() 

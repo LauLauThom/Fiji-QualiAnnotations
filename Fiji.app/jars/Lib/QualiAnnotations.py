@@ -4,28 +4,8 @@ from ij.plugin.frame  import RoiManager
 from ij.measure 	  import ResultsTable, Measurements
 import os
 from java.awt.event import ActionListener
+from fiji.util.gui  import GenericDialogPlus
 
-def addDefaultOptions(dialog):
-	'''Add stack mode choice, message and help button''' 
-	
-	# Add mode for stacks
-	choice = ["slice", "stack"]
-	dialog.addChoice("Stack mode : 1 table entry per", choice, choice[0])
-	
-	# Checkbox next slice and run Measure 
-	dialog.addCheckbox("Add ROI to Manager", True)
-	dialog.addCheckbox("run 'Measure'", False)
-	dialog.addCheckbox("Auto next slice", True)
-	
-	# Add message about citation and doc
-	dialog.addMessage("If you use this plugin, please cite : ***")
-	dialog.addMessage("Documentation and generic analysis workflows available on the GitHub repo (click Help)")
-	
-	# Add Help button pointing to the github
-	dialog.addHelp(r"https://github.com/LauLauThom/ImageJ-ManualClassifier")
-
-	dialog.hideCancelButton() 
-	
 
 def getTable():
 	'''Check if a table is open and get its name'''
@@ -87,43 +67,61 @@ def nextSlice(imp):
 	if imp.isHyperStack(): imp.setT(imp.getT()+1)        # increment the time slider
 	elif imp.isStack(): imp.setSlice(imp.currentSlice+1) # increment unique slider
 	else:pass
-		
-	
 
-class ButtonAction(ActionListener): # extends action listener   
-	'''
-	Generic class used to defined button actions
-	In particular it contains 2 key functions
-	- actionPerformed : Call when the button is clicked, this method does the default action + a custom action define in fillFunction
-	- fillFunction(Table) : Allows to perform custom action on the table, it is called by actionPErformed and thus executed on button-clicks
-	'''  
+
+class CustomDialog(GenericDialogPlus):
+	'''Model class for the plugin dialog for the manual classifier'''
 	
-	def __init__(self, dialog):
-		ActionListener.__init__(self)
-		self.dialog = dialog
+	def __init__(self, title):
+		GenericDialogPlus.__init__(self, title)
+		self.setModalityType(None) # like non-blocking generic dialog 
 	
-	def fillFunction(self, Table):
+	def addDefaultOptions(self):
+		# Add mode for stacks
+		choice = ["slice", "stack"]
+		self.addChoice("Stack mode : 1 table entry per", choice, choice[0])
+		
+		# Checkbox next slice and run Measure 
+		self.addCheckbox("Add ROI to Manager", True)
+		self.addCheckbox("run 'Measure'", False)
+		self.addCheckbox("Auto next slice", True)
+		
+		# Add message about citation and doc
+		self.addMessage("If you use this plugin, please cite : ***")
+		self.addMessage("Documentation and generic analysis workflows available on the GitHub repo (click Help)")
+		
+		# Add Help button pointing to the github
+		self.addHelp(r"https://github.com/LauLauThom/ImageJ-ManualClassifier")
+
+		self.hideCancelButton()
+	
+	
+	def fillTable(self, Table):
 		'''
-		Function to overwrite in descendant classes, used to add custom item to table.
-		It is called by action performed and thus executed when button is clicked
+		Function defining custom command to check GUI and add to table
+		It should be overwritten in the descendant classes
 		'''
 		pass
 	
-	def actionPerformed(self, event):  
+	def keyPressed(self, event):
 		'''
-		Called when button is clicked, no need to overwrite
-		It adds default column contents (image path + measures)
-		It also calls FillFunction
-		'''  
-  
+		This function should be overwritten in descendant classes
+		code = keyEvent.getKeyCode()
+		if code == keyEvent.VK_ADD or code==keyEvent.VK_PLUS: 
+			self.doAction()
+		'''
+		pass
+	
+	def doAction(self):
+		'''called if button clicked or shortcut called'''
 		imp = IJ.getImage() # get current image  				
 		
 		# Get stack mode
-		stackChoice = self.dialog.getChoices()[-1] # last dropdown
+		stackChoice = self.getChoices()[-1] # last dropdown
 		stackMode   = stackChoice.getSelectedItem()
 		
 		# Check options
-		checkboxes  = self.dialog.getCheckboxes()
+		checkboxes  = self.getCheckboxes()
 		addRoi      = checkboxes[-3].getState()
 		doMeasure   = checkboxes[-2].getState()
 		doNext      = checkboxes[-1].getState()
@@ -147,10 +145,10 @@ class ButtonAction(ActionListener): # extends action listener
 		Table.addValue("Image", filename)
 
 		# Add selected items (implementation-specific)
-		self.fillFunction(Table)
+		self.fillTable(Table)
  
 		# Read comment 
-		stringField = self.dialog.getStringFields()[0] 
+		stringField = self.getStringFields()[0] 
 		Table.addValue("Comment", stringField.text) 
 		
 		# Add Roi to RoiManager + set its properties
@@ -178,15 +176,37 @@ class ButtonAction(ActionListener): # extends action listener
 		if doNext: nextSlice(imp)
 		  
 		# Bring back the focus to the button window (otherwise the table is in the front)  
-		WindowManager.toFront(self.dialog)  
+		WindowManager.toFront(self)  
 
 
-class AddButtonAction(ButtonAction):
-	'''Class for Add button used by checkbox and dropdown plugin'''
+class AddDialog(CustomDialog):
+	'''Descendant class for dialog of Checkbox and Dropdown plugins with a Add button'''
 	
-	def __init__(self, dialog, function):
-		ButtonAction.__init__(self, dialog)
-		self.function = function
+	def __init__(self, title, fillFunction):
+		CustomDialog.__init__(self, title)
+		self.function = fillFunction
 	
-	def fillFunction(self, Table):
+	def fillTable(self, Table):
 		self.function(Table)
+	
+	def keyPressed(self, keyEvent):
+		code = keyEvent.getKeyCode()
+		if code == keyEvent.VK_ADD or code==keyEvent.VK_PLUS: 
+			self.doAction()
+		
+		
+class ButtonAction(ActionListener): # extends action listener   
+	'''
+	Generic class used to defined button actions
+	- actionPerformed : Call when the button is clicked, here it calls the Action.main() passed to the constructor 
+	'''  
+	
+	def __init__(self, dialog):
+		ActionListener.__init__(self)
+		self.dialog = dialog
+	
+	def actionPerformed(self, event):  
+		'''
+		Called when button is clicked
+		'''
+		self.dialog.doAction()
