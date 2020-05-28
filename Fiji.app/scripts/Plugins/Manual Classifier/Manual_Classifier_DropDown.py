@@ -10,8 +10,6 @@ Bent, Slim
 Broken, , 
 '''
 #@ File (label="CSV file for category and choice", style="extension:csv") csvpath
-from ij.measure 	import ResultsTable 
-from ij             import IJ
 from QualiAnnotations import AddDialog, ButtonAction
 import os, csv, codecs
 

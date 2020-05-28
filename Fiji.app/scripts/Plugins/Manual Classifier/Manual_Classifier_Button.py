@@ -9,11 +9,7 @@ Finally a third window will show up with one button per category.
 Clicking on the button will generate a new entry in a table with the image name and the category.  
 It will also skip to the next slice for stacks.  
 '''
-from ij	            import IJ, WindowManager 
-from ij.measure 	import ResultsTable, Measurements 
-from ij.plugin.filter import Analyzer 
-from ij.gui		    import GenericDialog, NonBlockingGenericDialog  
-from java.awt.event import ActionListener  
+from ij.gui		    import GenericDialog
 from java.awt 		import GridLayout, Button, Panel 
 from QualiAnnotations import CustomDialog, getTable, ButtonAction
 import os  
