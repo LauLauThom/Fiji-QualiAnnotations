@@ -15,7 +15,7 @@ from ij.plugin.filter import Analyzer
 from ij.gui		    import GenericDialog, NonBlockingGenericDialog  
 from java.awt.event import ActionListener  
 from java.awt 		import GridLayout, Button, Panel 
-from QualiAnnotations import CustomDialog, getTable, ButtonAction 
+from QualiAnnotations import CustomDialog, getTable, ButtonAction
 import os  
 
 class CatButtonAction(ButtonAction): 
@@ -29,7 +29,7 @@ class CatButtonAction(ButtonAction):
  
 class ButtonDialog(CustomDialog): 
 	'''Annotation dialog, also define keyboard shortcut and function to fill the table'''
-	
+		
 	def __init__(self, title, choiceIndex): 
 		CustomDialog.__init__(self, title) 
 		self.choiceIndex = choiceIndex 
@@ -38,30 +38,27 @@ class ButtonDialog(CustomDialog):
 	def fillTable(self, table): 
 		if self.choiceIndex==0: # single category column 
 			table.addValue("Category", self.selectedCategory) 
- 
+		 
 		else: # 1 column/category with 0/1 
 			for cat in listCat:  
 				if cat == self.selectedCategory:  
 					table.addValue(cat, 1)  
 				else:  
 					table.addValue(cat, 0) 
-	 
+	
 	def keyPressed(self, keyEvent): 
 		'''
 		Map button to keyboard shortcuts (use F1..F12)
 		ie one can press F1 to assign to the first category instead of clicking the button
-		Not working for some reason
 		'''		 
 		code = keyEvent.getKeyCode()
-		print "hello", code
 		
 		if code in listShortcut: 
 			index = listShortcut.index(code)
 			self.selectedCategory = listCat[index] 
-			self.doAction() 
-			 
-	 
-		  
+			self.doAction() 	 
+		
+  
 ############### GUI - CATEGORY DIALOG - collect N classes names (N define at first line)  #############  
   
 Win = GenericDialog("Categories names") 
@@ -101,40 +98,43 @@ if (Win.wasOKed()):
 	  
 	# Initialize GUI with category buttons  
 	winButton = ButtonDialog("Manual classifier - Single class per image", choiceIndex)  
-	winButton.addMessage("Click the category of the current image or ROI.\nTo annotate ROI, draw a ROI or activate one before clicking the category button.") 
-		 
+	winButton.addMessage("Click the category of the current image or ROI, or use the F1-F12 keyboard shortcuts.\nTo annotate ROI, draw a ROI or activate one before clicking the category button.") 
+	
 	# Loop over categories and add a button to the panel for each  
 	catPanel = Panel(GridLayout(0,4)) # Unlimited number of rows - fix to 4 columns 
-	 
+	
 	# Define actionListener for buttons: they share the same one, associated to the dialog
 	action = CatButtonAction(winButton)  
-
+	
 	listCat = []
 	listShortcut = range(112, 112+N_category)
+	
 	for i in range(N_category):  
 		  
 		# Recover the category name  
 		Cat = Win.getNextString()  
 		listCat.append(Cat)  
-  
+		
 		# Create a Button  
 		button = Button(Cat) # button label 
-		  
+		
 		# Bind action to button  
 		button.addActionListener(action)  
-		  
+		
 		# Add a button to the gui for this category  
-		catPanel.add(button)  
-	  
+		button.setFocusable(False) # prevent the button to take the focus, only the window should be able to take the keyboard shortcut
+		catPanel.add(button)
+		
+		
 	# Save categories in memory 
 	pref.put(ij.class, "listCat", listCat) 
- 
+	
 	# Add Panel to winButton 
 	winButton.addPanel(catPanel) 
-	 
+	
 	# Add comment field  
 	winButton.addStringField("Comments", "")  
-	 
+	
 	# Add default fields 
 	winButton.addDefaultOptions() 
-	winButton.showDialog()  
+	winButton.showDialog()
