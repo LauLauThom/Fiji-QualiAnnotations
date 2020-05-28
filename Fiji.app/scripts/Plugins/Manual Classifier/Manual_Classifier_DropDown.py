@@ -10,10 +10,7 @@ Bent, Slim
 Broken, , 
 '''
 #@ File (label="CSV file for category and choice", style="extension:csv") csvpath
-from fiji.util.gui  import GenericDialogPlus
-from ij.measure 	import ResultsTable 
-from ij             import IJ, WindowManager
-from QualiAnnotations import addDefaultOptions, AddButtonAction
+from QualiAnnotations import AddDialog, ButtonAction
 import os, csv, codecs
 
 ### Read CSV to get categories and choices
@@ -48,13 +45,16 @@ with open(csvPath, "r") as csvFile:
 			if entry: dropdown[i].append(entry) # dropdown[i] is the list of choices # if necessary since all columns might not have the same length
 
 
-
+# Define custom action on button click (in addition to default)
+def fillTable(Table):
+	'''Called when Add is clicked'''
+	for i, choice in enumerate( win.getChoices()[:-1] ): # Does not take last dropdown (stackMode)
+		Table.addValue(headers[i], choice.getSelectedItem() )
 
 # Initialize classification GUI
-win = GenericDialogPlus("Multi-dropdown Classification") # GenericDialogPlus needed for builtin Button support
-win.setModalityType(None) # like non-blocking generic dialog
-win.addMessage("""Select the descriptors corresponding to the current image, then click Add.
-To annotate ROI, draw or select a ROI before clicking Add.""") 
+win = AddDialog("Multi-dropdown Classification", fillTable)
+win.addMessage("""Select the descriptors corresponding to the current image, then click Add or press the + key.
+To annotate ROI, draw or select a ROI before validating.""") 
 
 for i in range(n):
 	win.addChoice(headers[i], dropdown[i], dropdown[i][0])
@@ -62,15 +62,9 @@ for i in range(n):
 # Add comment field 
 win.addStringField("Comments", "") 
 	  
-# Define custom action on button click (in addition to default)
-def fillTable(Table):
-	'''Called when Add is clicked'''
-	for i, choice in enumerate( win.getChoices()[:-1] ): # Does not take last dropdown (stackMode)
-		Table.addValue(headers[i], choice.getSelectedItem() ) 
-
 # Add button to window 
-win.addButton("Add", AddButtonAction(win, fillTable))
+win.addButton("Add", ButtonAction(win))
 
 # Add defaults
-addDefaultOptions(win)
+win.addDefaultOptions()
 win.showDialog()
