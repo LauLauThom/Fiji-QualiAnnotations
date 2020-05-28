@@ -56,10 +56,13 @@ if Win.wasOKed():
 		   
 		# Recover the category name   
 		category = Win.getNextString()   
-		box = Checkbox(category, False)  
+
+		# Make a checkbox with the category name
+		box = Checkbox(category, False)
+		box.setFocusable(False) # important to have the keybard shortcut working
 		dicoBox[category] = box  
-		   
-		# Add a button to the gui for this category   
+
+		# Add checkbox to the gui for this category   
 		catPanel.add(box)   
 	   
 	# Save categories in memory   
