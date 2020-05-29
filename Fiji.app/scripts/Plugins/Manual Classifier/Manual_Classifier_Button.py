@@ -11,23 +11,24 @@ It will also skip to the next slice for stacks.
 '''
 from ij.gui		    import GenericDialog
 from java.awt 		import GridLayout, Button, Panel 
+from java.awt.event import ActionListener
 from QualiAnnotations import CustomDialog, getTable, ButtonAction
 import os  
 
-class CatButtonAction(ButtonAction): 
+class ButtonAction(ActionListener): 
 	'''Define what happens when a button is clicked'''
 	
 	def actionPerformed(self, event): 
 		'''Update the selected category and doAction to fill the table'''
-		self.dialog.selectedCategory = event.getSource().getLabel() 
-		self.dialog.doAction() 
+		winButton.selectedCategory = event.getSource().getLabel() 
+		winButton.doAction() 
 		 
  
 class ButtonDialog(CustomDialog): 
 	'''Annotation dialog, also define keyboard shortcut and function to fill the table'''
 		
-	def __init__(self, title, choiceIndex): 
-		CustomDialog.__init__(self, title) 
+	def __init__(self, title, message, panel, choiceIndex): 
+		CustomDialog.__init__(self, title, message, panel) 
 		self.choiceIndex = choiceIndex 
 		self.selectedCategory = "" 
 	 
@@ -90,18 +91,13 @@ if (Win.wasOKed()):
 	choiceIndex = Win.getNextChoiceIndex() 
 	pref.put("table_style", choiceIndex) 
 	 
-	tableTitle, Table = getTable() 
-	  
-	# Initialize GUI with category buttons  
-	winButton = ButtonDialog("Manual classifier - Single class per image", choiceIndex)  
-	winButton.addMessage("Click the category of the current image or ROI, or use the F1-F12 keyboard shortcuts.\nTo annotate ROI, draw a ROI or activate one before clicking the category button.") 
+	tableTitle, Table = getTable()
 	
 	# Loop over categories and add a button to the panel for each  
 	catPanel = Panel(GridLayout(0,4)) # Unlimited number of rows - fix to 4 columns 
 	
 	# Define actionListener for buttons: they share the same one, associated to the dialog
-	action = CatButtonAction(winButton)  
-	
+	action = ButtonAction()	
 	listCat = []
 	listShortcut = range(112, 112+N_category)
 	
@@ -125,12 +121,11 @@ if (Win.wasOKed()):
 	# Save categories in memory 
 	pref.put(ij.class, "listCat", listCat) 
 	
-	# Add Panel to winButton 
-	winButton.addPanel(catPanel) 
-	
-	# Add comment field  
-	winButton.addStringField("Comments", "")  
-	
+	## Initialize classification gui
+	title = "Manual classifier - Single class per image"
+	message = "Click the category of the current image or ROI, or use the F1-F12 keyboard shortcuts.\nTo annotate ROI, draw a ROI or activate one before clicking the category button." 
+	winButton = ButtonDialog(title, message, catPanel, choiceIndex)
+		
 	# Add default fields 
 	winButton.addDefaultOptions() 
 	winButton.showDialog()
