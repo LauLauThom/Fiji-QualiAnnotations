@@ -1,4 +1,5 @@
 # Image-classification with Convolutionnal Neural Network (CNN)
+
 This directory contains KNIME workflows for the training of a deep-learning models for image-classification using the Keras integration in KNIME.  
 The trained model can be used for the classification of full-size images into custom categories (__but there is no localization of objects__).  
 In addition to KNIME, a python installation with Keras installed should be configured in KNIME (See [KNIME documentation](https://docs.knime.com/2019-06/deep_learning_installation_guide/index.html#keras-integration)).
@@ -8,6 +9,20 @@ Coupling a pre-trained base with custom classification layers is called "transfe
 
 The new fresh dense layers will be trained by the workflow for the prediction of custom image-classes, the VGG16 based is not further trained (frozen).  
 The VGG16 base could also be fine-tuned to be more specific to the new set of images, but only once the classification layers have been trained for a number of epochs. This is not proposed here to simplify the workflow.  
+
+# Requirements
+### KNIME
+All dependencies are installed automatically when opening one of the published workflow, except the __KNIME Image Processing - Deep Learning extension__.    
+Click [here](https://hub.knime.com/BioML-Konstanz/extensions/org.knime.knip.dl.feature/latest) to install it.  
+
+### Python
+The best is to let KNIME install a preconfigured anaconda environment (anaconda should be installed already).  
+Go to `File > Preferences > KNIME > Python Deep Learning`
+or manually (but tends to fail with tensorflow conflicts...)
+- python 3.6.9 or 3.6.10
+- tensorflow (or tensorflow-gpu 1.12.0 max)
+- keras 2.2.4
+- pandas 0.24.5
 
 # Training
 __The explanations in this section are valid for both the binary and multi-class classifier.__
