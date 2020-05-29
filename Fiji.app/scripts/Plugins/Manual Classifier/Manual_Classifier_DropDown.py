@@ -1,6 +1,6 @@
 '''
 This plugin takes a csv as input that defines the structure of the classification GUI
-The CSV should contain one column per dropdown choice menu
+The CSV should contain one column per dropdowns choice menu
 The first line of the CSV contains the label of the category and the following lines the possible choice
 example
 
@@ -10,6 +10,7 @@ Bent, Slim
 Broken, , 
 '''
 #@ File (label="CSV file for category and choice", style="extension:csv") csvpath
+from java.awt 		import Panel, Choice, Label, GridLayout
 from QualiAnnotations import AddDialog, ButtonAction
 import os, csv, codecs
 
@@ -38,11 +39,33 @@ with open(csvPath, "r") as csvFile:
 	headers = csvIterator.next() # read first header line 
 	n = len(headers)
 	
-	dropdown = [ [] for i in range(n)] # [[], [], [], [], []] such that dropdown[i] contains the list of choices for dropdown i
+	dropdowns = [ [] for i in range(n)] # [[], [], [], [], []] such that dropdowns[i] contains the list of choices for dropdowns i
 	
 	for row in csvIterator:
 		for i, entry in enumerate(row): # row is a list
-			if entry: dropdown[i].append(entry) # dropdown[i] is the list of choices # if necessary since all columns might not have the same length
+			if entry: dropdowns[i].append(entry) # dropdown[i] is the list of choices # if necessary since all columns might not have the same length
+
+
+# Create horizontal panel for dropdowns
+panel = Panel( GridLayout(0, n) ) # as many columns (n) as menus, as many rows as necessary (0)
+
+# First panel row -> dropdown labels
+for header in headers:
+	panel.add( Label(header) )
+
+# Second panel row -> dropdown choices
+for i in range(n):
+	label = headers[i] 
+	
+	chooser = Choice()
+	chooser.setName(label) # not display but easier to recover infos
+	
+	dropdown = dropdowns[i]
+	for option in dropdown:
+		chooser.add(option) 
+	
+	chooser.setFocusable(False)
+	panel.add(chooser)
 
 
 # Define custom action on button click (in addition to default)
@@ -51,17 +74,17 @@ def fillTable(Table):
 	for i, choice in enumerate( win.getChoices()[:-1] ): # Does not take last dropdown (stackMode)
 		Table.addValue(headers[i], choice.getSelectedItem() )
 
+
 # Initialize classification GUI
 win = AddDialog("Multi-dropdown Classification", fillTable)
 win.addMessage("""Select the descriptors corresponding to the current image, then click Add or press the + key.
 To annotate ROI, draw or select a ROI before validating.""") 
 
-for i in range(n):
-	win.addChoice(headers[i], dropdown[i], dropdown[i][0])
+win.addPanel(panel)
 
-# Add comment field 
-win.addStringField("Comments", "") 
-	  
+# Add comment field
+win.addStringField("Comments", "")
+
 # Add button to window 
 win.addButton("Add", ButtonAction(win))
 
