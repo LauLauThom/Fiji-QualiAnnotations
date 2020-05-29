@@ -71,8 +71,8 @@ for i in range(n):
 # Define custom action on button click (in addition to default)
 def fillTable(Table):
 	'''Called when Add is clicked'''
-	for i, choice in enumerate( win.getChoices()[:-1] ): # Does not take last dropdown (stackMode)
-		Table.addValue(headers[i], choice.getSelectedItem() )
+	for dropdown in ( panel.getComponents()[n:] ): # n first elements are the labels
+		Table.addValue(dropdown.getName(), dropdown.getSelectedItem() )
 
 
 # Initialize classification GUI
