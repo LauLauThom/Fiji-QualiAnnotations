@@ -71,19 +71,16 @@ for i in range(n):
 # Define custom action on button click (in addition to default)
 def fillTable(Table):
 	'''Called when Add is clicked'''
-	for i, choice in enumerate( win.getChoices()[:-1] ): # Does not take last dropdown (stackMode)
-		Table.addValue(headers[i], choice.getSelectedItem() )
+	for dropdown in ( panel.getComponents()[n:] ): # n first elements are the labels
+		Table.addValue(dropdown.getName(), dropdown.getSelectedItem() )
 
 
 # Initialize classification GUI
-win = AddDialog("Multi-dropdown Classification", fillTable)
-win.addMessage("""Select the descriptors corresponding to the current image, then click Add or press the + key.
-To annotate ROI, draw or select a ROI before validating.""") 
+title   = "Multi-dropdown Classification"
+message = """Select the descriptors corresponding to the current image, then click Add or press the + key.
+To annotate ROI, draw or select a ROI before validating."""
 
-win.addPanel(panel)
-
-# Add comment field
-win.addStringField("Comments", "")
+win = AddDialog(title, message, panel, fillTable)
 
 # Add button to window 
 win.addButton("Add", ButtonAction(win))
