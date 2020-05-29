@@ -38,17 +38,7 @@ Win.showDialog()
 ################# After OK clicking ###########   
 # Recover fields from the formular   
 if Win.wasOKed():    
-	 
-	def fillTable(Table): 
-		'''Read checkbox state and update table'''  
-		for cat, box in dicoBox.iteritems():   
-			Table.addValue(cat, box.getState() ) 
-	     
-	# Initialise GUI with category buttons   
-	winButton = AddDialog("Manual classifier - multi-class per image", fillTable)
-	winButton.addMessage("""Tick the categories corresponding to the current image, then click Add or press the + key.
-	To annotate ROI, draw or select a ROI before validating.""") 
-	  
+	
 	# Loop over categories, adding a tickbox to the panel for each  
 	dicoBox  = OrderedDict()          # contains (categoryName: CheckBox) 
 	catPanel = Panel(GridLayout(0,4)) # Unlimited number of rows - fix to 4 columns  
@@ -67,17 +57,21 @@ if Win.wasOKed():
 	   
 	# Save categories in memory   
 	pref.put(ij.class, "listCat_", dicoBox.keys() )   
-	   
-	# Add Panel to winButton  
-	winButton.addPanel(catPanel)  
-	  
-	# Add comment field  
-	winButton.addStringField("Comments", "")  
+	
+	## Initialize dialog
+	title = "Manual classifier - multi-class per image"
+	message = """Tick the categories corresponding to the current image, then click Add or press the + key.
+	To annotate ROI, draw or select a ROI before validating."""
+	
+	def fillTable(Table): 
+		'''Read checkbox state and update table'''  
+		for cat, box in dicoBox.iteritems():   
+			Table.addValue(cat, box.getState() ) 
+	
+	winButton = AddDialog(title, message, catPanel, fillTable)
 	winButton.addButton("Add", ButtonAction(winButton))   
 	 
 	# Add defaults 
 	winButton.addDefaultOptions() 
-	winButton.showDialog() 
- 
- 
+	winButton.showDialog()
   

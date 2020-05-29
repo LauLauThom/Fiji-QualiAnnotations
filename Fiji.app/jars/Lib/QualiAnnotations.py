@@ -70,11 +70,17 @@ def nextSlice(imp):
 
 
 class CustomDialog(GenericDialogPlus):
-	'''Model class for the plugin dialog for the manual classifier'''
+	'''
+	Model class for the plugin dialog for the manual classifier
+	All plugin share the same backbone, but have a custom central panel that is passed via the constructor
+	'''
 	
-	def __init__(self, title):
+	def __init__(self, title, message, panel):
 		GenericDialogPlus.__init__(self, title)
-		self.setModalityType(None) # like non-blocking generic dialog 
+		self.setModalityType(None) # like non-blocking generic dialog
+		self.addMessage(message)
+		self.addPanel(panel)
+		self.addStringField("Comments", "")
 	
 	def addDefaultOptions(self):
 		# Add mode for stacks
@@ -188,8 +194,8 @@ class AddDialog(CustomDialog):
 	The particularity is that the fillFunction is passed via the constructor
 	'''
 	
-	def __init__(self, title, fillFunction):
-		CustomDialog.__init__(self, title)
+	def __init__(self, title, message, panel, fillFunction):
+		CustomDialog.__init__(self, title, message, panel)
 		self.function = fillFunction
 	
 	def fillTable(self, Table):

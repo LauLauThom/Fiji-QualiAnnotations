@@ -76,14 +76,11 @@ def fillTable(Table):
 
 
 # Initialize classification GUI
-win = AddDialog("Multi-dropdown Classification", fillTable)
-win.addMessage("""Select the descriptors corresponding to the current image, then click Add or press the + key.
-To annotate ROI, draw or select a ROI before validating.""") 
+title   = "Multi-dropdown Classification"
+message = """Select the descriptors corresponding to the current image, then click Add or press the + key.
+To annotate ROI, draw or select a ROI before validating."""
 
-win.addPanel(panel)
-
-# Add comment field
-win.addStringField("Comments", "")
+win = AddDialog(title, message, panel, fillTable)
 
 # Add button to window 
 win.addButton("Add", ButtonAction(win))
