@@ -47,23 +47,24 @@ with open(csvPath, "r") as csvFile:
 
 
 # Create horizontal panel for dropdowns
-panel = Panel( GridLayout(0, n) )
+panel = Panel( GridLayout(0, n) ) # as many columns (n) as menus, as many rows as necessary (0)
 
-# First row in GUI = label
+# First panel row -> dropdown labels
 for header in headers:
 	panel.add( Label(header) )
 
-# Second row -> dropdown
+# Second panel row -> dropdown choices
 for i in range(n):
 	label = headers[i] 
 	
 	chooser = Choice()
-	chooser.setName(label)
+	chooser.setName(label) # not display but easier to recover infos
 	
 	dropdown = dropdowns[i]
 	for option in dropdown:
 		chooser.add(option) 
 	
+	chooser.setFocusable(False)
 	panel.add(chooser)
 
 
