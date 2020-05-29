@@ -1,5 +1,17 @@
 # Personal note
+Update site name : Assign-keywords, Keywords-Description, Keywords-labelling
+Plugin names: Assign keywords > ( Menu should have the same name than the update site )
+- with single-category button
+- with multiple keywords checkboxes
+- with multiple options dropdowns
+
 Currently drag and drop the code on Fiji window for testing purposes.
+- Mention heartbeat was for image sequence
+- Mention possibility to extract image features in KNIME
+
+# Installation
+- Activate the *** update site in Fiji
+- The plugins appear in the `Plugins > `menu
 
 # Plugins for manual classification of full images
 The plugin allow to associate images to 1 or a set of user-defined categories (also called classes).  
