@@ -161,22 +161,25 @@ class CustomDialog(GenericDialogPlus):
 		Table.addValue("Comment", stringField.text) 
 		
 		# Add Roi to RoiManager + set its properties
-		if addRoi:
-			roi = imp.getRoi()
-			if roi: 
-				
-				# Set properties of roi with new row
-				for heading in Table.getHeadings():
-					value = Table.getStringValue(heading, Table.size()-1)
-					roi.setProperty(heading, value)
-				
+		roi = imp.getRoi()
+		if roi: 
+			
+			# Set properties of roi with new row
+			for heading in Table.getHeadings():
+				value = Table.getStringValue(heading, Table.size()-1)
+				roi.setProperty(heading, value)
+			
+			if addRoi:
 				# Add to Manager
 				rm = getRoiManager()
 				rm.addRoi(roi)
-				
-				# Add roi name to table
 				roiName = rm.getRoi(rm.getCount()-1).getName()
-				Table.addValue("Roi", roiName)
+			
+			else: # the ROI might belong to the ROI Manager
+				roiName = roi.getName()
+			
+			# Add roi name to table
+			Table.addValue("Roi", roiName)
 		 
 		Table.show(tableTitle) # Update table	    
 		#Table.updateResults() # only for result table but then addValue does not work !  
