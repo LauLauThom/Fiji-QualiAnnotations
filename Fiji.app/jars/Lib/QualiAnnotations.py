@@ -8,22 +8,21 @@ from fiji.util.gui  import GenericDialogPlus
 
 
 def getTable():
-	'''Check if a table is open and get its name'''
-	# Check if a table called Classification or Classification.csv exists otherwise open a new one
-	win  = WindowManager.getWindow("Classification")
-	win2 = WindowManager.getWindow("Classification.csv")
+	''' Check if a table called Annotations or Annotations.csv exists otherwise open a new one'''
+	win  = WindowManager.getWindow("Annotations")
+	win2 = WindowManager.getWindow("Annotations.csv")
 	
 	if win: # different of None
 		Table = win.getResultsTable()
-		tableTitle = "Classification"
+		tableTitle = "Annotations"
 		
 	elif win2 : # different of None
 		Table = win2.getResultsTable()
-		tableTitle = "Classification.csv"
+		tableTitle = "Annotations.csv"
 		
 	else:
 		Table = ResultsTable()
-		tableTitle = "Classification"
+		tableTitle = "Annotations"
 	
 	return tableTitle, Table
 
