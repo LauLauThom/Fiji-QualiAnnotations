@@ -59,7 +59,7 @@ if Win.wasOKed():
 	pref.put(ij.class, "listCat_", dicoBox.keys() )   
 	
 	## Initialize dialog
-	title = "Manual classifier - multi-class per image"
+	title = "Qualitative Annotations - Annotate with checkboxes"
 	message = """Tick the categories corresponding to the current image, then click Add or press the + key.
 	To annotate ROI, draw or select a ROI before validating."""
 	

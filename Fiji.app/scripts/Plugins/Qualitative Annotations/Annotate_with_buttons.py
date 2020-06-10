@@ -122,7 +122,7 @@ if (Win.wasOKed()):
 	pref.put(ij.class, "listCat", listCat) 
 	
 	## Initialize classification gui
-	title = "Manual classifier - Single class per image"
+	title = "Qualitative Annotations - Annotate with buttons"
 	message = "Click the category of the current image or ROI, or use the F1-F12 keyboard shortcuts.\nTo annotate ROI, draw a ROI or activate one before clicking the category button." 
 	winButton = ButtonDialog(title, message, catPanel, choiceIndex)
 		
