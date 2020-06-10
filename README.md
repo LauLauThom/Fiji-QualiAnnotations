@@ -1,12 +1,10 @@
+# TO DO
+- automatically scrolling the results table to the last result line when appending to it
+
 # Personal note
 Update site name : Assign-keywords, Keywords-Description, Keywords-labelling
-Plugin names: Assign keywords > ( Menu should have the same name than the update site )
-- with single-category button
-- with multiple keywords checkboxes
-- with multiple options dropdowns
 
 Currently drag and drop the code on Fiji window for testing purposes.
-- Mention heartbeat was for image sequence
 - Mention possibility to extract image features in KNIME
 
 # Installation
