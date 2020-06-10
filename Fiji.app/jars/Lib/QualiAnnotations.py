@@ -1,4 +1,4 @@
-from ij 			  import IJ, WindowManager 
+from ij 			  import IJ, WindowManager, Prefs
 from ij.plugin.filter import Analyzer
 from ij.plugin.frame  import RoiManager
 from ij.measure 	  import ResultsTable, Measurements
@@ -81,15 +81,40 @@ class CustomDialog(GenericDialogPlus):
 		self.addPanel(panel)
 		self.addStringField("Comments", "")
 	
+	def actionPerformed(self, event):
+		'''Overwrite default: to save parameters in memory when ok is clicked'''
+		
+		if event.getSource().getLabel() == "  OK  ":
+		
+			# Get stack mode
+			stackChoice = self.getChoices()[-1] # last dropdown
+			stackMode   = stackChoice.getSelectedItem()
+			
+			# Check options
+			checkboxes  = self.getCheckboxes()
+			addRoi      = checkboxes[-3].getState()
+			doMeasure   = checkboxes[-2].getState()
+			doNext      = checkboxes[-1].getState()
+			
+			# Save them in preference
+			Prefs.set("annot.stackMode", stackMode)
+			Prefs.set("annot.addRoi", addRoi)
+			Prefs.set("annot.doMeasure", doMeasure)
+			Prefs.set("annot.doNext", doNext)
+			
+		# Do the mother class usual action handling()
+		GenericDialogPlus.actionPerformed(self, event)
+	
+	
 	def addDefaultOptions(self):
 		# Add mode for stacks
-		choice = ["slice", "stack"]
-		self.addChoice("Stack mode : 1 table entry per", choice, choice[0])
+		choices = ["slice", "stack"]
+		self.addChoice("Stack mode : 1 table entry per", choices, Prefs.get("annot.stackMode", "slice")) # add Presistence
 		
 		# Checkbox next slice and run Measure 
-		self.addCheckbox("Add ROI to Manager", True)
-		self.addCheckbox("run 'Measure'", False)
-		self.addCheckbox("Auto next slice", True)
+		self.addCheckbox("Add ROI to Manager", bool(Prefs.get("annot.addRoi", True)) ) # force casting to boolean, as Prefs.get returns a float (might be jython speicifc)
+		self.addCheckbox("run 'Measure'", bool(Prefs.get("annot.doMeasure", False)) )
+		self.addCheckbox("Auto next slice", bool(Prefs.get("annot.doNext", True)) )
 		
 		# Add message about citation and doc
 		self.addMessage("If you use this plugin, please cite : ***")
