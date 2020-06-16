@@ -17,6 +17,7 @@ The result table contains 1 column per category with 0 if the image is not in th
 
 - __Annotate with lists of choices__  
 This plugin allows to describe multiple features and for each features to have a list of choices.  
+<img src="https://github.com/LauLauThom/Fiji-QualiAnnotations/blob/master/images/Dropdown-plugin.png" alt="Plugin-dropdown" width="900" height="300">     
 
 # Installation
 - Activate the *** update site in Fiji
