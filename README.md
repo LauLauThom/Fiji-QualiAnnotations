@@ -17,7 +17,23 @@ The result table contains 1 column per category with 0 if the image is not in th
 
 - __Annotate with lists of choices__  
 This plugin allows to describe multiple features and for each features to have a list of choices.  
-<img src="https://github.com/LauLauThom/Fiji-QualiAnnotations/blob/master/images/Dropdown-plugin.png" alt="Plugin-dropdown" width="900" height="300">     
+<img src="https://github.com/LauLauThom/Fiji-QualiAnnotations/blob/master/images/Dropdown-plugin.png" alt="Plugin-dropdown" width="920" height="300">     
+
+# KNIME Worfklows
+You can find examples of analysis from the annotation table with KNIME in the `KNIMEworkflows` folder.  
+The workflows are documented with README files in their respective folders, especially pay attention to which annotation table is expected by the workflow (ie generated with which plugin).  
+To use the worklfow, simply download the knwf file and double-click it to open it in KNIME.
+
+Currently there are workflows for:
+- __Image and annotation vizualization__   
+Simply view the image and their annotation in a table. That should be the starting point if you are not familiar with KNIME
+
+- __Sunburst plot__  
+View the distribution of the qualitative features as concentric circles (like a multi-level pie chart)  
+
+-  __Deep learning classification__  
+Workflows for the training of a deep-learning model for image-classification, there are 2 subfolders for binary or multi-class classification.   
+Workflows for the prediction given a trained network are also provided.
 
 # Installation
 - Activate the *** update site in Fiji
