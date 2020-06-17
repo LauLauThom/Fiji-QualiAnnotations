@@ -26,7 +26,8 @@ See the [example csv](https://github.com/LauLauThom/Fiji-QualiAnnotations/blob/m
 You can find examples of analysis from the annotation table with KNIME in the `KNIMEworkflows` folder.  
 The workflows are documented with README files in their respective folders, especially pay attention to which annotation table is expected by the workflow (ie generated with which plugin).  
 To use the worklfow, simply download the knwf file and double-click it to open it in KNIME.  
-To download them from GitHub, either clone the repository, or if you dont have github, choose download as zip.
+To download all the workflows at once from GitHub, either clone the repository, or if you dont have github, choose download as zip.
+To download single worklfow from GitHub, click the workflow file and choose download on the next page.
 
 Currently there are workflows for:
 - [__Image and annotation vizualization__](https://github.com/LauLauThom/Fiji-QualiAnnotations/tree/master/KNIMEworkflows/ViewImagesAndAnnotations)   
