@@ -20,14 +20,14 @@ The best is to let KNIME install a preconfigured anaconda environment (anaconda 
 Go to `File > Preferences > KNIME > Python Deep Learning`
 or manually (but tends to fail with tensorflow conflicts...)
 - python 3.6.9 or 3.6.10
-- tensorflow (or tensorflow-gpu 1.12.0 max)
+- tensorflow (or tensorflow-gpu) __version 1.12.0 max__ !
 - keras 2.2.4
 - pandas 0.24.5
 
 # Training
 __The explanations in this section are valid for both the binary and multi-class classifier.__
 
-The workflows expect single grayscale images (no stack), and takes care of image pre-processing (resizing, intensity normalization, RGB conversion).    
+The workflows expect single-channel grayscale images (no stack), and takes care of image pre-processing (resizing, intensity normalization, RGB conversion).    
 The trained model is a hybrid model made of a pre-trained VGG16 base, and new dense layers appended on top.  
 Only the dense layers are trained, the base is frozen.  
 The base could also be further trained to have features more specific to the new images (fine tuning), but only once the dense layers have been trained for a number of epochs.  This is not proposed in the workflow for simplicity.    
