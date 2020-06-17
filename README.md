@@ -1,7 +1,7 @@
 ![Twitter Follow](https://img.shields.io/twitter/follow/LauLauThom?style=social)
 [![Say Thanks!](https://img.shields.io/badge/Say%20Thanks-!-1EAEDB.svg)](https://saythanks.io/to/laurent132.thomas@laposte.net)
 
-The plugins allow to associate images or image-regions to 1 or a set of user-defined keywords (or categories/classes).  
+Those Fiji plugins allow to associate images or image-regions to 1 or a set of user-defined keywords (or categories/classes).  
 They can be used to perform routine description of sample images, or to generate ground-truth category annotations for the training of a classifier for instance.  
 
 There are 3 plugins: 
@@ -38,6 +38,8 @@ Workflows for the prediction given a trained network are also provided.
 # Installation
 - Activate the *** update site in Fiji
 - The plugins appear in the `Plugins > `menu
+
+__NB__: The plugins are not compatible with ImageJ, as they rely on some Fiji-specific funcitonalities (script parameters, GenericDialogPlus...)
 
 # Citation
 If you use these plugins, please cite:
