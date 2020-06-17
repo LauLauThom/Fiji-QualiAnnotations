@@ -29,13 +29,13 @@ To use the worklfow, simply download the knwf file and double-click it to open i
 To download them from GitHub, either clone the repository, or if you dont have github, choose download as zip.
 
 Currently there are workflows for:
-- __Image and annotation vizualization__   
+- [__Image and annotation vizualization__](https://github.com/LauLauThom/Fiji-QualiAnnotations/tree/master/KNIMEworkflows/ViewImagesAndAnnotations)   
 Simply view the image and their annotation in a table. That should be the starting point if you are not familiar with KNIME
 
-- __Sunburst plot__  
+- [__Sunburst plot__](https://github.com/LauLauThom/Fiji-QualiAnnotations/tree/master/KNIMEworkflows/SunburstPlot)    
 View the distribution of the qualitative features as concentric circles (like a multi-level pie chart)  
 
--  __Deep learning classification__  
+-  [__Deep learning classification__](https://github.com/LauLauThom/Fiji-QualiAnnotations/tree/master/KNIMEworkflows/DeepLearning-Classification)    
 Workflows for the training of a deep-learning model for image-classification, there are 2 subfolders for binary or multi-class classification.   
 Workflows for the prediction given a trained network are also provided.
 
