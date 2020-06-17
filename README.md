@@ -17,6 +17,9 @@ The result table contains 1 column per category with 0 if the image is not in th
 
 - __Annotate with lists of choices__  
 This plugin allows to describe multiple features and for each features to have a list of choices.  
+When started, the plugin requires a comma-separated value (csv, with comma or semi-column separator) file or tsv (tab-separated) value file with the name of the features and the associated choices.  
+Such files can be easily generated in a tabular software like excel (just select saving as csv).  
+See the [example csv](https://github.com/LauLauThom/Fiji-QualiAnnotations/blob/master/KNIMEworkflows/SunburstPlot/DropDownChoices.csv) 
 <img src="https://github.com/LauLauThom/Fiji-QualiAnnotations/blob/master/images/Dropdown-plugin.png" alt="Plugin-dropdown" width="920" height="300">     
 
 # KNIME Worfklows
