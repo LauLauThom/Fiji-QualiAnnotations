@@ -107,6 +107,13 @@ class CustomDialog(GenericDialogPlus):
 	
 	
 	def addDefaultOptions(self):
+		'''
+		Add default GUI items
+		- stack mode
+		- add to Manager, nextSlice, runMeasurement
+		- citation message
+		- help button
+		'''
 		# Add mode for stacks
 		choices = ["slice", "stack"]
 		self.addChoice("Stack mode : 1 table entry per", choices, Prefs.get("annot.stackMode", "slice")) # add Presistence
@@ -194,6 +201,10 @@ class CustomDialog(GenericDialogPlus):
 				roi.setProperty(heading, value)
 			
 			if addRoi:
+				
+				# Set Roi slice-position
+				roi.setPosition(imp)
+				
 				# Add to Manager
 				rm = getRoiManager()
 				rm.addRoi(roi)
