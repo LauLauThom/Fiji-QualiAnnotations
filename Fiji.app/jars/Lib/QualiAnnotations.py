@@ -223,7 +223,7 @@ class CustomDialog(GenericDialogPlus):
 		if doNext: nextSlice(imp)
 		  
 		# Bring back the focus to the button window (otherwise the table is in the front)  
-		WindowManager.toFront(self)  
+		if not IJ.getFullVersion().startswith("1.52p"): WindowManager.toFront(self)  # prevent some ImageJ bug with 1.52p
 
 
 class AddDialog(CustomDialog):
