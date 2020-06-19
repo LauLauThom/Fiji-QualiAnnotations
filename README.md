@@ -3,13 +3,22 @@
 
 Those Fiji plugins allow to associate images or image-regions to 1 or a set of user-defined keywords (or categories/classes).  
 They can be used to perform routine description of sample images, or to generate ground-truth category annotations for the training of a classifier for instance.  
+Besides qualitative annotations, any measurement as selected in the Fiji `set Measurements`menu is reported to the table if the option `run Measure` is selected in the plugin.  
+The measurements and annotations are reported for the full-image, or for the currently active ROI if any. 
 
+# Installation
+- Activate the *** update site in Fiji
+- The plugins appear in the `Plugins > `menu
+
+__NB__: The plugins are not compatible with ImageJ, as they rely on some Fiji-specific funcitonalities (script parameters, GenericDialogPlus...)
+
+# Description
 There are 3 plugins: 
 - __Annotate with buttons__  
 A single class is associated to each image.  
 The result table can be chosen to either have a single category column with the name of the assigned category for each image.  
 Or like with the checkbox annotation plugin, the table can have one column per category with 0/1 for negative/positive cases.
-<img src="https://github.com/LauLauThom/Fiji-QualiAnnotations/blob/master/images/Button-Plugin.png" alt="Plugin-Button" width="1000" height="340">     
+<img src="https://github.com/LauLauThom/Fiji-QualiAnnotations/blob/master/images/Button-Plugin.png" alt="Plugin-Button" width="1150" height="340">     
 
 - __Annotate with checkboxes__  
 An image can be assigned to multiple descriptive keywords.    
@@ -21,6 +30,18 @@ When started, the plugin requires a comma-separated value (csv, with comma or se
 Such files can be easily generated in a tabular software like excel (just select saving as csv).  
 See the [example csv](https://github.com/LauLauThom/Fiji-QualiAnnotations/blob/master/KNIMEworkflows/SunburstPlot/DropDownChoices.csv) 
 <img src="https://github.com/LauLauThom/Fiji-QualiAnnotations/blob/master/images/Dropdown-plugin.png" alt="Plugin-dropdown" width="920" height="300">     
+
+# Annotate image-regions with ROI
+You can annotate image-regions by either drawing or activating an existing ROI before clicking the "Add" or category button.  
+The name of the ROI is thus appended to the result table in a dedicated ROI column.  
+If you draw new ROI, tick the "Add to Manager" option, otherwise the ROI name will be none (new ROI do not have a name, until saved in the RoiManager).  
+If you annotate ROI already stored in the RoiManager, dont tick the "Add To Manager", otherwise you will duplicate each annotated ROI.  
+
+The annotations and measurements (if selected) are saved in the ROI object as properties.  
+They can be retrieved using scripting or macro-programing via `Roi.getProperty(key)` or `Roi.getProperties()`.  
+With scripting languages, replace Roi with the roi-instance of interest.  
+`key` here should be one of the column header of the corresponding annotation table, so if you selected `run Measure` and Mean intensity was selected in Fiji measurement, you can recover `Roi.getProperty("Mean")`.  
+
 
 # KNIME Worfklows
 You can find examples of analysis from the annotation table with KNIME in the `KNIMEworkflows` folder.  
@@ -40,11 +61,7 @@ View the distribution of the qualitative features as concentric circles (like a 
 Workflows for the training of a deep-learning model for image-classification, there are 2 subfolders for binary or multi-class classification.   
 Workflows for the prediction given a trained network are also provided.
 
-# Installation
-- Activate the *** update site in Fiji
-- The plugins appear in the `Plugins > `menu
 
-__NB__: The plugins are not compatible with ImageJ, as they rely on some Fiji-specific funcitonalities (script parameters, GenericDialogPlus...)
 
 # Citation
 If you use these plugins, please cite:
