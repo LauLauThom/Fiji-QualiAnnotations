@@ -25,7 +25,10 @@ class ButtonAction(ActionListener):
 		 
  
 class ButtonDialog(CustomDialog): 
-	'''Annotation dialog, also define keyboard shortcut and function to fill the table'''
+	'''
+	Annotation dialog, also define keyboard shortcut and function to fill the table
+	doAction() is defined in the mother class customDialog
+	'''
 		
 	def __init__(self, title, message, panel, choiceIndex): 
 		CustomDialog.__init__(self, title, message, panel) 
