@@ -17,8 +17,10 @@ The folder also contains the respective workflows for prediction.
 The difference binary/multiclass is a difference in the classification layers (binary = single sigmoid output, multiclass = multiple categorical outputs).
 
 # Requirements
+This workflow requires both a KNIME installation with correct KNIME dependencies AND a python environment with also th eright python packages (See below).
+
 ### KNIME
-All dependencies are installed automatically when opening one of the published workflow, except the __KNIME Image Processing - Deep Learning extension__.    
+All KNIME dependencies are installed automatically when opening one of the published workflow, except the __KNIME Image Processing - Deep Learning extension__.    
 Click [here](https://hub.knime.com/BioML-Konstanz/extensions/org.knime.knip.dl.feature/latest) to install it.  
 
 ### Python
