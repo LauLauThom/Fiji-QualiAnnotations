@@ -35,7 +35,13 @@ or manually (but tends to fail with tensorflow conflicts...)
 # Training
 __The explanations in this section are valid for both the binary and multi-class classifier.__
 
-The workflows expect single-channel grayscale images (no stack), and takes care of image pre-processing (resizing, intensity normalization, RGB conversion).    
+## Ground-truth data
+The ground-truth data is provided by the annotation table which contains the image path and the image categories.  
+The annotated images (also for prediction) should be single-channel grayscale images.  
+There should be annotated imgaes for each category (relatively obvious) AND __there should be a similar anmount of annotated images for each category__.  
+If there are many more images for one category, then the model might not predict well the others.  
+
+The workflows takes care of image pre-processing (resizing, intensity normalization, RGB conversion) and of splitting the dataset into training, validation and test fraction.  
 The trained model is a hybrid model made of a pre-trained VGG16 base, and new dense layers appended on top.  
 Only the dense layers are trained, the base is frozen.  
 The base could also be further trained to have features more specific to the new images (fine tuning), but only once the dense layers have been trained for a number of epochs.  This is not proposed in the workflow for simplicity.    
