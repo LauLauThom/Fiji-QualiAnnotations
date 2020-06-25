@@ -17,7 +17,9 @@ The folder also contains the respective workflows for prediction.
 The difference binary/multiclass is a difference in the classification layers (binary = single sigmoid output, multiclass = multiple categorical outputs).
 
 # Requirements
-This workflow requires both a KNIME installation with correct KNIME dependencies AND a python environment with also the right python packages (See below).
+This workflow requires both a KNIME installation with correct KNIME dependencies AND a python environment with also the right python packages (See below).  
+It is also advised to have a CUDA-compatible NVIDIA GPU to speed up the training (2Gb GPU memory should be enough, but more is better).   
+The GPU is automatically recognized in KNIME If you have installed the gpu version of tensorflow and keras in python AND if you have installed CUDA on your machine.  
 
 ### KNIME
 All KNIME dependencies are installed automatically when opening one of the published workflow, except the __KNIME Image Processing - Deep Learning extension__.    
