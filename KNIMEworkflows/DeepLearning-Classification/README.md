@@ -36,10 +36,15 @@ or manually (but tends to fail with tensorflow conflicts...)
 __The explanations in this section are valid for both the binary and multi-class classifier.__
 
 ## Ground-truth data
-The ground-truth data is provided by the annotation table which contains the image path and the image categories.  
-The annotated images (also for prediction) should be single-channel grayscale images.  
-There should be annotated imgaes for each category (relatively obvious) AND __there should be a similar anmount of annotated images for each category__.  
-If there are many more images for one category, then the model might not predict well the others.  
+The ground-truth data is provided by the annotation table which contains the image path and the image-categories.  
+
+- there should be a sufficient amount of ground-truth data (at least a few dozen, no data-augmentation is performed)
+
+- the annotated images (also for prediction) should be single-channel grayscale images (for this workflow and this particular pre-processing)  
+
+- there should be annotated images for each category (relatively obvious) 
+
+- there should be a similar anmount of annotated images for each category, if there are many more images for one category, then the model might not predict well the others
 
 ## Image Pre-processing
 Deep-learning model do not work on 2048x2048 grayscale full resolution images for instance.  
