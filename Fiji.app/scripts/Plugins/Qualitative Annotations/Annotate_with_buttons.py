@@ -1,4 +1,4 @@
-#@ int (Label = "Number of categories", value=2, min=1, stepSize=1) N_category  
+#@ Integer (Label = "Number of categories", value=2, min=1, stepSize=1) N_category  
 #@ PrefService pref 
 #@ ImageJ ij 
 '''
