@@ -1,0 +1,1 @@
+This directory contains the workflow to train a multi-class image classifier.
