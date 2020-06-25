@@ -17,7 +17,7 @@ The folder also contains the respective workflows for prediction.
 The difference binary/multiclass is a difference in the classification layers (binary = single sigmoid output, multiclass = multiple categorical outputs).
 
 # Requirements
-This workflow requires both a KNIME installation with correct KNIME dependencies AND a python environment with also th eright python packages (See below).
+This workflow requires both a KNIME installation with correct KNIME dependencies AND a python environment with also the right python packages (See below).
 
 ### KNIME
 All KNIME dependencies are installed automatically when opening one of the published workflow, except the __KNIME Image Processing - Deep Learning extension__.    
@@ -41,13 +41,20 @@ The annotated images (also for prediction) should be single-channel grayscale im
 There should be annotated imgaes for each category (relatively obvious) AND __there should be a similar anmount of annotated images for each category__.  
 If there are many more images for one category, then the model might not predict well the others.  
 
-The workflows takes care of image pre-processing (resizing, intensity normalization, RGB conversion) and of splitting the dataset into training, validation and test fraction.  
+## Image Pre-processing
+Deep-learning model do not work on 2048x2048 grayscale full resolution images for instance.  
+The workflows takes care of image pre-processing (downscaling, intensity normalization, RGB conversion) and of splitting the dataset into training, validation and test fraction (which proportion can be changed by entering the _Split dataset_ node.  
+
+## Model architecture
 The trained model is a hybrid model made of a pre-trained VGG16 base, and new dense layers appended on top.  
 Only the dense layers are trained, the base is frozen.  
-The base could also be further trained to have features more specific to the new images (fine tuning), but only once the dense layers have been trained for a number of epochs.  This is not proposed in the workflow for simplicity.    
+The base could also be further trained to have features more specific to the new images (fine tuning), but only once the dense layers have been trained for a number of epochs.  This is not proposed in the workflow for simplicity. 
+
+## Training parameters
 The parameters for the training (number of epochs, batch size, learning rate...) can be adjusted in the __Keras Network Learner node__.  
 The progress of the training (loss and accuracy curves) can be monitored live by opening the training monitor (right-click the Keras Network learner node during training).    
 
+## Exporting the trained model
 After the training has completed, the trained model can be saved as a h5 file to use for prediction of image-categories on new images.  
 A text file containing the categories names is also saved along the trained model (YourModelFile-classes.txt).  
 
