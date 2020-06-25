@@ -14,7 +14,9 @@ The VGG16 base could also be fine-tuned to be more specific to the new set of im
 The Binary folder contains the workflow to train a binary image-classifier, ie for which the images get classified into possibly 2 categories only.   
 The Multiclass folder is the same reasoning, for the training of a model for classification in multiple image classes (2 or more).  
 The folder also contains the respective workflows for prediction.   
-The difference binary/multiclass is a difference in the classification layers (binary = single sigmoid output, multiclass = multiple categorical outputs).
+The difference binary/multiclass is a difference in the classification layers:
+- binary : single network output with sigmoid activation function and binary cross-entropy as loss function  
+- multiclass : multiple categorical outputs with softmax activation function and categorical cross-entropy as loss function
 
 # Requirements
 This workflow requires both a KNIME installation with correct KNIME dependencies AND a python environment with also the right python packages (See below).  
@@ -59,7 +61,18 @@ The base could also be further trained to have features more specific to the new
 
 ## Training parameters
 The parameters for the training (number of epochs, batch size, learning rate...) can be adjusted in the __Keras Network Learner node__.  
-The progress of the training (loss and accuracy curves) can be monitored live by opening the training monitor (right-click the Keras Network learner node during training).    
+In particular, to optimize the classification accuracy, it is highly advised to adjust the number of epochs specifically for each dataset and classification problem.  
+__The number of epochs should be sufficient to yield a good accuracy (low loss) for both the training and the validation set__.  
+However, __it should not be too large to prevent overfitting of the model__, which is characterised by a high accuracy (ie low loss) for the training fraction, but a low accuracy (high loss) for the test fraction.  
+A default value of 15 epochs is proposed, which should be adapted according to the number of annotated images and the difficulty of the classification. Smaller dataset or complex classification problems (e.g. high data variability) typically require more training iterations to see a model converge. If the model does not improve even after several epochs, either the annotated set or the batch size is too small, or the classification problem is too complicated.  
+Another parameter that can be eventually adjusted is the batch-size, which is a fraction of the training fraction, and correspond to the number of images to pass through the network during training, before computing the current loss and updating the networks weights. An epoch is completed once all batches composing the training fraction has passed through the network once.
+The batch size should be adjusted according to the available memory and eventually improve convergence. A default value of 4 images per batch is proposed but a larger value (8, 16) can be used if more memory is available or compute the loss based on more images.
+ 
+ 
+## Monitoring the training
+The training can be monitored in the keras network learner node by visualizing the loss (or accuracy but it is more coarse) for the training and validation set.   
+This allows to visualize the performance of the network along the training, and to evaluate the optimal number of epochs.  
+For a "good training", the accuracy should increase while the loss should decrease along the training, for both the training set and validation set.
 
 ## Exporting the trained model
 After the training has completed, the trained model can be saved as a h5 file to use for prediction of image-categories on new images.  
