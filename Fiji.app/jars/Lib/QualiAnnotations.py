@@ -3,6 +3,7 @@ from ij.plugin.filter import Analyzer
 from ij.plugin.frame  import RoiManager
 from ij.measure		  import ResultsTable, Measurements
 import os
+from collections	import OrderedDict
 from java.awt.event import ActionListener
 from fiji.util.gui	import GenericDialogPlus
 
@@ -35,10 +36,14 @@ def getRoiManager():
 	if not rm: rm = RoiManager() # create a new instance
 	return rm
 
-def getImageDirAndName(imp, stackMode):
+def getImageDirAndName(imp):
+	
+	out = OrderedDict()
 	
 	fileInfo = imp.getOriginalFileInfo()
-	if not fileInfo: return "", ""
+	if not fileInfo: 
+		return out
+		#return "", ""
 	
 	# Recover image directory
 	if fileInfo.directory:
@@ -46,25 +51,33 @@ def getImageDirAndName(imp, stackMode):
 	else:
 		directory = ""
 	
-	# Recover image name 
-	if not imp.isStack() or stackMode == "stack":  # single image or 1 entry/stack
-		filename = fileInfo.fileName
-		
-		if filename=="Untitled" or not filename: filename = imp.getWindow().getTitle()
+	# Get filename 
+	filename = fileInfo.fileName
+	if filename=="Untitled" or not filename: filename = imp.getWindow().getTitle()
 	
-	else: # Stack + mode Slice
+	# Make output dictionary
+	out["Folder"] = directory
+	out["File"]	  = filename
+	
+	# Get slice name 
+	if imp.isStack():
 		Stack = imp.getStack() 
-		filename = Stack.getSliceLabel(imp.currentSlice) 
+
+		# Slice name
+		sliceName = Stack.getSliceLabel(imp.currentSlice) 
 		 
-		if filename is None: # the slice label can be empty sometimes 
-			if imp.isHyperStack(): filename = "C:{},Z:{},T:{}".format(imp.getC(), imp.getZ(), imp.getT() )
+		if sliceName is None: # the slice label can be empty sometimes 
+			if imp.isHyperStack(): 
+				sliceName = "C:{},Z:{},T:{}".format(imp.getC(), imp.getZ(), imp.getT() )
 			else: # 1D stack
-				filename = 'Slice ' + str(imp.currentSlice)	 
-				 
-		else :	
-			filename = filename.split('\n',1)[0] # can be useful when ImagesToStack/Import Sequence was used
+				sliceName = 'Slice ' + str(imp.currentSlice)	 
+			 
+		else :
+			sliceName = sliceName.split('\n',1)[0] # can be useful when ImagesToStack/Import Sequence was used
 	
-	return directory, filename
+		out["Slice"] = sliceName 
+	
+	return out
 
 def nextSlice(imp):
 	if imp.isHyperStack(): imp.setT(imp.getT()+1)		 # increment the time slider
@@ -97,10 +110,6 @@ class CustomDialog(GenericDialogPlus):
 		'''Overwrite default: to save parameters in memory when ok is clicked'''
 		
 		if event.getSource().getLabel() == "  OK  ":
-		
-			# Get stack mode
-			stackChoice = self.getChoices()[-1] # last dropdown
-			stackMode	= stackChoice.getSelectedItem()
 			
 			# Check options
 			checkboxes	= self.getCheckboxes()
@@ -108,7 +117,6 @@ class CustomDialog(GenericDialogPlus):
 			doNext		= checkboxes[-1].getState()
 			
 			# Save them in preference
-			Prefs.set("annot.stackMode", stackMode)
 			Prefs.set("annot.doMeasure", doMeasure)
 			Prefs.set("annot.doNext", doNext)
 			
@@ -119,15 +127,10 @@ class CustomDialog(GenericDialogPlus):
 	def addDefaultOptions(self):
 		'''
 		Add default GUI items
-		- stack mode
 		- add to Manager, nextSlice, runMeasurement
 		- citation message
 		- help button
 		'''
-		# Add mode for stacks
-		choices = ["slice", "stack"]
-		self.addChoice("Stack mode : 1 table entry per", choices, Prefs.get("annot.stackMode", "slice")) # add Presistence
-		
 		# Checkbox next slice and run Measure 
 		self.addCheckbox("run 'Measure'", bool(Prefs.get("annot.doMeasure", False)) )
 		self.addCheckbox("Auto next slice", bool(Prefs.get("annot.doNext", True)) )
@@ -163,11 +166,7 @@ class CustomDialog(GenericDialogPlus):
 		+ it also calls the function fillTable which is implemented in descendant classes
 		DO NOT OVERWRITE
 		'''
-		imp = IJ.getImage() # get current image					
-		
-		# Get stack mode
-		stackChoice = self.getChoices()[-1] # last dropdown
-		stackMode	= stackChoice.getSelectedItem()
+		imp = IJ.getImage() # get current image
 		
 		# Check options
 		checkboxes	= self.getCheckboxes()
@@ -177,9 +176,6 @@ class CustomDialog(GenericDialogPlus):
 		# Get current table
 		tableTitle, Table = getTable()
 		Table.showRowNumbers(True)
-		
-		# Recover image name  
-		directory, filename = getImageDirAndName(imp, stackMode)
 		
 		# Initialize Analyzer
 		if doMeasure:
@@ -206,9 +202,9 @@ class CustomDialog(GenericDialogPlus):
 					Table.incrementCounter() # Automatically done if doMeasure 
 				
 				#Table.addValue("Index", Table.getCounter() )  
-				Table.addValue("Folder", directory) 
-				Table.addValue("Image", filename)
-
+				for key, value in getImageDirAndName(imp).iteritems():
+					Table.addValue(key, value) 
+				
 				# Add selected items (implementation-specific)
 				self.fillTable(Table)
 		 
@@ -230,8 +226,8 @@ class CustomDialog(GenericDialogPlus):
 				Table.incrementCounter() # Automatically done if doMeasure 
 			
 			#Table.addValue("Index", Table.getCounter() )  
-			Table.addValue("Folder", directory) 
-			Table.addValue("Image", filename)
+			for key, value in getImageDirAndName(imp).iteritems():
+				Table.addValue(key, value) 
 
 			# Add selected items (implementation-specific)
 			self.fillTable(Table)
