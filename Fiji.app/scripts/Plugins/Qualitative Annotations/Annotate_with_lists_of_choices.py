@@ -76,7 +76,7 @@ def fillTable(Table):
 
 
 # Initialize classification GUI
-title   = "Qualitative Annotations - Annotate with lists of choices"
+title   = "Qualitative Annotations - multi-classes (dropdown)"
 message = """Select the descriptors corresponding to the current image, then click Add or press the + key.
 To annotate ROI, draw or select a ROI before validating."""
 
