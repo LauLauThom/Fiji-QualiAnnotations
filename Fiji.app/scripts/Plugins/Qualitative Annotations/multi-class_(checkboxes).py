@@ -60,8 +60,8 @@ if Win.wasOKed():
 	
 	## Initialize dialog
 	title = "Qualitative Annotations - multi-classes (checkboxes)"
-	message = """Tick the categories corresponding to the current image, then click Add or press the + key.
-	To annotate ROI, draw or select a ROI before validating."""
+	message = """Tick the categories corresponding to the current image, then click 'Add' or press the '+' key.
+	To annotate ROI, draw a new ROI or select some ROI(s) in the RoiManager before clicking 'Add'/pressing '+'."""
 	
 	def fillTable(Table): 
 		'''Read checkbox state and update table'''  
