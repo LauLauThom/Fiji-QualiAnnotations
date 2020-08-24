@@ -57,7 +57,8 @@ class ButtonDialog(CustomDialog):
 			index = listShortcut.index(code)
 			self.selectedCategory = listCat[index] 
 			self.doAction() 	 
-		
+
+		
   
 ############### GUI - CATEGORY DIALOG - collect N classes names (N define at first line)  #############  
   
@@ -100,7 +101,8 @@ if (Win.wasOKed()):
 	catPanel = Panel(GridLayout(0,4)) # Unlimited number of rows - fix to 4 columns 
 	
 	# Define actionListener for buttons: they share the same one, associated to the dialog
-	action = ButtonAction()	
+	action = ButtonAction()
+	
 	listCat = []
 	listShortcut = range(112, 112+N_category)
 	
