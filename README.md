@@ -1,10 +1,11 @@
 ![Twitter Follow](https://img.shields.io/twitter/follow/LauLauThom?style=social)
 [![Say Thanks!](https://img.shields.io/badge/Say%20Thanks-!-1EAEDB.svg)](https://saythanks.io/to/laurent132.thomas@laposte.net)
 
-Those Fiji plugins allow to associate images or image-regions to 1 or a set of user-defined keywords (or categories/classes).  
+Those Fiji plugins allow to __describe images or image-regions (outlined by ROI) to 1 or a set of user-defined keywords (or categories/classes)__.  
 They can be used to perform routine description of sample images, or to generate ground-truth category annotations for the training of a classifier for instance.  
 Besides qualitative annotations, any measurement as selected in the Fiji `set Measurements`menu is reported to the table if the option `run Measure` is selected in the plugin.  
-The measurements and annotations are reported for the full-image, or for the currently active ROI if any. 
+The measurements and annotations are reported for the full-image by default.  
+To annotate ROI, either draw a new one before making a new annotation (it should be the actively selected ROI), or select existing Roi in the RoiManager before annotating. 
 
 # Installation
 - Activate the *** update site in Fiji
