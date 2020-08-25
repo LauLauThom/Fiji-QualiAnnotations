@@ -15,11 +15,12 @@ __NB__: The plugins are not compatible with ImageJ, as they rely on some Fiji-sp
 
 # Description
 There are 3 plugins: 
+
 - __Annotate with buttons__  
 A single class is associated to each image.  
 The result table can be chosen to either have a single category column with the name of the assigned category for each image.  
 Or like with the checkbox annotation plugin, the table can have one column per category with 0/1 for negative/positive cases.
-<img src="https://github.com/LauLauThom/Fiji-QualiAnnotations/blob/master/images/Button-Plugin.png" alt="Plugin-Button" width="1150" height="340">     
+<img src="https://github.com/LauLauThom/Fiji-QualiAnnotations/blob/master/images/Button-Plugin.png" alt="Plugin-Button" width="1250" height="300">     
 
 - __Annotate with checkboxes__  
 An image can be assigned to multiple descriptive keywords.    
@@ -30,7 +31,7 @@ This plugin allows to describe multiple features and for each features to have a
 When started, the plugin requires a comma-separated value (csv, with comma or semi-column separator) file or tsv (tab-separated) value file with the name of the features and the associated choices.  
 Such files can be easily generated in a tabular software like excel (just select saving as csv).  
 See the [example csv](https://github.com/LauLauThom/Fiji-QualiAnnotations/blob/master/KNIMEworkflows/SunburstPlot/DropDownChoices.csv) 
-<img src="https://github.com/LauLauThom/Fiji-QualiAnnotations/blob/master/images/Dropdown-plugin.png" alt="Plugin-dropdown" width="920" height="300">     
+<img src="https://github.com/LauLauThom/Fiji-QualiAnnotations/blob/master/images/Dropdown-plugin.png" alt="Plugin-dropdown" width="1000" height="300">     
 
 # Annotate image-regions with ROI
 You can annotate image-regions by either drawing or activating an existing ROI before clicking the "Add" or category button.  
