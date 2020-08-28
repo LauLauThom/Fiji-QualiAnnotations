@@ -38,26 +38,26 @@ def getRoiManager():
 
 def getImageDirAndName(imp):
 	
-	out = OrderedDict()
+	out = OrderedDict([("Folder",""), 
+					   ("Image", "")])
 	
 	fileInfo = imp.getOriginalFileInfo()
-	if not fileInfo: 
-		return out
-		#return "", ""
 	
 	# Recover image directory
-	if fileInfo.directory:
-		directory = fileInfo.directory.rstrip(os.path.sep) 
-	else:
-		directory = ""
+	if fileInfo and fileInfo.directory:
+		directory = fileInfo.directory.rstrip(os.path.sep) # remove the last slash of the directory path
+		out["Folder"] = directory
+
+	# Get image name 
+	imageName = ""
+	if fileInfo: 
+		imageName = fileInfo.fileName
 	
-	# Get filename 
-	filename = fileInfo.fileName
-	if filename=="Untitled" or not filename: filename = imp.getWindow().getTitle()
-	
-	# Make output dictionary
-	out["Folder"] = directory
-	out["File"]	  = filename
+	if imageName=="Untitled" or not imageName: 
+		imageName = imp.getWindow().getTitle()
+		
+	# Populate Image field
+	out["Image"]  = imageName
 	
 	# Get slice name 
 	if imp.isStack():
