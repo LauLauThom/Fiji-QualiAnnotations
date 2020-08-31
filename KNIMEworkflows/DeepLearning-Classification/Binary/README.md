@@ -17,6 +17,6 @@ After the training has completed, the trained model can be saved as a h5 file to
 Exporting the model also export a text file with class names. Both files (h5 and txt) are necessary for the prediction.  
 
 ## Example
-You can use the example dataset uploaded to Zenodo to experiment with the workflow.  
+You can use the [example dataset](http://doi.org/10.5281/zenodo.3997728) uploaded to Zenodo to experiment with the workflow.
 The Zenodo upload contains both the ground-truth images and the ground-truth categories in a csv table that can be loaded directly in the workflow.  
 It also contains a pre-trained model (h5 file + text file with class names) that can be loaded in the prediction workflow.  
