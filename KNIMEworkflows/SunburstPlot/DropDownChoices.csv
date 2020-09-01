@@ -1,4 +1,3 @@
-﻿Tail,Pigmentation,Heartbeat
-Straight,Darker,Normal
-Bent,Normal,Slow
-Broken,Clear,Fast
+﻿Texture,Shape,Pigmentation
+Granular,Circle,Dark
+Smooth,Ellipse,Clear
