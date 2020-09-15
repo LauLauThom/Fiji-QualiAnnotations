@@ -34,12 +34,11 @@ See the [example csv](https://github.com/LauLauThom/Fiji-QualiAnnotations/blob/m
 <img src="https://github.com/LauLauThom/Fiji-QualiAnnotations/blob/master/images/Dropdown-plugin.png" alt="Plugin-dropdown" width="1000" height="300">     
 
 # Annotate image-regions with ROI
-You can annotate image-regions by either drawing or activating an existing ROI before clicking the "Add" or category button.  
-The name of the ROI is thus appended to the result table in a dedicated ROI column.  
-If you draw new ROI, tick the "Add to Manager" option, otherwise the ROI name will be none (new ROI do not have a name, until saved in the RoiManager).  
-If you annotate ROI already stored in the RoiManager, dont tick the "Add To Manager", otherwise you will duplicate each annotated ROI.  
+You can annotate image-regions by either drawing a new roi or selecting one or multiple existing ROI stored in the RoiManager before clicking the "Add" or category button.  
+Newly drawn roi are automatically added to the Roi Manager.  
+The name of the ROI(s) is thus appended to the result table in a dedicated ROI column.  
 
-The annotations and measurements (if selected) are saved in the ROI object as properties.  
+Besides, the annotations and measurements (if selected) are saved in the ROI object as properties.  
 They can be retrieved using scripting or macro-programing via `Roi.getProperty(key)` or `Roi.getProperties()`.  
 With scripting languages, replace Roi with the roi-instance of interest.  
 `key` here should be one of the column header of the corresponding annotation table, so if you selected `run Measure` and Mean intensity was selected in Fiji measurement, you can recover `Roi.getProperty("Mean")`.  
@@ -63,6 +62,10 @@ View the distribution of the qualitative features as concentric circles (like a 
 Workflows for the training of a deep-learning model for image-classification, there are 2 subfolders for binary or multi-class classification.   
 Workflows for the prediction given a trained network are also provided.
 
+# Example dataset  
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3997728.svg)](https://doi.org/10.5281/zenodo.3997728)  
+An example of images from a related screening project in Zebrafish is available on Zenodo.  
+The Zenodo repository contains a zip archive with the images, ground-truth category annotations for the images (generated with the plugins) and a trained deep-learening model for classification of the images.  
 
 
 # Citation
