@@ -59,7 +59,7 @@ Simply view the image and their annotation in a table. That should be the starti
 View the distribution of the qualitative features as concentric circles (like a multi-level pie chart)  
 
 -  [__Deep learning classification__](https://github.com/LauLauThom/Fiji-QualiAnnotations/tree/master/KNIMEworkflows/DeepLearning-Classification)    
-Workflows for the training of a deep-learning model for image-classification, there are 2 subfolders for binary or multi-class classification.   
+Workflows for the training of a deep-learning model for image-classification (1 class per image), there are 2 subfolders wether the images can be classified into 1 class out 2 classes (binary) or into 1 class out of 2 or more classes (multi-class).     
 Workflows for the prediction given a trained network are also provided.
 
 # Example dataset  
