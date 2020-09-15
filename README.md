@@ -16,17 +16,17 @@ __NB__: The plugins are not compatible with ImageJ, as they rely on some Fiji-sp
 # Description
 There are 3 plugins: 
 
-- __Annotate with buttons__  
+- __Single class (buttons)__  
 A single class is associated to each image.  
 The result table can be chosen to either have a single category column with the name of the assigned category for each image.  
 Or like with the checkbox annotation plugin, the table can have one column per category with 0/1 for negative/positive cases.
 <img src="https://github.com/LauLauThom/Fiji-QualiAnnotations/blob/master/images/Button-Plugin.png" alt="Plugin-Button" width="1250" height="300">     
 
-- __Annotate with checkboxes__  
+- __Multi-class (checkboxes)__  
 An image can be assigned to multiple descriptive keywords.    
 The result table contains 1 column per category with 0 if the image is not in the category and 1 if it is.
 
-- __Annotate with lists of choices__  
+- __Multi-class (dropdown)__  
 This plugin allows to describe multiple features and for each features to have a list of choices.  
 When started, the plugin requires a comma-separated value (csv, with comma or semi-column separator) file or tsv (tab-separated) value file with the name of the features and the associated choices.  
 Such files can be easily generated in a tabular software like excel (just select saving as csv).  
@@ -50,13 +50,13 @@ You can find examples of analysis from the annotation table with KNIME in the `K
 The workflows are documented with README files in their respective folders, especially pay attention to which annotation table is expected by the workflow (ie generated with which plugin).  
 To use the worklfow, simply download the knwf file and double-click it to open it in KNIME.  
 To download all the workflows at once from GitHub, either clone the repository, or if you dont have github, choose download as zip.
-To download single worklfow from GitHub, click the workflow file and choose download on the next page.
+To download a single workflow from GitHub, click the workflow file and choose download on the next page.
 
 Currently there are workflows for:
 - [__Image and annotation vizualization__](https://github.com/LauLauThom/Fiji-QualiAnnotations/tree/master/KNIMEworkflows/ViewImagesAndAnnotations)   
 Simply view the image and their annotation in a table. That should be the starting point if you are not familiar with KNIME
 
-- [__Sunburst plot__](https://github.com/LauLauThom/Fiji-QualiAnnotations/tree/master/KNIMEworkflows/SunburstPlot)    
+- [__Sunburst chart__](https://github.com/LauLauThom/Fiji-QualiAnnotations/tree/master/KNIMEworkflows/SunburstPlot)    
 View the distribution of the qualitative features as concentric circles (like a multi-level pie chart)  
 
 -  [__Deep learning classification__](https://github.com/LauLauThom/Fiji-QualiAnnotations/tree/master/KNIMEworkflows/DeepLearning-Classification)    
