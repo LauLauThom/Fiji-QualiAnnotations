@@ -11,12 +11,12 @@ The new fresh dense layers will be trained by the workflow for the prediction of
 The VGG16 base could also be fine-tuned to be more specific to the new set of images, but only once the classification layers have been trained for a number of epochs. This is not proposed here to simplify the workflow.  
 
 # Binary and MultiClass ?
-The Binary folder contains the workflow to train a binary image-classifier, ie for which the images get classified into possibly 2 categories only.   
-The Multiclass folder is the same reasoning, for the training of a model for classification in multiple image classes (2 or more).  
+The Binary folder contains the workflow to train a binary image-classifier, ie for which the images get classified into 1 out of 2 possible categories.   
+The Multiclass folder is the same reasoning, except that the images get classified into 1 category out of multiple categories (2 or more).  
 The folder also contains the respective workflows for prediction.   
 The difference binary/multiclass is a difference in the classification layers:
-- binary : single network output with sigmoid activation function and binary cross-entropy as loss function  
-- multiclass : multiple categorical outputs with softmax activation function and categorical cross-entropy as loss function
+- binary : single network output (prbability for the first class) with sigmoid activation function and binary cross-entropy as loss function  
+- multiclass : multiple categorical outputs (1 proability per class) with softmax activation function and categorical cross-entropy as loss function
 
 # Requirements
 This workflow requires both a KNIME installation with correct KNIME dependencies AND a python environment with also the right python packages (See below).  
@@ -41,6 +41,9 @@ __The explanations in this section are valid for both the binary and multi-class
 
 ## Ground-truth data
 The ground-truth data is provided by the annotation table which contains the image path and the image-categories.  
+Example of annotated ground-truth data is available on Zenodo.  
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3997728.svg)](https://doi.org/10.5281/zenodo.3997728)
+
 
 - there should be a sufficient amount of ground-truth data (at least a few dozen, no data-augmentation is performed)
 
@@ -86,3 +89,4 @@ __The explanation in this section are valid for both the binary and multi-class 
 
 The workflows take as input a list of grayscale images for which one wants to predict the image-categories, provided a model trained using the training workflow.  
 The model inputs are the trained model as a h5 file, and the text file containing the image-category names, both of them were generated during training.  
+The Zenodo repository mentioned above also contained a zip archive with such trained model.  
