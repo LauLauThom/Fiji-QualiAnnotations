@@ -31,7 +31,7 @@ The result table contains 1 column per category with 0 if the image is not in th
 This plugin allows to describe multiple features and for each features to have a list of choices.  
 When started, the plugin requires a comma-separated value (csv, with comma or semi-column separator) file or tsv (tab-separated) value file with the name of the features and the associated choices.  
 Such files can be easily generated in a tabular software like excel (just select saving as csv).  
-See the [example csv](https://github.com/LauLauThom/Fiji-QualiAnnotations/blob/master/KNIMEworkflows/SunburstPlot/DropDownChoices.csv) 
+See the [example csv](https://github.com/LauLauThom/Fiji-QualiAnnotations/blob/master/KNIMEworkflows/SunburstPlot/DropDownChoices.csv) and the associated [wiki section ](https://github.com/LauLauThom/Fiji-QualiAnnotations/wiki/Input-for-the-dropdown-plugin).  
 <img src="https://github.com/LauLauThom/Fiji-QualiAnnotations/blob/master/images/Dropdown-plugin.png" alt="Plugin-dropdown" width="1000" height="300">     
 
 # Annotate image-regions with ROI
@@ -61,7 +61,8 @@ View the distribution of the qualitative features as concentric circles (like a 
 
 -  [__Deep learning classification__](https://github.com/LauLauThom/Fiji-QualiAnnotations/tree/master/KNIMEworkflows/DeepLearning-Classification)    
 Workflows for the training of a deep-learning model for image-classification (1 class per image), there are 2 subfolders wether the images can be classified into 1 class out 2 classes (binary) or into 1 class out of 2 or more classes (multi-class).     
-Workflows for the prediction given a trained network are also provided.
+Workflows for the prediction given a trained network are also provided.  
+Allso see the wiki page about the [Keras Network learner node](https://github.com/LauLauThom/Fiji-QualiAnnotations/wiki/Keras-Network-Learner-node). 
 
 # Example dataset  
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3997728.svg)](https://doi.org/10.5281/zenodo.3997728)  
