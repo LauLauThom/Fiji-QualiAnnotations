@@ -1,3 +1,4 @@
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4063892.svg)](https://doi.org/10.5281/zenodo.4063892)  
 ![Twitter Follow](https://img.shields.io/twitter/follow/LauLauThom?style=social)
 [![Say Thanks!](https://img.shields.io/badge/Say%20Thanks-!-1EAEDB.svg)](https://saythanks.io/to/laurent132.thomas@laposte.net)
 
