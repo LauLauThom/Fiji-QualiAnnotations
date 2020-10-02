@@ -5,3 +5,7 @@ Refer to the documentation in the workflow for more details.
 <img src="https://github.com/LauLauThom/Fiji-QualiAnnotations/blob/master/images/Sunburst-workflow.png" alt="sunburst-workflow" width="600" height="140">     
 
 <img src="https://github.com/LauLauThom/Fiji-QualiAnnotations/blob/master/images/Sunburst-plot.png" alt="sunburst-plot" width="920" height="1000">     
+
+__Supplementary Figure 2: Visualizing data-distribution using sunburst charts in KNIME.__   
+__(Top)__: The workflow counts the occurrence for each combination of features occurring in the dataset. The number of samples with a particular combination of qualitative features is reported in the column “Sum”. Here the table depicts the occurrence for the annotations of the table in Figure 3 (see article).  
+__(Bottom)__: Resulting sunburst chart with each qualitative feature represented as a concentric circle. The concentric order of the feature circles (inner to outer) can be adapted by the user. The sunburst chart allows to compare the data-distribution for qualitative features, and to identify trends between features. For instance, the highlighted portion shows that all specimens with smooth appearance also have a circular shape, and most of them a rather dark pigmentation. 
