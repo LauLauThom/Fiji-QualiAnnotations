@@ -14,6 +14,13 @@ To annotate ROI, either draw a new one before making a new annotation (it should
 
 __NB__: The plugins are not compatible with ImageJ, as they rely on some Fiji-specific funcitonalities (script parameters, GenericDialogPlus...)
 
+# Video Tutorials
+Check the dedicated [youtube playlist](https://www.youtube.com/playlist?list=PLbBgXlYof3_YVqR80jhFPCkc0M3GQMAq4) covering from the introduction of the plugins to the use of the analysis workflows.  
+Or click on the image below to open the first tuto in youtube.  
+
+[![YouTube](https://img.youtube.com/vi/TUzjM7n4fb8/0.jpg)](https://www.youtube.com/watch?v=TUzjM7n4fb8)
+
+
 # Description
 There are 3 plugins: 
 
