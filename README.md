@@ -79,4 +79,8 @@ The Zenodo repository contains a zip archive with the images, ground-truth categ
 
 # Citation
 If you use these plugins, please cite:
-***
+
+Thomas LSV, Schaefer F and Gehrig J.   
+_Fiji plugins for qualitative image annotations: routine analysis and application to image classification_ [version 1; peer review: awaiting peer review].   
+F1000Research 2020, 9:1248   
+https://doi.org/10.12688/f1000research.26872.1
