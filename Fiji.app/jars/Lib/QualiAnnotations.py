@@ -136,7 +136,14 @@ class CustomDialog(GenericDialogPlus):
 		self.addCheckbox("Auto next slice", bool(Prefs.get("annot.doNext", True)) )
 		
 		# Add message about citation and doc
-		self.addMessage("If you use this plugin, please cite : ***")
+		self.addMessage("""If you use this plugin, please cite : 
+		
+		Thomas LSV, Schaefer F and Gehrig J.
+		Fiji plugins for qualitative image annotations: routine analysis and application to image classification
+		[version 1; peer review: awaiting peer review]
+		F1000Research 2020, 9:1248
+		https://doi.org/10.12688/f1000research.26872.1""")
+		
 		self.addMessage("Documentation and generic analysis workflows available on the GitHub repo (click Help)")
 		
 		# Add Help button pointing to the github
