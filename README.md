@@ -55,9 +55,10 @@ With scripting languages, replace Roi with the roi-instance of interest.
 # KNIME Worfklows
 You can find examples of analysis from the annotation table with KNIME in the `KNIMEworkflows` folder.  
 The workflows are documented with README files in their respective folders, especially pay attention to which annotation table is expected by the workflow (ie generated with which plugin).  
-To use the worklfow, simply download the knwf file and double-click it to open it in KNIME.  
-To download all the workflows at once from GitHub, either clone the repository, or if you dont have github, choose download as zip.
-To download a single workflow from GitHub, click the workflow file and choose download on the next page.
+To use the worklfows, simply download the knwf file and double-click it to open it in KNIME.   
+To download all the workflows at once from GitHub, either clone the repository, or if you dont have github, choose download as zip.  
+To download a single workflow from GitHub, click the workflow file and choose download on the next page.  
+The workflows can also be downloaded directly from the [KNIME Hub](https://hub.knime.com/l.thomas/spaces/Public/latest/Qualitative-Annotations/).   
 
 Currently there are workflows for:
 - [__Image and annotation vizualization__](https://github.com/LauLauThom/Fiji-QualiAnnotations/tree/master/KNIMEworkflows/ViewImagesAndAnnotations)   
