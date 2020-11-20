@@ -58,7 +58,7 @@ The workflows are documented with README files in their respective folders, espe
 To use the worklfows, simply download the knwf file and double-click it to open it in KNIME.   
 To download all the workflows at once from GitHub, either clone the repository, or if you dont have github, choose download as zip.  
 To download a single workflow from GitHub, click the workflow file and choose download on the next page.  
-The workflows can also be downloaded directly from the [KNIME Hub](https://hub.knime.com/l.thomas/spaces/Public/latest/Qualitative-Annotations/).   
+The workflows can also be downloaded directly from the [KNIME Hub](https://hub.knime.com/l.thomas/spaces/Exploitation%20of%20qualitative%20image%20annotations/latest/).   
 
 Currently there are workflows for:
 - [__Image and annotation vizualization__](https://github.com/LauLauThom/Fiji-QualiAnnotations/tree/master/KNIMEworkflows/ViewImagesAndAnnotations)   
