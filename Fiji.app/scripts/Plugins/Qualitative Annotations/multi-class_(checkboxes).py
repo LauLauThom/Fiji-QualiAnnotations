@@ -17,6 +17,10 @@ from QualiAnnotations import CustomDialog, ButtonAction
 import os 
  
 class MainDialog(CustomDialog):
+	"""
+	Main annotation dialog for this plugin
+	In this case the panel contains checkboxes
+	"""
 	
 	def __init__(self, title, message, panel):
 		CustomDialog.__init__(self, title, message, panel)
