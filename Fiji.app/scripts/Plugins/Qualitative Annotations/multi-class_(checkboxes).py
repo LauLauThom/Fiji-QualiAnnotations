@@ -1,6 +1,6 @@
 #@ Integer (Label = "Number of categories", value=2, min=1, stepSize=1) N_category_   
 #@ PrefService pref   
-#@ ImageJ ij   
+#@ ImageJ imagej   
 '''
 This script can be used to manually classify full images from a stack into N user-defined categories.   
 A first window pops up to request the number of categories.   
@@ -38,7 +38,7 @@ class MainDialog(CustomDialog):
 			self.doAction()
  
 ############### GUI - CATEGORY DIALOG - collect N classes names (N define at first line)  #############
-listCat = pref.getList(ij.class, "listCat_")  # try to retrieve the list of categories from the persistence, if not return [] - ij.class workaround see https://forum.image.sc/t/store-a-list-using-the-persistence-prefservice/26449   
+listCat = pref.getList(imagej.class, "listCat_")  # try to retrieve the list of categories from the persistence, if not return [] - ij.class workaround see https://forum.image.sc/t/store-a-list-using-the-persistence-prefservice/26449   
 
 # Add N string fields to the dialog for class names   
 catDialog = GenericDialog("Categories names")   
@@ -92,7 +92,7 @@ if catDialog.wasOKed():
 		catPanel.add(box)   
 	   
 	# Save categories in memory   
-	pref.put(ij.class, "listCat_", listCat )
+	pref.put(imagej.class, "listCat_", listCat )
 	
 	## Initialize dialog
 	title = "Qualitative Annotations - multi-classes (checkboxes)"
