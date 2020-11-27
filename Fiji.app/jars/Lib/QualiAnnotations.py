@@ -79,9 +79,24 @@ def getImageDirAndName(imp):
 	
 	return out
 
-def nextSlice(imp):
-	if imp.isHyperStack(): imp.setT(imp.getT()+1)		 # increment the time slider
+def nextSlice(imp, dimension):
+	"""Display next slice, dimension should be 'time', 'channel' or 'Z-slice' """
+	if imp.isHyperStack(): 
+		
+		if dimension == "time":
+			imp.setT( imp.getT()+1 )		 # increment the time slider
+		
+		elif dimensions == "channel":
+			imp.setC( imp.getC()+1 )
+		
+		elif dimensions == "Z-slice":
+			imp.setZ( imp.getZ()+1 )
+		
+		else:
+			pass
+			
 	elif imp.isStack(): imp.setSlice(imp.currentSlice+1) # increment unique slider
+	
 	else:pass
 
 def setRoiProperties(roi, table):
