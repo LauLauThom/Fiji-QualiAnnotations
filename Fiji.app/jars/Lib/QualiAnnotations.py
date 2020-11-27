@@ -5,7 +5,7 @@ from ij.measure		  import ResultsTable, Measurements
 import os
 from collections	import OrderedDict
 from java.awt.event import ActionListener
-from java.awt 		import Label
+from java.awt 		import Label, Component
 from fiji.util.gui	import GenericDialogPlus
 
 hyperstackDim = ["time", "channel", "Z-slice"]
@@ -173,6 +173,8 @@ class CustomDialog(GenericDialogPlus):
 		
 		# Add new component to the gui for this category and repaint GUI
 		newComponent = self.makeCategoryComponent(newCategory)
+		if newComponent is None: return
+		if not isinstance(newComponent, Component): raise TypeError("Expect a component to be added to the dialog")
 		self.getPanel().add(newComponent) # component 1 is the panel
 		self.validate() # recompute the layout and update the display
 	
