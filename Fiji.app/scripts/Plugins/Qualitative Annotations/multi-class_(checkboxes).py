@@ -32,7 +32,7 @@ class MainDialog(CustomDialog):
 			table.addValue( checkbox.getLabel(), checkbox.getState() )
 	
 	def keyPressed(self, keyEvent):
-		'''Pressing any of the + key also adds to the table like the Add button''' 
+		"""Define shortcut: pressing any of the + key also adds to the table like the Add button""" 
 		code = keyEvent.getKeyCode()
 		if code == keyEvent.VK_ADD or code==keyEvent.VK_PLUS: 
 			self.doAction()
