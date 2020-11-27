@@ -10,12 +10,28 @@ Clicking on the button will generate a new entry in a table with the image name 
 It will also skip to the next slice for stacks.   
 '''
 from ij.gui		    import GenericDialog   
-from java.awt 		import GridLayout, Button, Panel , Checkbox  
+from java.awt 		import GridLayout, Button, Panel, Checkbox
+from java.awt.event import ActionListener
 from collections 	import OrderedDict 
-from QualiAnnotations import AddDialog, ButtonAction
+from QualiAnnotations import CustomDialog, ButtonAction
 import os 
  
- 
+class MainDialog(CustomDialog):
+	
+	def __init__(self, title, message, panel):
+		CustomDialog.__init__(self, title, message, panel)
+		self.panel = panel # Expose the panel to the other functions
+	
+	def fillTable(self, table):
+		'''Read checkbox state and update table'''  
+		for cat, box in dicoBox.iteritems():   
+			table.addValue(cat, box.getState() ) 
+	
+	def keyPressed(self, keyEvent):
+		'''Pressing any of the + key also adds to the table like the Add button''' 
+		code = keyEvent.getKeyCode()
+		if code == keyEvent.VK_ADD or code==keyEvent.VK_PLUS: 
+			self.doAction()
  
 ############### GUI - CATEGORY DIALOG - collect N classes names (N define at first line)  #############
 listCat = pref.getList(ij.class, "listCat_")  # try to retrieve the list of categories from the persistence, if not return [] - ij.class workaround see https://forum.image.sc/t/store-a-list-using-the-persistence-prefservice/26449   
@@ -38,6 +54,20 @@ catDialog.showDialog()
  
  
 ################# After OK clicking ###########   
+class NewCategoryAction(ActionListener): # extends action listener	
+	
+	def __init__(self):
+		ActionListener.__init__(self)
+	
+	def actionPerformed(self, event):  
+		'''
+		Called when button "Add new category" is clicked
+		'''
+		# Prompt a string input
+		# Recover the new category name
+		# close the winButton and redisplay it
+		pass
+		
 # Recover fields from the formular   
 if catDialog.wasOKed():    
 	
@@ -65,10 +95,6 @@ if catDialog.wasOKed():
 	message = """Tick the categories corresponding to the current image, then click 'Add' or press the '+' key.
 	To annotate ROI, draw a new ROI or select some ROI(s) in the RoiManager before clicking 'Add'/pressing '+'."""
 	
-	def fillTable(Table): 
-		'''Read checkbox state and update table'''  
-		for cat, box in dicoBox.iteritems():   
-			Table.addValue(cat, box.getState() ) 
 	
 	winButton = AddDialog(title, message, catPanel, fillTable)
 	winButton.addButton("Add", ButtonAction(winButton))   
@@ -76,4 +102,4 @@ if catDialog.wasOKed():
 	# Add defaults 
 	winButton.addDefaultOptions() 
 	winButton.showDialog()
-  
+
