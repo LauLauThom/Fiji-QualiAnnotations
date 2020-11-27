@@ -5,6 +5,7 @@ from ij.measure		  import ResultsTable, Measurements
 import os
 from collections	import OrderedDict
 from java.awt.event import ActionListener
+from java.awt 		import Label
 from fiji.util.gui	import GenericDialogPlus
 
 hyperstackDim = ["time", "channel", "Z-slice"]
@@ -114,6 +115,7 @@ class CustomDialog(GenericDialogPlus):
 	'''
 	Model class for the plugin dialog for the manual classifier
 	All plugin share the same backbone, but have a custom central panel that is passed via the constructor
+	Also the daughter class should implement their own makeCategoryComponent(category) to return an adapted component to add to the GUI
 	'''
 	
 	def __init__(self, title, message, panel):
@@ -121,6 +123,7 @@ class CustomDialog(GenericDialogPlus):
 		self.setModalityType(None) # like non-blocking generic dialog
 		self.addMessage(message)
 		self.addPanel(panel)
+		self.addButton("Add new category", self) # the GUI also catches the event for this button too
 		self.addStringField("Comments", "")
 	
 	def actionPerformed(self, event):
@@ -128,10 +131,9 @@ class CustomDialog(GenericDialogPlus):
 		Overwrite default: to save parameters in memory when ok is clicked
 		NB: NEVER use getNext methods here, since we call them several time
 		'''
-		
-		if event.getSource().getLabel() == "  OK  ":
-			
-			# Check options
+		sourceLabel = event.getSource().getLabel()
+		if sourceLabel == "  OK  ":
+			# Check options and save them in persistence
 			checkboxes	= self.getCheckboxes()
 			doMeasure	= checkboxes[-2].getState()
 			doNext		= checkboxes[-1].getState()
@@ -139,10 +141,36 @@ class CustomDialog(GenericDialogPlus):
 			# Save them in preference
 			Prefs.set("annot.doMeasure", doMeasure)
 			Prefs.set("annot.doNext", doNext)
+		
+		
+		elif sourceLabel == "Add new category":
+			self.addCategoryComponent()
+		
+		else:
+			pass
+			
 			
 		# Do the mother class usual action handling()
 		GenericDialogPlus.actionPerformed(self, event)
 	
+	def makeCategoryComponent(self, category):
+		"""
+		This method should return a new component (checkbox, button...) to add to the GUI when the button add new category is cliked
+		This method should be overwritten in the daughter classes, it is illustrated here with a label
+		"""
+		return Label(category)
+	
+	def addCategoryComponent(self):
+		"""
+		Request a new category name, create the associated category component via the makeCategory method and update the dialog 
+		"""
+		newCategory = IJ.getString("Enter new category name", "new category")
+		if not newCategory: return # if Cancelled (ie newCat=="") or empty field just dont go further 
+		
+		# Add new component to the gui for this category and repaint GUI
+		newComponent = self.makeCategoryComponent(newCategory)
+		self.getComponent(1).add(newComponent) # component 1 is the panel
+		self.validate() # recompute the layout and update the display
 	
 	def addDefaultOptions(self):
 		'''
@@ -316,7 +344,7 @@ class AddDialog(CustomDialog):
 		
 class ButtonAction(ActionListener): # extends action listener	
 	'''
-	Generic class used to defined button actions
+	Class defining the action for the button "Add"
 	The action is initialized with the dialog to be able to do stuff with it
 	- actionPerformed : Call when the button is clicked, here it calls the Action.main() passed to the constructor 
 	'''	 
