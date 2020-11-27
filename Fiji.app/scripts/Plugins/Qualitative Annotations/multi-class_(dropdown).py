@@ -11,8 +11,33 @@ Broken, ,
 '''
 #@ File (label="CSV file for category and choice", style="extension:csv") csvpath
 from java.awt 		import Panel, Choice, Label, GridLayout
-from QualiAnnotations import AddDialog, ButtonAction
+from QualiAnnotations import CustomDialog, ButtonAction
 import os, csv, codecs
+
+class MainDialog(CustomDialog):
+	"""
+	Main annotation dialog for this plugin
+	In this case the panel contains dropdowns
+	"""
+	def fillTable(self, table):
+		'''Read dropdown states and update table'''  
+		for dropdown in ( self.getPanel().getComponents()[n:] ): # n first elements are the labels
+			table.addValue( dropdown.getName(), dropdown.getSelectedItem() )
+	
+	def keyPressed(self, keyEvent):
+		"""Define shortcut: pressing any of the + key also adds to the table like the Add button""" 
+		code = keyEvent.getKeyCode()
+		if code == keyEvent.VK_ADD or code==keyEvent.VK_PLUS: 
+			self.doAction()
+	
+	def makeCategoryComponent(self, category):
+		"""
+		Generates a checkbox with the new category name, to add to the GUI
+		Overwrite the original method
+		"""
+		# TO DO
+		return None
+
 
 ### Read CSV to get categories and choices
 csvPath = csvpath.getPath()
@@ -68,19 +93,12 @@ for i in range(n):
 	panel.add(chooser)
 
 
-# Define custom action on button click (in addition to default)
-def fillTable(Table):
-	'''Called when Add is clicked'''
-	for dropdown in ( panel.getComponents()[n:] ): # n first elements are the labels
-		Table.addValue(dropdown.getName(), dropdown.getSelectedItem() )
-
-
 # Initialize classification GUI
 title   = "Qualitative Annotations - multi-classes (dropdown)"
 message = """Select the descriptors corresponding to the current image, then click 'Add' or press one of the '+' key.
 To annotate ROI, draw a new ROI or select some ROI(s) from the RoiManager before clicking 'Add'/pressing '+'."""
 
-win = AddDialog(title, message, panel, fillTable)
+win = MainDialog(title, message, panel)
 
 # Add button to window 
 win.addButton("Add", ButtonAction(win))
