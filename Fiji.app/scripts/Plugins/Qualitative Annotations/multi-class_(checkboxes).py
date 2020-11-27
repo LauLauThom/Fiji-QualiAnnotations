@@ -17,15 +17,17 @@ import os
  
  
  
-############### GUI - CATEGORY DIALOG - collect N classes names (N define at first line)  #############   
+############### GUI - CATEGORY DIALOG - collect N classes names (N define at first line)  #############
+listCat = pref.getList(ij.class, "listCat_")  # try to retrieve the list of categories from the persistence, if not return [] - ij.class workaround see https://forum.image.sc/t/store-a-list-using-the-persistence-prefservice/26449   
+
+# Add N string fields to the dialog for class names   
 Win = GenericDialog("Categories names")   
-   
-# Add N string fields for class names   
-for i in range(N_category_):   
-	listCat = pref.getList(ij.class, "listCat_")            # try to retrieve the list of categories from the persistence, if not return [] - ij.class workaround see https://forum.image.sc/t/store-a-list-using-the-persistence-prefservice/26449   
-	  
-	if listCat and i<=len(listCat)-1:  
+
+for i in range(N_category_):
+	
+	if listCat and i<=len(listCat)-1:  # read previous categories
 		catName = listCat[i]  
+	
 	else:  
 		catName = "Category_" + str(i+1)   
 	  
