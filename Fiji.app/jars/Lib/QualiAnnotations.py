@@ -126,6 +126,10 @@ class CustomDialog(GenericDialogPlus):
 		self.addButton("Add new category", self) # the GUI also catches the event for this button too
 		self.addStringField("Comments", "")
 	
+	def getPanel(self):
+		"""Return the panel contained in the GenericDialog"""
+		return self.getComponent(1) # Might need to adapt it, if we add more items before the panel
+	
 	def actionPerformed(self, event):
 		'''
 		Overwrite default: to save parameters in memory when ok is clicked
@@ -169,7 +173,7 @@ class CustomDialog(GenericDialogPlus):
 		
 		# Add new component to the gui for this category and repaint GUI
 		newComponent = self.makeCategoryComponent(newCategory)
-		self.getComponent(1).add(newComponent) # component 1 is the panel
+		self.getPanel().add(newComponent) # component 1 is the panel
 		self.validate() # recompute the layout and update the display
 	
 	def addDefaultOptions(self):
