@@ -7,6 +7,8 @@ from collections	import OrderedDict
 from java.awt.event import ActionListener
 from fiji.util.gui	import GenericDialogPlus
 
+hyperstackDim = ["time", "channel", "Z-slice"]
+
 
 def getTable():
 	''' Check if a table called Annotations or Annotations.csv exists otherwise open a new one'''
@@ -79,9 +81,24 @@ def getImageDirAndName(imp):
 	
 	return out
 
-def nextSlice(imp):
-	if imp.isHyperStack(): imp.setT(imp.getT()+1)		 # increment the time slider
+def nextSlice(imp, dimension):
+	"""Display next slice, dimension should be 'time', 'channel' or 'Z-slice' """
+	if imp.isHyperStack(): 
+		
+		if dimension == hyperstackDim[0]:
+			imp.setT( imp.getT()+1 )		 # increment the time slider
+		
+		elif dimension == hyperstackDim[1]:
+			imp.setC( imp.getC()+1 )
+		
+		elif dimension == hyperstackDim[2]:
+			imp.setZ( imp.getZ()+1 )
+		
+		else:
+			pass
+			
 	elif imp.isStack(): imp.setSlice(imp.currentSlice+1) # increment unique slider
+	
 	else:pass
 
 def setRoiProperties(roi, table):
@@ -107,7 +124,10 @@ class CustomDialog(GenericDialogPlus):
 		self.addStringField("Comments", "")
 	
 	def actionPerformed(self, event):
-		'''Overwrite default: to save parameters in memory when ok is clicked'''
+		'''
+		Overwrite default: to save parameters in memory when ok is clicked
+		NB: NEVER use getNext methods here, since we call them several time
+		'''
 		
 		if event.getSource().getLabel() == "  OK  ":
 			
@@ -134,6 +154,8 @@ class CustomDialog(GenericDialogPlus):
 		# Checkbox next slice and run Measure 
 		self.addCheckbox("run 'Measure'", bool(Prefs.get("annot.doMeasure", False)) )
 		self.addCheckbox("Auto next slice", bool(Prefs.get("annot.doNext", True)) )
+		self.addToSameRow()
+		self.addChoice("dimension (for hyperstack)", hyperstackDim, hyperstackDim[0])
 		
 		# Add message about citation and doc
 		self.addMessage("""If you use this plugin, please cite : 
@@ -166,6 +188,11 @@ class CustomDialog(GenericDialogPlus):
 		'''
 		pass
 	
+	def getChosenDimension(self):
+		"""Return 'time', 'channel' or 'Z-slice'"""
+		listChoices = self.getChoices()
+		return listChoices[0].getSelectedItem()
+	
 	def doAction(self):
 		'''
 		Main function called if a button is clicked or shortcut called
@@ -175,16 +202,15 @@ class CustomDialog(GenericDialogPlus):
 		'''
 		imp = IJ.getImage() # get current image
 		
-		# Check options
-		checkboxes	= self.getCheckboxes()
-		doMeasure	= checkboxes[-2].getState()
-		doNext		= checkboxes[-1].getState()
-		
 		# Get current table
 		tableTitle, Table = getTable()
 		Table.showRowNumbers(True)
 		
+		# Check options, use getCheckboxes(), because the checkbox plugin have other checkboxes
+		checkboxes	= self.getCheckboxes()
+		
 		# Initialize Analyzer
+		doMeasure = checkboxes[-2].getState()
 		if doMeasure:
 			analyzer = Analyzer(imp, Table)
 			analyzer.setMeasurement(Measurements.LABELS, False) # dont add label to table
@@ -260,8 +286,9 @@ class CustomDialog(GenericDialogPlus):
 		Table.show(tableTitle) # Update table		
 		#Table.updateResults() # only for result table but then addValue does not work !  
 		  
-		# Go to next slice	
-		if doNext: nextSlice(imp)
+		# Go to next slice
+		doNext    = checkboxes[-1].getState()
+		if doNext: nextSlice(imp, self.getChosenDimension() )
 		  
 		# Bring back the focus to the button window (otherwise the table is in the front)  
 		if not IJ.getFullVersion().startswith("1.52p"): WindowManager.toFront(self)	 # prevent some ImageJ bug with 1.52p
