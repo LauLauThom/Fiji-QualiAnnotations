@@ -124,7 +124,10 @@ class CustomDialog(GenericDialogPlus):
 		self.addStringField("Comments", "")
 	
 	def actionPerformed(self, event):
-		'''Overwrite default: to save parameters in memory when ok is clicked'''
+		'''
+		Overwrite default: to save parameters in memory when ok is clicked
+		NB: NEVER use getNext methods here, since we call them several time
+		'''
 		
 		if event.getSource().getLabel() == "  OK  ":
 			
