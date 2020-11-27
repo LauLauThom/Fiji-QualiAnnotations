@@ -9,7 +9,8 @@ Finally a third window will show up with one button per category.
 Clicking on the button will generate a new entry in a table with the image name and the category.   
 It will also skip to the next slice for stacks.   
 '''
-from ij.gui		    import GenericDialog   
+from ij.gui		    import GenericDialog
+from ij 			import IJ
 from java.awt 		import GridLayout, Button, Panel, Checkbox
 from java.awt.event import ActionListener
 from collections 	import OrderedDict 
@@ -60,17 +61,32 @@ catDialog.showDialog()
 ################# After OK clicking ###########   
 class NewCategoryAction(ActionListener): # extends action listener	
 	
-	def __init__(self):
+	def __init__(self, dialog):
 		ActionListener.__init__(self)
+		self.dialog = dialog
 	
+	def addCategory(self, category):
+		"""Add a new component to the dialog provided a new category name"""
+		
+		# Make a new checkbox with the category name
+		checkbox = Checkbox(category, False)
+		checkbox.setFocusable(False) # important to have the keybard shortcut working
+
+		# Add checkbox to the gui for this category and repaint GUI
+		panel = self.dialog.getComponent(1)
+		panel.add(checkbox)
+		self.dialog.validate() # recompute the layout and update the display
+		
 	def actionPerformed(self, event):  
-		'''
+		"""
 		Called when button "Add new category" is clicked
-		'''
-		# Prompt a string input
-		# Recover the new category name
-		# close the winButton and redisplay it
-		pass
+		This method could be defined in the mother class 
+		"""
+		newCategory = IJ.getString("Enter new category name", "new category")
+		if not newCategory: return # if Cancelled (ie newCat=="") or empty field just dont go further 
+		self.addCategory(newCategory)
+		
+		
 		
 # Recover fields from the formular   
 if catDialog.wasOKed():    
@@ -101,7 +117,9 @@ if catDialog.wasOKed():
 	
 	
 	winButton = MainDialog(title, message, catPanel)
-	winButton.addButton("Add", ButtonAction(winButton))   
+	winButton.addButton("Add", ButtonAction(winButton))
+	winButton.addButton("Add new category", NewCategoryAction(winButton)) 
+
 	 
 	# Add defaults 
 	winButton.addDefaultOptions() 
