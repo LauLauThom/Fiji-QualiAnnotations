@@ -24,8 +24,8 @@ class MainDialog(CustomDialog):
 	
 	def fillTable(self, table):
 		'''Read checkbox state and update table'''  
-		for cat, box in dicoBox.iteritems():   
-			table.addValue(cat, box.getState() ) 
+		for checkbox in self.panel.getComponents():
+			table.addValue( checkbox.getLabel(), checkbox.getState() )
 	
 	def keyPressed(self, keyEvent):
 		'''Pressing any of the + key also adds to the table like the Add button''' 
@@ -72,23 +72,23 @@ class NewCategoryAction(ActionListener): # extends action listener
 if catDialog.wasOKed():    
 	
 	# Loop over categories, adding a tickbox to the panel for each  
-	dicoBox  = OrderedDict()          # contains (categoryName: CheckBox) 
 	catPanel = Panel(GridLayout(0,4)) # Unlimited number of rows - fix to 4 columns  
+	listCat = [] # for perstistence
 	for i in range(N_category_):   
 		   
 		# Recover the category name   
 		category = catDialog.getNextString()   
+		listCat.append(category)
 
 		# Make a checkbox with the category name
 		box = Checkbox(category, False)
 		box.setFocusable(False) # important to have the keybard shortcut working
-		dicoBox[category] = box  
 
 		# Add checkbox to the gui for this category   
 		catPanel.add(box)   
 	   
 	# Save categories in memory   
-	pref.put(ij.class, "listCat_", dicoBox.keys() )   
+	pref.put(ij.class, "listCat_", listCat )
 	
 	## Initialize dialog
 	title = "Qualitative Annotations - multi-classes (checkboxes)"
@@ -96,7 +96,7 @@ if catDialog.wasOKed():
 	To annotate ROI, draw a new ROI or select some ROI(s) in the RoiManager before clicking 'Add'/pressing '+'."""
 	
 	
-	winButton = AddDialog(title, message, catPanel, fillTable)
+	winButton = MainDialog(title, message, catPanel)
 	winButton.addButton("Add", ButtonAction(winButton))   
 	 
 	# Add defaults 
