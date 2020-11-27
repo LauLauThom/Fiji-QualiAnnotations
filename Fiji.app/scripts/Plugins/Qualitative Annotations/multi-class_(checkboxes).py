@@ -21,7 +21,7 @@ import os
 listCat = pref.getList(ij.class, "listCat_")  # try to retrieve the list of categories from the persistence, if not return [] - ij.class workaround see https://forum.image.sc/t/store-a-list-using-the-persistence-prefservice/26449   
 
 # Add N string fields to the dialog for class names   
-Win = GenericDialog("Categories names")   
+catDialog = GenericDialog("Categories names")   
 
 for i in range(N_category_):
 	
@@ -31,15 +31,15 @@ for i in range(N_category_):
 	else:  
 		catName = "Category_" + str(i+1)   
 	  
-	Win.addStringField("Category: ", catName)   
-	Win.addMessage("") # skip one line   
+	catDialog.addStringField("Category: ", catName)   
+	catDialog.addMessage("") # skip one line   
 	   
-Win.showDialog()   
+catDialog.showDialog()   
  
  
 ################# After OK clicking ###########   
 # Recover fields from the formular   
-if Win.wasOKed():    
+if catDialog.wasOKed():    
 	
 	# Loop over categories, adding a tickbox to the panel for each  
 	dicoBox  = OrderedDict()          # contains (categoryName: CheckBox) 
@@ -47,7 +47,7 @@ if Win.wasOKed():
 	for i in range(N_category_):   
 		   
 		# Recover the category name   
-		category = Win.getNextString()   
+		category = catDialog.getNextString()   
 
 		# Make a checkbox with the category name
 		box = Checkbox(category, False)
