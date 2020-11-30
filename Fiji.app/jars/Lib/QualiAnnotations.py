@@ -114,17 +114,36 @@ def setRoiProperties(roi, table):
 class CustomDialog(GenericDialogPlus):
 	'''
 	Model class for the plugin dialog for the manual classifier
-	All plugin share the same backbone, but have a custom central panel that is passed via the constructor
-	Also the daughter class should implement their own makeCategoryComponent(category) to return an adapted component to add to the GUI
+	All plugin share the same backbone but have a custom central panel that is passed via the constructor
+	
+	Backbone
+	--------
+	- Message
+	- Custom Panel
+	- Add category button
+	- Comments
+	- Default options including
+		-- add to Manager, nextSlice, runMeasurement
+		-- citation message
+		-- help button
+	
+	Daughter class should implement the following methods:
+	- __init__ , if the plugin should have a different structure than the backbone above
+	- makeCategoryComponent(category) which should return a new category component to add to the main dialog
+	- addAction(), function when the button Add is pressed (add to table)
+	- fillTable(table), function stating how to add to the table
 	'''
 	
 	def __init__(self, title, message, panel):
+		"""This can be overwritten to readjust the order or if some component are not needed"""
 		GenericDialogPlus.__init__(self, title)
 		self.setModalityType(None) # like non-blocking generic dialog
 		self.addMessage(message)
 		self.addPanel(panel)
 		self.addButton("Add new category", self) # the GUI also catches the event for this button too
 		self.addStringField("Comments", "")
+		self.addButton("Add", self)
+		self.addDefaultOptions()
 	
 	def getPanel(self):
 		"""Return the panel contained in the GenericDialog"""
@@ -132,8 +151,11 @@ class CustomDialog(GenericDialogPlus):
 	
 	def actionPerformed(self, event):
 		'''
-		Overwrite default: to save parameters in memory when ok is clicked
-		NB: NEVER use getNext methods here, since we call them several time
+		Handle buttons clicks, delegates to custom methods
+		OK: save parameters in memory
+		Add new category: delegate to addCategoryComponent() (should be overwritten in daughter)
+		Add: delegate to addAction()
+		NB: NEVER use getNext methods here, since we call them several time 
 		'''
 		sourceLabel = event.getSource().getLabel()
 		if sourceLabel == "  OK  ":
@@ -150,13 +172,23 @@ class CustomDialog(GenericDialogPlus):
 		elif sourceLabel == "Add new category":
 			self.addCategoryComponent()
 		
+		elif sourceLabel == "Add":
+			self.addAction()
+		
 		else:
 			pass
-			
 			
 		# Do the mother class usual action handling()
 		GenericDialogPlus.actionPerformed(self, event)
 	
+	
+	def addAction(self):
+		"""
+		Action following the action clicking the button "Add" 
+		This method can be overwritten in descendant class, if more than the classical doAction
+		"""
+		self.doAction()
+		
 	def makeCategoryComponent(self, category):
 		"""
 		This method should return a new component (checkbox, button...) to add to the GUI when the button add new category is cliked
@@ -208,7 +240,7 @@ class CustomDialog(GenericDialogPlus):
 		self.hideCancelButton()
 	
 	
-	def fillTable(self, Table):
+	def fillTable(self, table):
 		'''
 		Function defining custom command to check GUI and add to table
 		It should be overwritten in the descendant classes
@@ -217,8 +249,9 @@ class CustomDialog(GenericDialogPlus):
 	
 	def keyPressed(self, event):
 		'''
-		This function should be overwritten in descendant classes
-		but it should call self.doAction()
+		Handle keyboard shortcuts (either + or F1-F12)
+		the method should be implemented in descendant classes
+		but it should usually call self.doAction()
 		'''
 		pass
 	
@@ -231,7 +264,7 @@ class CustomDialog(GenericDialogPlus):
 		'''
 		Main function called if a button is clicked or shortcut called
 		It does the default stuff (adding imageName...)
-		+ it also calls the function fillTable which is implemented in descendant classes
+		+ it also calls the function fillTable which should be implemented in descendant classes
 		DO NOT OVERWRITE
 		'''
 		imp = IJ.getImage() # get current image
@@ -326,41 +359,3 @@ class CustomDialog(GenericDialogPlus):
 		  
 		# Bring back the focus to the button window (otherwise the table is in the front)  
 		if not IJ.getFullVersion().startswith("1.52p"): WindowManager.toFront(self)	 # prevent some ImageJ bug with 1.52p
-
-
-class AddDialog(CustomDialog):
-	'''
-	Descendant class for dialog of Checkbox and Dropdown plugins with a Add button
-	The particularity is that the fillFunction is passed via the constructor
-	'''
-	
-	def __init__(self, title, message, panel, fillFunction):
-		CustomDialog.__init__(self, title, message, panel)
-		self.function = fillFunction
-	
-	def fillTable(self, Table):
-		self.function(Table)
-	
-	def keyPressed(self, keyEvent):
-		'''Pressing any of the + key also adds to the table like the Add button''' 
-		code = keyEvent.getKeyCode()
-		if code == keyEvent.VK_ADD or code==keyEvent.VK_PLUS: 
-			self.doAction()
-		
-		
-class ButtonAction(ActionListener): # extends action listener	
-	'''
-	Class defining the action for the button "Add"
-	The action is initialized with the dialog to be able to do stuff with it
-	- actionPerformed : Call when the button is clicked, here it calls the Action.main() passed to the constructor 
-	'''	 
-	
-	def __init__(self, dialog):
-		ActionListener.__init__(self)
-		self.dialog = dialog
-	
-	def actionPerformed(self, event):  
-		'''
-		Called when button is clicked
-		'''
-		self.dialog.doAction()
