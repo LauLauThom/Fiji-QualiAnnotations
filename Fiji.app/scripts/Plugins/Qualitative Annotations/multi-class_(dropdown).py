@@ -11,8 +11,44 @@ Broken, ,
 '''
 #@ File (label="CSV file for category and choice", style="extension:csv") csvpath
 from java.awt 		import Panel, Choice, Label, GridLayout
-from QualiAnnotations import AddDialog, ButtonAction
+from fiji.util.gui	import GenericDialogPlus
+from QualiAnnotations import CustomDialog
 import os, csv, codecs
+
+class MainDialog(CustomDialog):
+	"""
+	Main annotation dialog for this plugin
+	In this case the panel contains dropdowns
+	"""
+
+	def __init__(self, title, message, panel):
+		"""Custom constructor instead of the CustomDialog constructor: does not add the "Add" button"""
+		GenericDialogPlus.__init__(self, title)
+		self.setModalityType(None) # like non-blocking generic dialog
+		self.addMessage(message)
+		self.addPanel(panel)
+		#self.addButton("Add new category", self) # no add new category button for dropdown
+		self.addStringField("Comments", "")
+		self.addButton("Add", self)
+		self.addDefaultOptions()
+	
+	def fillTable(self, table):
+		'''Read dropdown states and update table'''  
+		for dropdown in ( self.getPanel().getComponents()[n:] ): # n first elements are the labels
+			table.addValue( dropdown.getName(), dropdown.getSelectedItem() )
+	
+	def keyPressed(self, keyEvent):
+		"""Define shortcut: pressing any of the + key also adds to the table like the Add button""" 
+		code = keyEvent.getKeyCode()
+		if code == keyEvent.VK_ADD or code==keyEvent.VK_PLUS: 
+			self.defaultActionSequence()
+	
+	def makeCategoryComponent(self, category):
+		"""
+		Could return a new dropdown, but not implemented
+		"""
+		return None
+
 
 ### Read CSV to get categories and choices
 csvPath = csvpath.getPath()
@@ -68,23 +104,10 @@ for i in range(n):
 	panel.add(chooser)
 
 
-# Define custom action on button click (in addition to default)
-def fillTable(Table):
-	'''Called when Add is clicked'''
-	for dropdown in ( panel.getComponents()[n:] ): # n first elements are the labels
-		Table.addValue(dropdown.getName(), dropdown.getSelectedItem() )
-
-
 # Initialize classification GUI
 title   = "Qualitative Annotations - multi-classes (dropdown)"
 message = """Select the descriptors corresponding to the current image, then click 'Add' or press one of the '+' key.
 To annotate ROI, draw a new ROI or select some ROI(s) from the RoiManager before clicking 'Add'/pressing '+'."""
 
-win = AddDialog(title, message, panel, fillTable)
-
-# Add button to window 
-win.addButton("Add", ButtonAction(win))
-
-# Add defaults
-win.addDefaultOptions()
+win = MainDialog(title, message, panel)
 win.showDialog()

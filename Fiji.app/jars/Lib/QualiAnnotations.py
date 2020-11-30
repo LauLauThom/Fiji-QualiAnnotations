@@ -5,6 +5,7 @@ from ij.measure		  import ResultsTable, Measurements
 import os
 from collections	import OrderedDict
 from java.awt.event import ActionListener
+from java.awt 		import Label, Component
 from fiji.util.gui	import GenericDialogPlus
 
 hyperstackDim = ["time", "channel", "Z-slice"]
@@ -16,18 +17,18 @@ def getTable():
 	win2 = WindowManager.getWindow("Annotations.csv")
 	
 	if win: # different of None
-		Table = win.getResultsTable()
+		table = win.getResultsTable()
 		tableTitle = "Annotations"
 		
 	elif win2 : # different of None
-		Table = win2.getResultsTable()
+		table = win2.getResultsTable()
 		tableTitle = "Annotations.csv"
 		
 	else:
-		Table = ResultsTable()
+		table = ResultsTable()
 		tableTitle = "Annotations"
 	
-	return tableTitle, Table
+	return tableTitle, table
 
 def getRoiManager():
 	"""
@@ -113,25 +114,52 @@ def setRoiProperties(roi, table):
 class CustomDialog(GenericDialogPlus):
 	'''
 	Model class for the plugin dialog for the manual classifier
-	All plugin share the same backbone, but have a custom central panel that is passed via the constructor
+	All plugin share the same backbone but have a custom central panel that is passed via the constructor
+	
+	Backbone
+	--------
+	- Message
+	- Custom Panel
+	- Add category button
+	- Comments
+	- Default options including
+		-- add to Manager, nextSlice, runMeasurement
+		-- citation message
+		-- help button
+	
+	Daughter class should implement the following methods:
+	- __init__ , if the plugin should have a different structure than the backbone above
+	- makeCategoryComponent(category) which should return a new category component to add to the main dialog
+	- addAction(), function when the button Add is pressed (add to table)
+	- fillTable(table), function stating how to add to the table
 	'''
 	
 	def __init__(self, title, message, panel):
+		"""This can be overwritten to readjust the order or if some component are not needed"""
 		GenericDialogPlus.__init__(self, title)
 		self.setModalityType(None) # like non-blocking generic dialog
 		self.addMessage(message)
 		self.addPanel(panel)
+		self.addButton("Add new category", self) # the GUI also catches the event for this button too
 		self.addStringField("Comments", "")
+		self.addButton("Add", self)
+		self.addDefaultOptions()
+	
+	def getPanel(self):
+		"""Return the panel contained in the GenericDialog"""
+		return self.getComponent(1) # Might need to adapt it, if we add more items before the panel
 	
 	def actionPerformed(self, event):
 		'''
-		Overwrite default: to save parameters in memory when ok is clicked
-		NB: NEVER use getNext methods here, since we call them several time
+		Handle buttons clicks, delegates to custom methods
+		OK: save parameters in memory
+		Add new category: delegate to addCategoryComponent() (should be overwritten in daughter)
+		Add: delegate to addAction()
+		NB: NEVER use getNext methods here, since we call them several time 
 		'''
-		
-		if event.getSource().getLabel() == "  OK  ":
-			
-			# Check options
+		sourceLabel = event.getSource().getLabel()
+		if sourceLabel == "  OK  ":
+			# Check options and save them in persistence
 			checkboxes	= self.getCheckboxes()
 			doMeasure	= checkboxes[-2].getState()
 			doNext		= checkboxes[-1].getState()
@@ -139,10 +167,48 @@ class CustomDialog(GenericDialogPlus):
 			# Save them in preference
 			Prefs.set("annot.doMeasure", doMeasure)
 			Prefs.set("annot.doNext", doNext)
+		
+		
+		elif sourceLabel == "Add new category":
+			self.addCategoryComponent()
+		
+		elif sourceLabel == "Add":
+			self.addAction()
+		
+		else:
+			pass
 			
 		# Do the mother class usual action handling()
 		GenericDialogPlus.actionPerformed(self, event)
 	
+	
+	def addAction(self):
+		"""
+		Action following the action clicking the button "Add" 
+		This method can be overwritten in descendant class, if more than the classical defaultActionSequence
+		"""
+		self.defaultActionSequence()
+		
+	def makeCategoryComponent(self, category):
+		"""
+		This method should return a new component (checkbox, button...) to add to the GUI when the button add new category is cliked
+		This method should be overwritten in the daughter classes, it is illustrated here with a label
+		"""
+		return Label(category)
+	
+	def addCategoryComponent(self):
+		"""
+		Request a new category name, create the associated category component via the makeCategory method and update the dialog 
+		"""
+		newCategory = IJ.getString("Enter new category name", "new category")
+		if not newCategory: return # if Cancelled (ie newCat=="") or empty field just dont go further 
+		
+		# Add new component to the gui for this category and repaint GUI
+		newComponent = self.makeCategoryComponent(newCategory)
+		if newComponent is None: return
+		if not isinstance(newComponent, Component): raise TypeError("Expect a component to be added to the dialog")
+		self.getPanel().add(newComponent) # component 1 is the panel
+		self.validate() # recompute the layout and update the display
 	
 	def addDefaultOptions(self):
 		'''
@@ -174,7 +240,7 @@ class CustomDialog(GenericDialogPlus):
 		self.hideCancelButton()
 	
 	
-	def fillTable(self, Table):
+	def fillTable(self, table):
 		'''
 		Function defining custom command to check GUI and add to table
 		It should be overwritten in the descendant classes
@@ -183,8 +249,9 @@ class CustomDialog(GenericDialogPlus):
 	
 	def keyPressed(self, event):
 		'''
-		This function should be overwritten in descendant classes
-		but it should call self.doAction()
+		Handle keyboard shortcuts (either + or F1-F12)
+		the method should be implemented in descendant classes
+		but it should usually call self.defaultActionSequence()
 		'''
 		pass
 	
@@ -193,18 +260,25 @@ class CustomDialog(GenericDialogPlus):
 		listChoices = self.getChoices()
 		return listChoices[0].getSelectedItem()
 	
-	def doAction(self):
-		'''
-		Main function called if a button is clicked or shortcut called
-		It does the default stuff (adding imageName...)
-		+ it also calls the function fillTable which is implemented in descendant classes
-		DO NOT OVERWRITE
-		'''
+	def defaultActionSequence(self):
+		"""
+		Central function (DO NOT OVERWRITE) called if a button is clicked or shortcut called
+		It trigger the following actions:
+		- getting the current table
+		- checking the GUI state (checkboxes, dropdown...)
+		- running measurements if measure is selected
+		- setting ROI attribute (if roi)
+		- incrementing table counter
+		- adding image directory and name to table
+		- filling columns from GUI state using custom fillTable()
+		- switching to next slice
+		- displaying the annotation GUI to the front, important to catch next keyboard shortcuts
+		"""
 		imp = IJ.getImage() # get current image
 		
 		# Get current table
-		tableTitle, Table = getTable()
-		Table.showRowNumbers(True)
+		tableTitle, table = getTable()
+		table.showRowNumbers(True)
 		
 		# Check options, use getCheckboxes(), because the checkbox plugin have other checkboxes
 		checkboxes	= self.getCheckboxes()
@@ -212,7 +286,7 @@ class CustomDialog(GenericDialogPlus):
 		# Initialize Analyzer
 		doMeasure = checkboxes[-2].getState()
 		if doMeasure:
-			analyzer = Analyzer(imp, Table)
+			analyzer = Analyzer(imp, table)
 			analyzer.setMeasurement(Measurements.LABELS, False) # dont add label to table
 		
 		# Check if existing roi manager
@@ -232,22 +306,22 @@ class CustomDialog(GenericDialogPlus):
 					analyzer.measure() # as selected in Set Measurements
 					
 				else:
-					Table.incrementCounter() # Automatically done if doMeasure 
+					table.incrementCounter() # Automatically done if doMeasure 
 				
-				#Table.addValue("Index", Table.getCounter() )  
+				#table.addValue("Index", table.getCounter() )  
 				for key, value in getImageDirAndName(imp).iteritems():
-					Table.addValue(key, value) 
+					table.addValue(key, value) 
 				
 				# Add selected items (implementation-specific)
-				self.fillTable(Table)
+				self.fillTable(table)
 		 
 				# Read comment 
 				stringField = self.getStringFields()[0] 
-				Table.addValue("Comment", stringField.text)
+				table.addValue("Comment", stringField.text)
 
 				# Add roi name to the table + set its property
-				Table.addValue("Roi", roi.getName()) # Add roi name to table
-				setRoiProperties(roi, Table)
+				table.addValue("Roi", roi.getName()) # Add roi name to table
+				setRoiProperties(roi, table)
 					
 		# No roi selected in the Manager
 		else:
@@ -256,18 +330,18 @@ class CustomDialog(GenericDialogPlus):
 				analyzer.measure() # as selected in Set Measurements
 				
 			else:
-				Table.incrementCounter() # Automatically done if doMeasure 
+				table.incrementCounter() # Automatically done if doMeasure 
 			
-			#Table.addValue("Index", Table.getCounter() )  
+			#table.addValue("Index", table.getCounter() )  
 			for key, value in getImageDirAndName(imp).iteritems():
-				Table.addValue(key, value) 
+				table.addValue(key, value) 
 
 			# Add selected items (implementation-specific)
-			self.fillTable(Table)
+			self.fillTable(table)
 	 
 			# Read comment 
 			stringField = self.getStringFields()[0] 
-			Table.addValue("Comment", stringField.text) 
+			table.addValue("Comment", stringField.text) 
 			
 			# Check if an active Roi, not yet present in Manager
 			roi = imp.getRoi()
@@ -280,11 +354,11 @@ class CustomDialog(GenericDialogPlus):
 				# get back the roi from the manager to set properties
 				roiBis	= rm.getRoi(rm.getCount()-1) 
 				roiName = roiBis.getName()
-				Table.addValue("Roi", roiName) # Add roi name to table
-				setRoiProperties(roiBis, Table)
+				table.addValue("Roi", roiName) # Add roi name to table
+				setRoiProperties(roiBis, table)
 		
-		Table.show(tableTitle) # Update table		
-		#Table.updateResults() # only for result table but then addValue does not work !  
+		table.show(tableTitle) # Update table		
+		#table.updateResults() # only for result table but then addValue does not work !  
 		  
 		# Go to next slice
 		doNext    = checkboxes[-1].getState()
@@ -292,41 +366,3 @@ class CustomDialog(GenericDialogPlus):
 		  
 		# Bring back the focus to the button window (otherwise the table is in the front)  
 		if not IJ.getFullVersion().startswith("1.52p"): WindowManager.toFront(self)	 # prevent some ImageJ bug with 1.52p
-
-
-class AddDialog(CustomDialog):
-	'''
-	Descendant class for dialog of Checkbox and Dropdown plugins with a Add button
-	The particularity is that the fillFunction is passed via the constructor
-	'''
-	
-	def __init__(self, title, message, panel, fillFunction):
-		CustomDialog.__init__(self, title, message, panel)
-		self.function = fillFunction
-	
-	def fillTable(self, Table):
-		self.function(Table)
-	
-	def keyPressed(self, keyEvent):
-		'''Pressing any of the + key also adds to the table like the Add button''' 
-		code = keyEvent.getKeyCode()
-		if code == keyEvent.VK_ADD or code==keyEvent.VK_PLUS: 
-			self.doAction()
-		
-		
-class ButtonAction(ActionListener): # extends action listener	
-	'''
-	Generic class used to defined button actions
-	The action is initialized with the dialog to be able to do stuff with it
-	- actionPerformed : Call when the button is clicked, here it calls the Action.main() passed to the constructor 
-	'''	 
-	
-	def __init__(self, dialog):
-		ActionListener.__init__(self)
-		self.dialog = dialog
-	
-	def actionPerformed(self, event):  
-		'''
-		Called when button is clicked
-		'''
-		self.dialog.doAction()

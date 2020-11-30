@@ -12,24 +12,26 @@ It will also skip to the next slice for stacks.
 from ij.gui		    import GenericDialog
 from java.awt 		import GridLayout, Button, Panel 
 from java.awt.event import ActionListener
-from QualiAnnotations import CustomDialog, getTable, ButtonAction
+from QualiAnnotations import CustomDialog, getTable
 import os  
 
 class ButtonAction(ActionListener): 
-	'''Define what happens when a button is clicked'''
+	'''Define what happens when a category button is clicked'''
 	
 	def actionPerformed(self, event): 
-		'''Update the selected category and doAction to fill the table'''
+		'''Update the selected category and defaultActionSequence to fill the table'''
 		winButton.selectedCategory = event.getSource().getLabel() 
-		winButton.doAction() 
+		winButton.defaultActionSequence() 
 		 
- 
+# Define global actionListener for buttons: they share the same one, associated to the dialog
+buttonAction = ButtonAction()
+
 class ButtonDialog(CustomDialog): 
 	'''
 	Annotation dialog, also define keyboard shortcut and function to fill the table
-	doAction() is defined in the mother class customDialog
+	defaultActionSequence() is defined in the mother class customDialog
 	'''
-		
+	
 	def __init__(self, title, message, panel, choiceIndex): 
 		CustomDialog.__init__(self, title, message, panel) 
 		self.choiceIndex = choiceIndex 
@@ -50,15 +52,22 @@ class ButtonDialog(CustomDialog):
 		'''
 		Map button to keyboard shortcuts (use F1..F12)
 		ie one can press F1 to assign to the first category instead of clicking the button
-		'''		 
+		'''
 		code = keyEvent.getKeyCode()
 		
 		if code in listShortcut: 
 			index = listShortcut.index(code)
 			self.selectedCategory = listCat[index] 
-			self.doAction() 	 
+			self.defaultActionSequence() 	 
 
+	def makeCategoryComponent(self, category):
+		"""Return a button with the new category name, and mapped to the action"""
+		listCat.append(category)
 		
+		button = Button(category)
+		button.addActionListener(buttonAction)
+		button.setFocusable(False)
+		return button
   
 ############### GUI - CATEGORY DIALOG - collect N classes names (N define at first line)  #############  
   
@@ -71,8 +80,9 @@ Win.addChoice("Classification table shoud have",
 				choice[indexDefault] ) 
   
 # Add N string field to get class names 
+listCat = pref.getList(ij.class, "listCat")            # try to retrieve the list of categories from the persistence, if not return [] - ij.class workaround see https://forum.image.sc/t/store-a-list-using-the-persistence-prefservice/26449 
+
 for i in range(N_category): 
-	listCat = pref.getList(ij.class, "listCat")            # try to retrieve the list of categories from the persistence, if not return [] - ij.class workaround see https://forum.image.sc/t/store-a-list-using-the-persistence-prefservice/26449 
 	 
 	if listCat and i<=len(listCat)-1: 
 		catName = listCat[i] 
@@ -100,9 +110,6 @@ if (Win.wasOKed()):
 	# Loop over categories and add a button to the panel for each  
 	catPanel = Panel(GridLayout(0,4)) # Unlimited number of rows - fix to 4 columns 
 	
-	# Define actionListener for buttons: they share the same one, associated to the dialog
-	action = ButtonAction()
-	
 	listCat = []
 	listShortcut = range(112, 112+N_category)
 	
@@ -116,7 +123,7 @@ if (Win.wasOKed()):
 		button = Button(Cat) # button label 
 		
 		# Bind action to button  
-		button.addActionListener(action)  
+		button.addActionListener(buttonAction)  
 		
 		# Add a button to the gui for this category  
 		button.setFocusable(False) # prevent the button to take the focus, only the window should be able to take the keyboard shortcut
@@ -132,5 +139,4 @@ if (Win.wasOKed()):
 	winButton = ButtonDialog(title, message, catPanel, choiceIndex)
 	
 	# Add default fields 
-	winButton.addDefaultOptions() 
 	winButton.showDialog()
