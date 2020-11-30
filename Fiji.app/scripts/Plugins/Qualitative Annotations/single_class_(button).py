@@ -19,9 +19,9 @@ class ButtonAction(ActionListener):
 	'''Define what happens when a category button is clicked'''
 	
 	def actionPerformed(self, event): 
-		'''Update the selected category and doAction to fill the table'''
+		'''Update the selected category and defaultActionSequence to fill the table'''
 		winButton.selectedCategory = event.getSource().getLabel() 
-		winButton.doAction() 
+		winButton.defaultActionSequence() 
 		 
 # Define global actionListener for buttons: they share the same one, associated to the dialog
 buttonAction = ButtonAction()
@@ -29,7 +29,7 @@ buttonAction = ButtonAction()
 class ButtonDialog(CustomDialog): 
 	'''
 	Annotation dialog, also define keyboard shortcut and function to fill the table
-	doAction() is defined in the mother class customDialog
+	defaultActionSequence() is defined in the mother class customDialog
 	'''
 	
 	def __init__(self, title, message, panel, choiceIndex): 
@@ -58,7 +58,7 @@ class ButtonDialog(CustomDialog):
 		if code in listShortcut: 
 			index = listShortcut.index(code)
 			self.selectedCategory = listCat[index] 
-			self.doAction() 	 
+			self.defaultActionSequence() 	 
 
 	def makeCategoryComponent(self, category):
 		"""Return a button with the new category name, and mapped to the action"""

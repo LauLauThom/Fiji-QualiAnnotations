@@ -185,9 +185,9 @@ class CustomDialog(GenericDialogPlus):
 	def addAction(self):
 		"""
 		Action following the action clicking the button "Add" 
-		This method can be overwritten in descendant class, if more than the classical doAction
+		This method can be overwritten in descendant class, if more than the classical defaultActionSequence
 		"""
-		self.doAction()
+		self.defaultActionSequence()
 		
 	def makeCategoryComponent(self, category):
 		"""
@@ -251,7 +251,7 @@ class CustomDialog(GenericDialogPlus):
 		'''
 		Handle keyboard shortcuts (either + or F1-F12)
 		the method should be implemented in descendant classes
-		but it should usually call self.doAction()
+		but it should usually call self.defaultActionSequence()
 		'''
 		pass
 	
@@ -260,13 +260,20 @@ class CustomDialog(GenericDialogPlus):
 		listChoices = self.getChoices()
 		return listChoices[0].getSelectedItem()
 	
-	def doAction(self):
-		'''
-		Main function called if a button is clicked or shortcut called
-		It does the default stuff (adding imageName...)
-		+ it also calls the function fillTable which should be implemented in descendant classes
-		DO NOT OVERWRITE
-		'''
+	def defaultActionSequence(self):
+		"""
+		Central function (DO NOT OVERWRITE) called if a button is clicked or shortcut called
+		It trigger the following actions:
+		- getting the current table
+		- checking the GUI state (checkboxes, dropdown...)
+		- running measurements if measure is selected
+		- setting ROI attribute (if roi)
+		- incrementing table counter
+		- adding image directory and name to table
+		- filling columns from GUI state using custom fillTable()
+		- switching to next slice
+		- displaying the annotation GUI to the front, important to catch next keyboard shortcuts
+		"""
 		imp = IJ.getImage() # get current image
 		
 		# Get current table

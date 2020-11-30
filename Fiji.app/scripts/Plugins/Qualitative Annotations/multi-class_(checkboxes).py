@@ -30,7 +30,7 @@ class MainDialog(CustomDialog):
 		"""Define shortcut: pressing any of the + key also adds to the table like the Add button""" 
 		code = keyEvent.getKeyCode()
 		if code == keyEvent.VK_ADD or code==keyEvent.VK_PLUS: 
-			self.doAction()
+			self.defaultActionSequence()
 	
 	def makeCategoryComponent(self, category):
 		"""
