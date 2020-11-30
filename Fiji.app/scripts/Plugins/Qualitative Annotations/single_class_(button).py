@@ -52,7 +52,7 @@ class ButtonDialog(CustomDialog):
 		'''
 		Map button to keyboard shortcuts (use F1..F12)
 		ie one can press F1 to assign to the first category instead of clicking the button
-		'''		 
+		'''
 		code = keyEvent.getKeyCode()
 		
 		if code in listShortcut: 
@@ -139,5 +139,4 @@ if (Win.wasOKed()):
 	winButton = ButtonDialog(title, message, catPanel, choiceIndex)
 	
 	# Add default fields 
-	winButton.addDefaultOptions() 
 	winButton.showDialog()
