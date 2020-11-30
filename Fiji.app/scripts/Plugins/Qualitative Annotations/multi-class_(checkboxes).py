@@ -12,7 +12,7 @@ It will also skip to the next slice for stacks.
 from ij.gui		    import GenericDialog
 from ij 			import IJ
 from java.awt 		import GridLayout, Button, Panel, Checkbox
-from QualiAnnotations import CustomDialog, ButtonAction
+from QualiAnnotations import CustomDialog
 import os 
  
 class MainDialog(CustomDialog):
@@ -23,7 +23,7 @@ class MainDialog(CustomDialog):
 	
 	def fillTable(self, table):
 		'''Read checkbox state and update table'''  
-		for checkbox in self.getComponent(1).getComponents(): # component 1 is the panel
+		for checkbox in self.getPanel().getComponents():
 			table.addValue( checkbox.getLabel(), checkbox.getState() )
 	
 	def keyPressed(self, keyEvent):
@@ -91,11 +91,5 @@ if catDialog.wasOKed():
 	message = """Tick the categories corresponding to the current image, then click 'Add' or press the '+' key.
 	To annotate ROI, draw a new ROI or select some ROI(s) in the RoiManager before clicking 'Add'/pressing '+'."""
 	
-	
-	winButton = MainDialog(title, message, catPanel)
-	winButton.addButton("Add", ButtonAction(winButton))
-	 
-	# Add defaults 
-	winButton.addDefaultOptions() 
+	winButton = MainDialog(title, message, catPanel) 
 	winButton.showDialog()
-
