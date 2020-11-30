@@ -17,18 +17,18 @@ def getTable():
 	win2 = WindowManager.getWindow("Annotations.csv")
 	
 	if win: # different of None
-		Table = win.getResultsTable()
+		table = win.getResultsTable()
 		tableTitle = "Annotations"
 		
 	elif win2 : # different of None
-		Table = win2.getResultsTable()
+		table = win2.getResultsTable()
 		tableTitle = "Annotations.csv"
 		
 	else:
-		Table = ResultsTable()
+		table = ResultsTable()
 		tableTitle = "Annotations"
 	
-	return tableTitle, Table
+	return tableTitle, table
 
 def getRoiManager():
 	"""
@@ -277,8 +277,8 @@ class CustomDialog(GenericDialogPlus):
 		imp = IJ.getImage() # get current image
 		
 		# Get current table
-		tableTitle, Table = getTable()
-		Table.showRowNumbers(True)
+		tableTitle, table = getTable()
+		table.showRowNumbers(True)
 		
 		# Check options, use getCheckboxes(), because the checkbox plugin have other checkboxes
 		checkboxes	= self.getCheckboxes()
@@ -286,7 +286,7 @@ class CustomDialog(GenericDialogPlus):
 		# Initialize Analyzer
 		doMeasure = checkboxes[-2].getState()
 		if doMeasure:
-			analyzer = Analyzer(imp, Table)
+			analyzer = Analyzer(imp, table)
 			analyzer.setMeasurement(Measurements.LABELS, False) # dont add label to table
 		
 		# Check if existing roi manager
@@ -306,22 +306,22 @@ class CustomDialog(GenericDialogPlus):
 					analyzer.measure() # as selected in Set Measurements
 					
 				else:
-					Table.incrementCounter() # Automatically done if doMeasure 
+					table.incrementCounter() # Automatically done if doMeasure 
 				
-				#Table.addValue("Index", Table.getCounter() )  
+				#table.addValue("Index", table.getCounter() )  
 				for key, value in getImageDirAndName(imp).iteritems():
-					Table.addValue(key, value) 
+					table.addValue(key, value) 
 				
 				# Add selected items (implementation-specific)
-				self.fillTable(Table)
+				self.fillTable(table)
 		 
 				# Read comment 
 				stringField = self.getStringFields()[0] 
-				Table.addValue("Comment", stringField.text)
+				table.addValue("Comment", stringField.text)
 
 				# Add roi name to the table + set its property
-				Table.addValue("Roi", roi.getName()) # Add roi name to table
-				setRoiProperties(roi, Table)
+				table.addValue("Roi", roi.getName()) # Add roi name to table
+				setRoiProperties(roi, table)
 					
 		# No roi selected in the Manager
 		else:
@@ -330,18 +330,18 @@ class CustomDialog(GenericDialogPlus):
 				analyzer.measure() # as selected in Set Measurements
 				
 			else:
-				Table.incrementCounter() # Automatically done if doMeasure 
+				table.incrementCounter() # Automatically done if doMeasure 
 			
-			#Table.addValue("Index", Table.getCounter() )  
+			#table.addValue("Index", table.getCounter() )  
 			for key, value in getImageDirAndName(imp).iteritems():
-				Table.addValue(key, value) 
+				table.addValue(key, value) 
 
 			# Add selected items (implementation-specific)
-			self.fillTable(Table)
+			self.fillTable(table)
 	 
 			# Read comment 
 			stringField = self.getStringFields()[0] 
-			Table.addValue("Comment", stringField.text) 
+			table.addValue("Comment", stringField.text) 
 			
 			# Check if an active Roi, not yet present in Manager
 			roi = imp.getRoi()
@@ -354,11 +354,11 @@ class CustomDialog(GenericDialogPlus):
 				# get back the roi from the manager to set properties
 				roiBis	= rm.getRoi(rm.getCount()-1) 
 				roiName = roiBis.getName()
-				Table.addValue("Roi", roiName) # Add roi name to table
-				setRoiProperties(roiBis, Table)
+				table.addValue("Roi", roiName) # Add roi name to table
+				setRoiProperties(roiBis, table)
 		
-		Table.show(tableTitle) # Update table		
-		#Table.updateResults() # only for result table but then addValue does not work !  
+		table.show(tableTitle) # Update table		
+		#table.updateResults() # only for result table but then addValue does not work !  
 		  
 		# Go to next slice
 		doNext    = checkboxes[-1].getState()
