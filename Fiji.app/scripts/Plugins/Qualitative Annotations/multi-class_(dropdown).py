@@ -11,7 +11,8 @@ Broken, ,
 '''
 #@ File (label="CSV file for category and choice", style="extension:csv") csvpath
 from java.awt 		import Panel, Choice, Label, GridLayout
-from QualiAnnotations import CustomDialog, ButtonAction
+from fiji.util.gui	import GenericDialogPlus
+from QualiAnnotations import CustomDialog
 import os, csv, codecs
 
 class MainDialog(CustomDialog):
@@ -19,6 +20,18 @@ class MainDialog(CustomDialog):
 	Main annotation dialog for this plugin
 	In this case the panel contains dropdowns
 	"""
+
+	def __init__(self, title, message, panel):
+		"""Custom constructor instead of the CustomDialog constructor: does not add the "Add" button"""
+		GenericDialogPlus.__init__(self, title)
+		self.setModalityType(None) # like non-blocking generic dialog
+		self.addMessage(message)
+		self.addPanel(panel)
+		#self.addButton("Add new category", self) # no add new category button for dropdown
+		self.addStringField("Comments", "")
+		self.addButton("Add", self)
+		self.addDefaultOptions()
+	
 	def fillTable(self, table):
 		'''Read dropdown states and update table'''  
 		for dropdown in ( self.getPanel().getComponents()[n:] ): # n first elements are the labels
@@ -32,10 +45,8 @@ class MainDialog(CustomDialog):
 	
 	def makeCategoryComponent(self, category):
 		"""
-		Generates a checkbox with the new category name, to add to the GUI
-		Overwrite the original method
+		Could return a new dropdown, but not implemented
 		"""
-		# TO DO
 		return None
 
 
@@ -99,10 +110,4 @@ message = """Select the descriptors corresponding to the current image, then cli
 To annotate ROI, draw a new ROI or select some ROI(s) from the RoiManager before clicking 'Add'/pressing '+'."""
 
 win = MainDialog(title, message, panel)
-
-# Add button to window 
-win.addButton("Add", ButtonAction(win))
-
-# Add defaults
-win.addDefaultOptions()
 win.showDialog()
