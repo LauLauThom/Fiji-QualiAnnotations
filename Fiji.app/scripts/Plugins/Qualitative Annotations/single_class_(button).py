@@ -12,8 +12,14 @@ It will also skip to the next slice for stacks.
 from ij.gui		    import GenericDialog
 from java.awt 		import GridLayout, Button, Panel 
 from java.awt.event import ActionListener
+from javax.swing import JButton
 from QualiAnnotations import CustomDialog, getTable
 import os  
+
+# Make a dictionary for keycode and shortcut name for button F1-F12
+listKeyCodes = range(112, 124) # see https://docs.oracle.com/javase/7/docs/api/constant-values.html#java.awt.event.KeyEvent.VK_F1
+listF1_F12 = ["F"+str(x) for x in range(1,13) ]      # simply F1-F12
+dicoShortcuts = dict(zip(listKeyCodes, listF1_F12))  # keyCode:"FX" value
 
 class ButtonAction(ActionListener): 
 	'''Define what happens when a category button is clicked'''
@@ -54,9 +60,14 @@ class ButtonDialog(CustomDialog):
 		ie one can press F1 to assign to the first category instead of clicking the button
 		'''
 		code = keyEvent.getKeyCode()
+		#print "Pressed key", code # just for debugging in case
 		
-		if code in listShortcut: 
-			index = listShortcut.index(code)
+		if code in dicoShortcuts: # check if the code is in the dicos keys
+			index = code - 112 # switch back from keyCode index starting at 112 with F1, to 0-based list index
+		else: 
+			return # prevent issue otherwise index variable non-existing
+
+		if index >= 0 and index < len(listCat):
 			self.selectedCategory = listCat[index] 
 			self.defaultActionSequence() 	 
 
@@ -64,9 +75,14 @@ class ButtonDialog(CustomDialog):
 		"""Return a button with the new category name, and mapped to the action"""
 		listCat.append(category)
 		
-		button = Button(category)
+		button = JButton(category)
 		button.addActionListener(buttonAction)
 		button.setFocusable(False)
+
+		# Add button tooltip if fit in the F1-F12 button range
+		nCat = len(listCat)
+		if nCat <= 12: button.setToolTipText("Keyboard shortcut: F" + str(nCat)) # F shortcut labels are 1-based, ie match the len value
+
 		return button
   
 ############### GUI - CATEGORY DIALOG - collect N classes names (N define at first line)  #############  
@@ -120,7 +136,8 @@ if (Win.wasOKed()):
 		listCat.append(Cat)  
 		
 		# Create a Button  
-		button = Button(Cat) # button label 
+		button = JButton(Cat) # button label 
+		if i<12: button.setToolTipText( "Keyboard shortcut: F" + str(i+1) )
 		
 		# Bind action to button  
 		button.addActionListener(buttonAction)  
