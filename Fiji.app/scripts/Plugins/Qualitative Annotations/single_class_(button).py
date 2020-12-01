@@ -69,10 +69,9 @@ class ButtonDialog(CustomDialog):
 		Map button to keyboard shortcuts (use F1..F12)
 		ie one can press F1 to assign to the first category instead of clicking the button
 		'''
-		code = keyEvent.getKeyCode()
-		#print "Pressed key", code # just for debugging in case
+		code = keyEvent.getKeyCode()		#print "Pressed key", code # just for debugging in case
 		
-		if code in dicoShortcuts: # check if the code is in the dicos keys
+		if code in dicoShortcuts: # check if the code is in the dicos keys
 			index = code - 112 # switch back from keyCode index starting at 112 with F1, to 0-based list index
 		else: 
 			return # prevent issue otherwise index variable non-existing
