@@ -10,6 +10,7 @@ Clicking on the button will generate a new entry in a table with the image name 
 It will also skip to the next slice for stacks.  
 '''
 from ij.gui		    import GenericDialog
+from fiji.util.gui  import GenericDialogPlus
 from java.awt 		import GridLayout, Button, Panel 
 from java.awt.event import ActionListener
 from QualiAnnotations import CustomDialog, getTable
@@ -33,7 +34,16 @@ class ButtonDialog(CustomDialog):
 	'''
 	
 	def __init__(self, title, message, panel, choiceIndex): 
-		CustomDialog.__init__(self, title, message, panel) 
+		GenericDialogPlus.__init__(self, title)
+		self.setModalityType(None) # like non-blocking generic dialog
+		self.addMessage(message)
+		self.addPanel(panel)
+		self.addButton("Add new category", self) 
+		self.addStringField("Comments", "")
+		#self.addButton("Add", self) # no add button for button-plugin
+		self.addDefaultOptions()
+		
+		# Variable used by instance methods
 		self.choiceIndex = choiceIndex 
 		self.selectedCategory = "" 
 	 
