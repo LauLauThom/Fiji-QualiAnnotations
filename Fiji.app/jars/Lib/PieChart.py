@@ -1,3 +1,4 @@
+
 from javax.swing import JPanel, JFrame
 from org.jfree.chart import JFreeChart, ChartPanel, ChartFactory
 from org.jfree.data.general import DefaultPieDataset
@@ -7,7 +8,9 @@ from collections import Counter
 class PieChart(JFrame): 
 	"""
 	Create a Frame holding a PieChart from a list of data, typically a table column
-	Values in the list should be string
+	Values in the data list should be string
+	Inspired from https://www.tutorialspoint.com/jfreechart/jfreechart_pie_chart.htm
+	Except that the class extends on JFrame and not ApplicationFrame, which causes Fiji to quit completely when plot is closed
 	"""
 	
 	def __init__(self, plotTitle, listData, showLegend=True, showTooltip=True):
