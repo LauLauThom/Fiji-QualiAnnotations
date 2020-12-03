@@ -124,8 +124,9 @@ class CustomDialog(GenericDialogPlus):
 	- Comments
 	- Default options including
 		-- add to Manager, nextSlice, runMeasurement
-		-- citation message
+		-- online ressource message
 		-- help button
+	- Citation
 	
 	Daughter class should implement the following methods:
 	- __init__ , if the plugin should have a different structure than the backbone above
@@ -144,6 +145,7 @@ class CustomDialog(GenericDialogPlus):
 		self.addStringField("Comments", "")
 		self.addButton("Add", self)
 		self.addDefaultOptions()
+		self.addCitation()
 	
 	def getPanel(self):
 		"""Return the panel contained in the GenericDialog"""
@@ -214,7 +216,7 @@ class CustomDialog(GenericDialogPlus):
 		'''
 		Add default GUI items
 		- add to Manager, nextSlice, runMeasurement
-		- citation message
+		- resource message
 		- help button
 		'''
 		# Checkbox next slice and run Measure 
@@ -222,8 +224,15 @@ class CustomDialog(GenericDialogPlus):
 		self.addCheckbox("Auto next slice", bool(Prefs.get("annot.doNext", True)) )
 		self.addToSameRow()
 		self.addChoice("dimension (for hyperstack)", hyperstackDim, hyperstackDim[0])
+		self.addMessage("Documentation and generic analysis workflows available on the GitHub repo (click Help)")
 		
-		# Add message about citation and doc
+		# Add Help button pointing to the github
+		self.addHelp(r"https://github.com/LauLauThom/Fiji-QualiAnnotations")
+		
+		self.hideCancelButton()
+	
+	def addCitation(self):
+		"""Add message about citation"""
 		self.addMessage("""If you use this plugin, please cite : 
 		
 		Thomas LSV, Schaefer F and Gehrig J.
@@ -231,14 +240,6 @@ class CustomDialog(GenericDialogPlus):
 		[version 1; peer review: awaiting peer review]
 		F1000Research 2020, 9:1248
 		https://doi.org/10.12688/f1000research.26872.1""")
-		
-		self.addMessage("Documentation and generic analysis workflows available on the GitHub repo (click Help)")
-		
-		# Add Help button pointing to the github
-		self.addHelp(r"https://github.com/LauLauThom/Fiji-QualiAnnotations")
-
-		self.hideCancelButton()
-	
 	
 	def fillTable(self, table):
 		'''

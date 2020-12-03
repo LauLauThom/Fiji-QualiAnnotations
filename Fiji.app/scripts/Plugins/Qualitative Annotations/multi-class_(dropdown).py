@@ -22,7 +22,7 @@ class MainDialog(CustomDialog):
 	"""
 
 	def __init__(self, title, message, panel):
-		"""Custom constructor instead of the CustomDialog constructor: does not add the "Add" button"""
+		"""Custom constructor instead of the CustomDialog constructor: does not have the "Add" button"""
 		GenericDialogPlus.__init__(self, title)
 		self.setModalityType(None) # like non-blocking generic dialog
 		self.addMessage(message)
@@ -31,7 +31,8 @@ class MainDialog(CustomDialog):
 		self.addStringField("Comments", "")
 		self.addButton("Add", self)
 		self.addDefaultOptions()
-	
+		self.addCitation()
+		
 	def fillTable(self, table):
 		'''Read dropdown states and update table'''  
 		for dropdown in ( self.getPanel().getComponents()[n:] ): # n first elements are the labels

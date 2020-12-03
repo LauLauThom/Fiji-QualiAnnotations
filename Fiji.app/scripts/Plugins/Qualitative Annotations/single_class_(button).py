@@ -49,6 +49,7 @@ class ButtonDialog(CustomDialog):
 		#self.addButton("Add", self) # no add button for button-plugin
 		self.addDefaultOptions()
 		
+		self.addCitation()
 		# Variable used by instance methods
 		self.choiceIndex = choiceIndex 
 		self.selectedCategory = "" 
