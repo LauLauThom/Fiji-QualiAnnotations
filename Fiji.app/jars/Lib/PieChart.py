@@ -1,6 +1,6 @@
-
-from javax.swing import JPanel, JFrame
-from org.jfree.chart import JFreeChart, ChartPanel, ChartFactory
+from javax.swing            import JPanel, JFrame
+from org.jfree.chart.plot   import PiePlot
+from org.jfree.chart        import JFreeChart, ChartPanel, ChartFactory
 from org.jfree.data.general import DefaultPieDataset
 from org.jfree.ui import ApplicationFrame, RefineryUtilities 
 from collections import Counter
@@ -20,20 +20,28 @@ class PieChart(JFrame):
 		self.setContentPane(panel) # put the plot panel in the JFrame
 
 	def generatePlotPanel(self, plotTitle, listData, showLegend, showTooltip):
-
+		"""
+		1) Create a PieDataset
+		2) Create a PieChart (or  Create a PiePlot and put it in a JFreeChart)
+		3) Put the PieChart in a ChartPanel
+		"""
 		# Get a dictionary of value occurence in the list {value1:count, value2:count...}
 		dataDico = Counter(listData)
 		#print dataDico # value: counts OK
 		 
 		# Create a Pie dataset from the dicoData
-		dataPlot = DefaultPieDataset() 
+		pieDataset = DefaultPieDataset() 
 		for key, value in dataDico.items(): 
 			#print key, value 
-			dataPlot.setValue(key, value) 
+			pieDataset.setValue(key, value) 
 				 
-		# Create a JFreeChartInstance
+		# Create an instance of JFreeChart 	
 		urls = False
-		chart = ChartFactory.createPieChart(plotTitle, dataPlot, showLegend, showTooltip, urls) 
+		chart = ChartFactory.createPieChart(plotTitle, pieDataset, showLegend, showTooltip, urls) 
+		
+		# Alternative way
+		#piePlot = PiePlot(pieDataset)
+		#chart   = JFreeChart(plotTitle, piePlot)
 		
 		return ChartPanel(chart)
 	
