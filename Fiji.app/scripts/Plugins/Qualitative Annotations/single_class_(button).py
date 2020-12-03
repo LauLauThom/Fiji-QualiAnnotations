@@ -43,7 +43,7 @@ class ButtonDialog(CustomDialog):
 		GenericDialogPlus.__init__(self, title)
 		self.setModalityType(None) # like non-blocking generic dialog
 		self.addMessage(message)
-		self.addPanel(panel) # cannot be replaced by a JPanel
+		self.addPanel(panel) # cannot be replaced by a JPanel
 		self.addButton("Add new category", self) 
 		self.addStringField("Comments", "")
 		#self.addButton("Add", self) # no add button for button-plugin
