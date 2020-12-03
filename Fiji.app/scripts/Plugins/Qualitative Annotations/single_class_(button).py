@@ -9,8 +9,8 @@ Finally a third window will show up with one button per category.
 Clicking on the button will generate a new entry in a table with the image name and the category.  
 It will also skip to the next slice for stacks.  
 '''
-from ij.gui		    import GenericDialog
-from ij 			import WindowManager
+from ij.gui			import GenericDialog
+from ij 			import IJ, WindowManager
 from fiji.util.gui  import GenericDialogPlus
 from java.awt 		import GridLayout, Button, Panel 
 from java.awt.event import ActionListener
@@ -29,7 +29,11 @@ class PlotAction(ActionListener):
 	
 	def actionPerformed(self, event):
 		
-		tableWindow = WindowManager.getActiveTable()
+		if IJ.getFullVersion() < "1.53g": 
+			IJ.error("This plugin requires ImageJ version 1.53g minimum.\n Update using Help > Update ImageJ...")
+			return
+			
+		tableWindow = WindowManager.getActiveTable() # this function requires the 1.53g (or at least not working with 1.53c)
 
 		if not tableWindow: return
 

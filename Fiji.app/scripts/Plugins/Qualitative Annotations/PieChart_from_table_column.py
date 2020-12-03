@@ -2,7 +2,11 @@ from PieChart import PieChart
 from ij.gui import GenericDialog
 from ij import IJ, WindowManager
 
-tableWindow = WindowManager.getActiveTable()
+if IJ.getFullVersion() < "1.53g": 
+	IJ.error("This plugin requires ImageJ version 1.53g minimum.\n Update using Help > Update ImageJ...")
+	raise Exception("ImageJ version 1.53g minimum required")
+
+tableWindow = WindowManager.getActiveTable() # this function requires the 1.53g (or at least not working with 1.53c)
 #print tableWindow
 
 if not tableWindow: 
