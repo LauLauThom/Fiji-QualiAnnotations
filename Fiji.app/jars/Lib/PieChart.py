@@ -53,6 +53,8 @@ class PieChart(JFrame):
 		self.setVisible(True)
 
 if __name__ in ['__builtin__', '__main__']:
-	test = ["1","1","1","2","2","3","3","3","3","3"] # convert to string otherwise issue
-	frame = PieChart("My data column", test)
+
+	# Create toy dataset and display the pie plot
+	data = ["banana"]*3 + ["apple"]*5 + ["cherry"]*10
+	frame = PieChart("Fruits", data)
 	frame.showFrame("MyFrame")
