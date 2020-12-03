@@ -8,7 +8,8 @@ tableWindow = WindowManager.getActiveTable()
 if not tableWindow: 
 	IJ.error("No open table")
 
-else:
+
+else:
 
 	# List column headers
 	table   = tableWindow.getResultsTable()
