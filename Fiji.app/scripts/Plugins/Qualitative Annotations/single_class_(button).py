@@ -10,17 +10,38 @@ Clicking on the button will generate a new entry in a table with the image name 
 It will also skip to the next slice for stacks.  
 '''
 from ij.gui		    import GenericDialog
+from ij 			import WindowManager
 from fiji.util.gui  import GenericDialogPlus
 from java.awt 		import GridLayout, Button, Panel 
 from java.awt.event import ActionListener
 from javax.swing import JButton
 from QualiAnnotations import CustomDialog, getTable
+from PieChart 		  import PieChart
 import os  
 
 # Make a dictionary for keycode and shortcut name for button F1-F12
 listKeyCodes = range(112, 124) # see https://docs.oracle.com/javase/7/docs/api/constant-values.html#java.awt.event.KeyEvent.VK_F1
 listF1_F12 = ["F"+str(x) for x in range(1,13) ]      # simply F1-F12
 dicoShortcuts = dict(zip(listKeyCodes, listF1_F12))  # keyCode:"FX" value
+
+class PlotAction(ActionListener):
+	"""Display a PieChart of the data in the category column upon click"""
+	
+	def actionPerformed(self, event):
+		
+		tableWindow = WindowManager.getActiveTable()
+
+		if not tableWindow: return
+
+		# Get column Category
+		table   = tableWindow.getResultsTable()
+		column       = table.getColumnAsVariables("Category")
+		columnString = [str(item) for item in column]
+		
+		# Plot Pie Plot for this column
+		pieChart = PieChart("Category", columnString)
+		pieChart.showFrame("Data-distribution")
+
 
 class ButtonAction(ActionListener): 
 	'''Define what happens when a category button is clicked'''
@@ -48,8 +69,9 @@ class ButtonDialog(CustomDialog):
 		self.addStringField("Comments", "")
 		#self.addButton("Add", self) # no add button for button-plugin
 		self.addDefaultOptions()
-		
+		if choiceIndex == 0: self.addButton("Make PieChart from category column", PlotAction())
 		self.addCitation()
+
 		# Variable used by instance methods
 		self.choiceIndex = choiceIndex 
 		self.selectedCategory = "" 
@@ -134,7 +156,7 @@ if (Win.wasOKed()):
 	tableTitle, Table = getTable()
 	
 	# Loop over categories and add a button to the panel for each  
-	catPanel = Panel(GridLayout(0,4)) # Unlimited number of rows - fix to 4 columns - not possible to use a JPanel, not supported by GenericDialog
+	catPanel = Panel(GridLayout(0,4)) # Unlimited number of rows - fix to 4 columns - not possible to use a JPanel, not supported by GenericDialog
 	
 	listCat = []
 	listShortcut = range(112, 112+N_category)
