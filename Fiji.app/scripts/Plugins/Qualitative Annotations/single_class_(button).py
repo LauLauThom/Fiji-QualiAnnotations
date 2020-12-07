@@ -73,7 +73,7 @@ class ButtonDialog(CustomDialog):
 		self.addStringField("Comments", "")
 		#self.addButton("Add", self) # no add button for button-plugin
 		self.addDefaultOptions()
-		if choiceIndex == 0: self.addButton("Make PieChart from category column", PlotAction())
+		#if choiceIndex == 0: self.addButton("Make PieChart from category column", PlotAction()) # Remov this button: risk of cherry picking to improve the plot
 		self.addCitation()
 
 		# Variable used by instance methods
