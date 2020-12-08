@@ -1,4 +1,5 @@
-from ij				  import IJ, WindowManager, Prefs
+from ij				import IJ, WindowManager, Prefs
+from ij.gui			import GenericDialog
 from ij.plugin.filter import Analyzer
 from ij.plugin.frame  import RoiManager
 from ij.measure		  import ResultsTable, Measurements
@@ -110,7 +111,46 @@ def setRoiProperties(roi, table):
 		value = table.getStringValue(heading, table.size()-1)
 		roi.setProperty(heading, value)
 
-
+class CategoryDialog(GenericDialog):
+	"""Dialog prompting the category names, used by the single class button and checkbox plugins"""
+	
+	def __init__(self, nCategories):
+		
+		GenericDialog.__init__(self, "Category names")
+		self.nCategories = nCategories
+		
+		# Get previous categories from persistence
+		stringCat = Prefs.get("annot.listCat", "") # Retrieve the list of categories as a comma separated list
+		self.listCategories = stringCat.split(",") if stringCat else []
+		nOldCat = len(self.listCategories) 
+		
+		for i in range(nCategories): 
+	 
+			if self.listCategories and i<=nOldCat-1:	catName = self.listCategories[i] 
+			else:										catName = "Category_" + str(i+1) 
+			
+			# Add string input to GUI
+			self.addStringField("Category: ", catName) 
+			self.addMessage("") # skip one line before the next input field
+	
+	
+	def actionPerformed(self, event):
+		"""Save categories names in memory if OKed"""
+		
+		sourceLabel = event.getSource().getLabel()
+		
+		if sourceLabel == "  OK  ": 
+			self.listCategories = [textField.getText() for textField in self.getStringFields()]
+			Prefs.set("annot.listCat", ",".join(self.listCategories) ) # save the new list of categories
+		
+		# Do the mother class usual action handling()
+		GenericDialogPlus.actionPerformed(self, event)
+		
+	
+	def getCategoryNames(self):
+		return self.listCategories
+		
+		
 class CustomDialog(GenericDialogPlus):
 	'''
 	Model class for the plugin dialog for the manual classifier
