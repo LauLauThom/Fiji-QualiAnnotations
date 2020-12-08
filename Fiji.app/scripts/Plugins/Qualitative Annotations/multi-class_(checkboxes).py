@@ -1,6 +1,4 @@
 #@ Integer (Label = "Number of categories", value=2, min=1, stepSize=1) N_category_   
-#@ PrefService pref   
-#@ ImageJ imagej   
 '''
 This script can be used to manually classify full images from a stack into N user-defined categories.   
 A first window pops up to request the number of categories.   
@@ -12,7 +10,7 @@ It will also skip to the next slice for stacks.
 from ij.gui		    import GenericDialog
 from ij 			import IJ
 from java.awt 		import GridLayout, Button, Panel, Checkbox
-from QualiAnnotations import CustomDialog
+from QualiAnnotations import CustomDialog, CategoryDialog
 import os 
  
 class MainDialog(CustomDialog):
@@ -43,23 +41,10 @@ class MainDialog(CustomDialog):
 		return checkbox
  
 ############### GUI - CATEGORY DIALOG - collect N classes names (N define at first line)  #############
-listCat = pref.getList(imagej.class, "listCat_")  # try to retrieve the list of categories from the persistence, if not return [] - ij.class workaround see https://forum.image.sc/t/store-a-list-using-the-persistence-prefservice/26449   
 
-# Add N string fields to the dialog for class names   
-catDialog = GenericDialog("Categories names")   
-
-for i in range(N_category_):
-	
-	if listCat and i<=len(listCat)-1:  # read previous categories
-		catName = listCat[i]  
-	
-	else:  
-		catName = "Category_" + str(i+1)   
-	  
-	catDialog.addStringField("Category: ", catName)   
-	catDialog.addMessage("") # skip one line   
-	   
-catDialog.showDialog()   
+# Initialize a category dialog with N categories
+catDialog = CategoryDialog(N_category_)   
+catDialog.showDialog()
  
  
 ################# After OK clicking ###########   
@@ -69,22 +54,15 @@ if catDialog.wasOKed():
 	
 	# Loop over categories, adding a tickbox to the panel for each  
 	catPanel = Panel(GridLayout(0,4)) # Unlimited number of rows - fix to 4 columns  
-	listCat = [] # for perstistence
-	for i in range(N_category_):   
-		   
-		# Recover the category name   
-		category = catDialog.getNextString()   
-		listCat.append(category)
-
+	
+	for category in catDialog.getCategoryNames():   
+		
 		# Make a checkbox with the category name
 		box = Checkbox(category, False)
 		box.setFocusable(False) # important to have the keybard shortcut working
 
 		# Add checkbox to the gui for this category   
 		catPanel.add(box)   
-	   
-	# Save categories in memory   
-	pref.put(imagej.class, "listCat_", listCat )
 	
 	## Initialize dialog
 	title = "Qualitative Annotations - multi-classes (checkboxes)"
