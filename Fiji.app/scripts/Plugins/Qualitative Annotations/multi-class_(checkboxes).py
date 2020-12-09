@@ -10,7 +10,7 @@ It will also skip to the next slice for stacks.
 #@ String  (label = "Browsing mode", choices={"stack", "directory"}) browse_mode
 
 from ij.gui		    import GenericDialog
-from ij 			import IJ
+from ij 			import IJ, Prefs
 from java.awt 		import GridLayout, Button, Panel, Checkbox
 from QualiAnnotations import CustomDialog, CategoryDialog
 import os 
@@ -37,6 +37,10 @@ class MainDialog(CustomDialog):
 		Generates a checkbox with the new category name, to add to the GUI
 		Overwrite the original method
 		"""
+		stringCat = Prefs.get("annot.listCat", "")
+		newStringCat = stringCat + "," + category if stringCat else category
+		Prefs.set("annot.listCat", newStringCat)
+		
 		# Make a new checkbox with the category name
 		checkbox = Checkbox(category, False)
 		checkbox.setFocusable(False) # important to have the keybard shortcut working
