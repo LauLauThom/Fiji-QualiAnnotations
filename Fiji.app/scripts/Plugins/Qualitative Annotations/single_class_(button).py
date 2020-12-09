@@ -1,6 +1,3 @@
-#@ Integer (Label = "Number of categories", value=2, min=1, stepSize=1) N_category  
-#@ String (Label="Table structure", choices={"single category column","one column per category"}) table_structure
-#@ String (Label="Mode", choices={"Stack", "Directory"}) mode
 '''
 This script can be used to manually classify full images from a stack into N user-defined categories.  
 A first window pops up to request the number of categories.  
@@ -9,6 +6,10 @@ Finally a third window will show up with one button per category.
 Clicking on the button will generate a new entry in a table with the image name and the category.  
 It will also skip to the next slice for stacks.  
 '''
+#@ Integer (Label = "Number of categories", value=2, min=1, stepSize=1) N_category  
+#@ String (Label="Table structure", choices={"single category column","one column per category"}) table_structure
+#@ String (Label="Browsing mode", choices={"stack", "directory"}) browse_mode
+
 from ij.gui			import GenericDialog
 from ij 			import IJ, WindowManager, Prefs
 from fiji.util.gui  import GenericDialogPlus
@@ -64,7 +65,11 @@ class ButtonDialog(CustomDialog):
 	defaultActionSequence() is defined in the mother class customDialog
 	'''
 	
-	def __init__(self, title, message, panel, tableStructure): 
+	def __init__(self, title, message, panel, browseMode="stack", tableStructure="single category column"): 
+		"""
+		browseMode: "stack" or "directory"
+		tableStructure: "single category column" or anything else, such as "one column per category"
+		"""
 		GenericDialogPlus.__init__(self, title)
 		self.setModalityType(None) # like non-blocking generic dialog
 		self.addMessage(message)
@@ -72,6 +77,7 @@ class ButtonDialog(CustomDialog):
 		self.addButton("Add new category", self) 
 		self.addStringField("Comments", "")
 		#self.addButton("Add", self) # no add button for button-plugin
+		self.browseMode = browseMode # important to define it before adding defaultOptions
 		self.addDefaultOptions()
 		#if choiceIndex == 0: self.addButton("Make PieChart from category column", PlotAction()) # Remov this button: risk of cherry picking to improve the plot
 		self.addCitation()
@@ -159,5 +165,5 @@ if catDialog.wasOKed():
 	# Initialize classification gui
 	title = "Qualitative Annotations - single class (buttons)"
 	message = "Click the category of the current image or ROI, or use the F1-F12 keyboard shortcuts.\nTo annotate ROI, draw a new ROI or select some ROI in the RoiManager before clicking the category button." 
-	winButton = ButtonDialog(title, message, catPanel, table_structure)
+	winButton = ButtonDialog(title, message, catPanel, browse_mode, table_structure)
 	winButton.showDialog()
