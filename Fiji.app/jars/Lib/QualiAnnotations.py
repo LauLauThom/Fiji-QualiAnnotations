@@ -1,5 +1,6 @@
 from ij				import IJ, WindowManager, Prefs
 from ij.gui			import GenericDialog
+from ij.plugin		import NextImageOpener
 from ij.plugin.filter import Analyzer
 from ij.plugin.frame  import RoiManager
 from ij.measure		  import ResultsTable, Measurements
@@ -149,8 +150,25 @@ class CategoryDialog(GenericDialog):
 	
 	def getCategoryNames(self):
 		return self.listCategories
+
+
+class BrowseButton(ActionListener):
+	"""Implement the action following click on Previous/Next image"""
+	
+	labelPrevious = "Previous image file"
+	labelNext     = "Next image file"
+	imageOpener   =  NextImageOpener()
+
+	def actionPerformed(self, event):
+		label = event.getSource().getLabel()
 		
+		if label == self.labelPrevious:
+			self.imageOpener.run("backward")
 		
+		elif label == self.labelNext:
+			self.imageOpener.run("forward")
+
+
 class CustomDialog(GenericDialogPlus):
 	'''
 	Model class for the plugin dialog for the manual classifier
@@ -175,8 +193,11 @@ class CustomDialog(GenericDialogPlus):
 	- fillTable(table), function stating how to add to the table
 	'''
 	
-	def __init__(self, title, message, panel):
-		"""This can be overwritten to readjust the order or if some component are not needed"""
+	def __init__(self, title, message, panel, browseMode="stack"):
+		"""
+		This can be overwritten to readjust the order or if some components are not needed
+		The browseMode is either "stack" or "directory"
+		"""
 		GenericDialogPlus.__init__(self, title)
 		self.setModalityType(None) # like non-blocking generic dialog
 		self.addMessage(message)
@@ -184,8 +205,11 @@ class CustomDialog(GenericDialogPlus):
 		self.addButton("Add new category", self) # the GUI also catches the event for this button too
 		self.addStringField("Comments", "")
 		self.addButton("Add", self)
+		
+		self.browseMode = browseMode # important to define it before addDefaultOptions and nextSlice...
 		self.addDefaultOptions()
 		self.addCitation()
+		
 	
 	def getPanel(self):
 		"""Return the panel contained in the GenericDialog"""
@@ -255,20 +279,29 @@ class CustomDialog(GenericDialogPlus):
 	def addDefaultOptions(self):
 		'''
 		Add default GUI items
+		- checkbox runMeasurement
 		- add to Manager, nextSlice, runMeasurement
 		- resource message
 		- help button
 		'''
 		# Checkbox next slice and run Measure 
 		self.addCheckbox("run 'Measure'", bool(Prefs.get("annot.doMeasure", False)) )
-		self.addCheckbox("Auto next slice", bool(Prefs.get("annot.doNext", True)) )
-		self.addToSameRow()
-		self.addChoice("dimension (for hyperstack)", hyperstackDim, hyperstackDim[0])
+		self.addCheckbox("Auto next slice/image file", bool(Prefs.get("annot.doNext", True)) )
+
+		if self.browseMode == "stack":
+			self.addToSameRow()
+			self.addChoice("dimension (for hyperstack)", hyperstackDim, hyperstackDim[0])
+		
+		elif self.browseMode == "directory":
+			# Add button previous/next
+			self.addButton(BrowseButton.labelPrevious, BrowseButton())
+			self.addToSameRow()
+			self.addButton(BrowseButton.labelNext, BrowseButton())
+			
 		self.addMessage("Documentation and generic analysis workflows available on the GitHub repo (click Help)")
 		
 		# Add Help button pointing to the github
 		self.addHelp(r"https://github.com/LauLauThom/Fiji-QualiAnnotations")
-		
 		self.hideCancelButton()
 	
 	def addCitation(self):
@@ -403,7 +436,9 @@ class CustomDialog(GenericDialogPlus):
 		  
 		# Go to next slice
 		doNext    = checkboxes[-1].getState()
-		if doNext: nextSlice(imp, self.getChosenDimension() )
+		if doNext:
+			if   self.browseMode == "stack":     nextSlice(imp, self.getChosenDimension() )
+			elif self.browseMode == "directory": NextImageOpener().run("forward")
 		  
 		# Bring back the focus to the button window (otherwise the table is in the front)  
 		if not IJ.getFullVersion().startswith("1.52p"): WindowManager.toFront(self)	 # prevent some ImageJ bug with 1.52p
