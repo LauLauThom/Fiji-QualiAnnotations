@@ -9,7 +9,8 @@ Straight, Gross
 Bent, Slim
 Broken, , 
 '''
-#@ File (label="CSV file for category and choice", style="extension:csv") csvpath
+#@ File   (label="CSV file for category and choice", style="extension:csv") csvpath
+#@ String (label="Browsing mode", choices={"stack", "directory"}) browse_mode
 from java.awt 		import Panel, Choice, Label, GridLayout
 from fiji.util.gui	import GenericDialogPlus
 from QualiAnnotations import CustomDialog
@@ -21,7 +22,7 @@ class MainDialog(CustomDialog):
 	In this case the panel contains dropdowns
 	"""
 
-	def __init__(self, title, message, panel):
+	def __init__(self, title, message, panel, browseMode):
 		"""Custom constructor instead of the CustomDialog constructor: does not have the "Add" button"""
 		GenericDialogPlus.__init__(self, title)
 		self.setModalityType(None) # like non-blocking generic dialog
@@ -30,8 +31,11 @@ class MainDialog(CustomDialog):
 		#self.addButton("Add new category", self) # no add new category button for dropdown
 		self.addStringField("Comments", "")
 		self.addButton("Add", self)
+		
+		self.browseMode = browseMode # important to define it before addDefaultOptions
 		self.addDefaultOptions()
 		self.addCitation()
+		
 		
 	def fillTable(self, table):
 		'''Read dropdown states and update table'''  
@@ -110,5 +114,5 @@ title   = "Qualitative Annotations - multi-classes (dropdown)"
 message = """Select the descriptors corresponding to the current image, then click 'Add' or press one of the '+' key.
 To annotate ROI, draw a new ROI or select some ROI(s) from the RoiManager before clicking 'Add'/pressing '+'."""
 
-win = MainDialog(title, message, panel)
+win = MainDialog(title, message, panel, browse_mode)
 win.showDialog()

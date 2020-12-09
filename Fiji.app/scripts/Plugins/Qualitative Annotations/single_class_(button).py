@@ -1,6 +1,3 @@
-#@ Integer (Label = "Number of categories", value=2, min=1, stepSize=1) N_category  
-#@ PrefService pref 
-#@ ImageJ ij 
 '''
 This script can be used to manually classify full images from a stack into N user-defined categories.  
 A first window pops up to request the number of categories.  
@@ -9,13 +6,17 @@ Finally a third window will show up with one button per category.
 Clicking on the button will generate a new entry in a table with the image name and the category.  
 It will also skip to the next slice for stacks.  
 '''
+#@ Integer (Label = "Number of categories", value=2, min=1, stepSize=1) N_category  
+#@ String (Label="Table structure", choices={"single category column","one column per category"}) table_structure
+#@ String (Label="Browsing mode", choices={"stack", "directory"}) browse_mode
+
 from ij.gui			import GenericDialog
-from ij 			import IJ, WindowManager
+from ij 			import IJ, WindowManager, Prefs
 from fiji.util.gui  import GenericDialogPlus
 from java.awt 		import GridLayout, Button, Panel 
 from java.awt.event import ActionListener
 from javax.swing import JButton
-from QualiAnnotations import CustomDialog, getTable
+from QualiAnnotations import CustomDialog, CategoryDialog, getTable
 from PieChart 		  import PieChart
 import os  
 
@@ -64,7 +65,11 @@ class ButtonDialog(CustomDialog):
 	defaultActionSequence() is defined in the mother class customDialog
 	'''
 	
-	def __init__(self, title, message, panel, choiceIndex): 
+	def __init__(self, title, message, panel, browseMode="stack", tableStructure="single category column"): 
+		"""
+		browseMode: "stack" or "directory"
+		tableStructure: "single category column" or anything else, such as "one column per category"
+		"""
 		GenericDialogPlus.__init__(self, title)
 		self.setModalityType(None) # like non-blocking generic dialog
 		self.addMessage(message)
@@ -72,16 +77,17 @@ class ButtonDialog(CustomDialog):
 		self.addButton("Add new category", self) 
 		self.addStringField("Comments", "")
 		#self.addButton("Add", self) # no add button for button-plugin
+		self.browseMode = browseMode # important to define it before adding defaultOptions
 		self.addDefaultOptions()
 		#if choiceIndex == 0: self.addButton("Make PieChart from category column", PlotAction()) # Remov this button: risk of cherry picking to improve the plot
 		self.addCitation()
 
 		# Variable used by instance methods
-		self.choiceIndex = choiceIndex 
+		self.tableStructure = tableStructure 
 		self.selectedCategory = "" 
 	 
 	def fillTable(self, table): 
-		if self.choiceIndex==0: # single category column 
+		if self.tableStructure=="single category column": # single category column 
 			table.addValue("Category", self.selectedCategory) 
 		 
 		else: # 1 column/category with 0/1 
@@ -111,6 +117,9 @@ class ButtonDialog(CustomDialog):
 		"""Return a button with the new category name, and mapped to the action"""
 		listCat.append(category)
 		
+		# Save the new category in memory
+		Prefs.set("annot.listCat", ",".join(listCat) )
+		
 		button = JButton(category)
 		button.addActionListener(buttonAction)
 		button.setFocusable(False)
@@ -122,58 +131,28 @@ class ButtonDialog(CustomDialog):
 		return button
   
 ############### GUI - CATEGORY DIALOG - collect N classes names (N define at first line)  #############  
-  
-Win = GenericDialog("Categories names") 
- 
-choice = ["a single category column", "1 column per category"] 
-indexDefault = pref.getInt("table_style", 0) 
-Win.addChoice("Classification table shoud have",  
-				choice,  
-				choice[indexDefault] ) 
-  
-# Add N string field to get class names 
-listCat = pref.getList(ij.class, "listCat")            # try to retrieve the list of categories from the persistence, if not return [] - ij.class workaround see https://forum.image.sc/t/store-a-list-using-the-persistence-prefservice/26449 
+catDialog = CategoryDialog(N_category)
+catDialog.showDialog()
 
-for i in range(N_category): 
-	 
-	if listCat and i<=len(listCat)-1: 
-		catName = listCat[i] 
-	else: 
-		catName = "Category_" + str(i+1) 
-	 
-	Win.addStringField("Category: ", catName) 
-	 
-	Win.addMessage("") # skip one line  
-	  
-Win.showDialog() 
-  
-  
+
 ################# After OK clicking ###########  
   
 # Recover fields from the formular  
-if (Win.wasOKed()):   
- 
-	# get Choice single/multi column 
-	choiceIndex = Win.getNextChoiceIndex() 
-	pref.put("table_style", choiceIndex) 
-	 
+if catDialog.wasOKed():   
+
 	tableTitle, Table = getTable()
 	
 	# Loop over categories and add a button to the panel for each  
 	catPanel = Panel(GridLayout(0,4)) # Unlimited number of rows - fix to 4 columns - not possible to use a JPanel, not supported by GenericDialog
 	
-	listCat = []
+	listCat = catDialog.getCategoryNames()
 	listShortcut = range(112, 112+N_category)
 	
-	for i in range(N_category):  
+	for index, category in enumerate(listCat): 
 		  
-		# Recover the category name  
-		Cat = Win.getNextString()  
-		listCat.append(Cat)  
-		
 		# Create a Button  
-		button = JButton(Cat) # button label 
-		if i<12: button.setToolTipText( "Keyboard shortcut: F" + str(i+1) )
+		button = JButton(category) # button label 
+		if index<12: button.setToolTipText( "Keyboard shortcut: F" + str(index+1) ) # index is 0-based, F shortcut are 1-based
 		
 		# Bind action to button  
 		button.addActionListener(buttonAction)  
@@ -181,15 +160,10 @@ if (Win.wasOKed()):
 		# Add a button to the gui for this category  
 		button.setFocusable(False) # prevent the button to take the focus, only the window should be able to take the keyboard shortcut
 		catPanel.add(button)
-		
-		
-	# Save categories in memory 
-	pref.put(ij.class, "listCat", listCat) 
 	
-	## Initialize classification gui
+	
+	# Initialize classification gui
 	title = "Qualitative Annotations - single class (buttons)"
 	message = "Click the category of the current image or ROI, or use the F1-F12 keyboard shortcuts.\nTo annotate ROI, draw a new ROI or select some ROI in the RoiManager before clicking the category button." 
-	winButton = ButtonDialog(title, message, catPanel, choiceIndex)
-	
-	# Add default fields 
+	winButton = ButtonDialog(title, message, catPanel, browse_mode, table_structure)
 	winButton.showDialog()
