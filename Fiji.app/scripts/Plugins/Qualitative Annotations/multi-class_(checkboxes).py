@@ -1,4 +1,5 @@
 #@ Integer (Label = "Number of categories", value=2, min=1, stepSize=1) N_category_   
+#@ String  (label = "Browsing mode", choices={"stack", "directory"}) browse_mode
 '''
 This script can be used to manually classify full images from a stack into N user-defined categories.   
 A first window pops up to request the number of categories.   
@@ -69,5 +70,5 @@ if catDialog.wasOKed():
 	message = """Tick the categories corresponding to the current image, then click 'Add' or press the '+' key.
 	To annotate ROI, draw a new ROI or select some ROI(s) in the RoiManager before clicking 'Add'/pressing '+'."""
 	
-	winButton = MainDialog(title, message, catPanel) 
+	winButton = MainDialog(title, message, catPanel, browse_mode) 
 	winButton.showDialog()
