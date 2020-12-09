@@ -290,7 +290,7 @@ class CustomDialog(GenericDialogPlus):
 
 		if self.browseMode == "stack":
 			self.addToSameRow()
-			self.addChoice("dimension (for hyperstack)", hyperstackDim, hyperstackDim[0])
+			self.addChoice("- dimension (for hyperstack)", hyperstackDim, hyperstackDim[0])
 		
 		elif self.browseMode == "directory":
 			# Add button previous/next
