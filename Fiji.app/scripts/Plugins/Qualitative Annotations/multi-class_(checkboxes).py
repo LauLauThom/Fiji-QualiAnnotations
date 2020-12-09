@@ -1,5 +1,3 @@
-#@ Integer (Label = "Number of categories", value=2, min=1, stepSize=1) N_category_   
-#@ String  (label = "Browsing mode", choices={"stack", "directory"}) browse_mode
 '''
 This script can be used to manually classify full images from a stack into N user-defined categories.   
 A first window pops up to request the number of categories.   
@@ -8,6 +6,9 @@ Finally a third window will show up with one button per category.
 Clicking on the button will generate a new entry in a table with the image name and the category.   
 It will also skip to the next slice for stacks.   
 '''
+#@ Integer (Label = "Number of categories", value=2, min=1, stepSize=1) N_category_   
+#@ String  (label = "Browsing mode", choices={"stack", "directory"}) browse_mode
+
 from ij.gui		    import GenericDialog
 from ij 			import IJ
 from java.awt 		import GridLayout, Button, Panel, Checkbox
