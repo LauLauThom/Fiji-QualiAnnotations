@@ -39,6 +39,28 @@ def getTable():
 		tableTitle = table.getTitle()
 	
 	return tableTitle, table
+	
+def getCategoriesFromTable():
+	"""
+	If a table is opened, this function will try to find the categories by either reading the column headers
+	or by reading the content of a column called "Category"
+	"""
+	title, table = getTable()
+	headings = table.getHeadings().tolist()
+	if not headings: return []
+	
+	if "Category" in headings: 
+		# parse the column category to a set
+		column = [str(item)[1:-1] for item in table.getColumnAsVariables("Category")] # convert from ij.macro.Variable to string + remove the " "
+		return list(set(column))
+		
+	else:
+		# remove the columns File, Folder, Comment - Always test for presence to prevent ValueError
+		for header in ["Folder", "Image", "Slice", "Comment", "Area", "Mean", "Min", "Max"]:
+			if header in headings: headings.remove(header)
+
+		# Also remove the measurement columns ?
+		return headings
 
 def getRoiManager():
 	"""
