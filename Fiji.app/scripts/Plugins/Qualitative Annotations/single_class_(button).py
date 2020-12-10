@@ -139,8 +139,6 @@ catDialog.showDialog()
   
 # Recover fields from the formular  
 if catDialog.wasOKed():   
-
-	tableTitle, Table = getTable()
 	
 	# Loop over categories and add a button to the panel for each  
 	catPanel = Panel(GridLayout(0,4)) # Unlimited number of rows - fix to 4 columns - not possible to use a JPanel, not supported by GenericDialog
