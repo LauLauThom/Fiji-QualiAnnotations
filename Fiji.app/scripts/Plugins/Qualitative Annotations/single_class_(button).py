@@ -1,8 +1,13 @@
 '''
 This script can be used to manually classify full images from a stack into N user-defined categories.  
-A first window pops up to request the number of categories.  
-A second window follows asking for the name to use for those categories.  
-Finally a third window will show up with one button per category.  
+A first window pops up to request:
+- the number of categories N
+- the structure of the table (single/multi category column)
+- the image browsing mode (stack or directory)
+- if the category names should be read from an active table (better than having a browse button, then I dont have to handle issue loading the table)
+
+A second window follows with N text fields for the category names.
+Finally the annotation GUI will show up with one button per category.  
 Clicking on the button will generate a new entry in a table with the image name and the category.  
 It will also skip to the next slice for stacks.  
 '''
