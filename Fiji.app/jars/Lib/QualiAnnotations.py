@@ -356,8 +356,11 @@ class CustomDialog(GenericDialogPlus):
 		- switching to next slice
 		- displaying the annotation GUI to the front, important to catch next keyboard shortcuts
 		"""
-		imp = IJ.getImage() # get current image
-		
+		try:
+			imp = IJ.getImage() # get current image
+		except: # no image: just stop the execution then
+			return
+			
 		# Get current table
 		tableTitle, table = getTable()
 		table.showRowNumbers(True)
