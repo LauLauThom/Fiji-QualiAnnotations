@@ -14,21 +14,29 @@ hyperstackDim = ["time", "channel", "Z-slice"]
 
 
 def getTable():
-	''' Check if a table called Annotations or Annotations.csv exists otherwise open a new one'''
-	win	 = WindowManager.getWindow("Annotations")
-	win2 = WindowManager.getWindow("Annotations.csv")
+	''' Check if a table exists otherwise open a new one'''
 	
-	if win: # different of None
-		table = win.getResultsTable()
-		tableTitle = "Annotations"
-		
-	elif win2 : # different of None
-		table = win2.getResultsTable()
-		tableTitle = "Annotations.csv"
-		
+	# Default case if none of the case match below, call a new results table with table "Annotations"
+	table = ResultsTable()
+	tableTitle  = "Annotations"
+	tableWindow = None # prevent issue if no case matc for if below
+	
+	# Check if wecan get a table window
+	if IJ.getFullVersion() >= "1.53g":
+		tableWindow = WindowManager.getActiveTable() # this function requires the 1.53g (or at least not working with 1.53c)
+		# might return None
+	
 	else:
-		table = ResultsTable()
-		tableTitle = "Annotations"
+		# Fallback on fetching either a window called Annotations or Annotations.csv as in previous plugin versions
+		win  = WindowManager.getWindow("Annotations")
+		win2 = WindowManager.getWindow("Annotations.csv") # upon saving it adds this extension
+		
+		if    win : tableWindow = win
+		elif  win2: tableWindow = win2
+	
+	if tableWindow: 
+		table      = tableWindow.getResultsTable()
+		tableTitle = table.getTitle()
 	
 	return tableTitle, table
 
