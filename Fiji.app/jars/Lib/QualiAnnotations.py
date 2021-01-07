@@ -54,7 +54,7 @@ def getCategoriesFromTable():
 		
 	else:
 		# remove the columns File, Folder, Comment - Always test for presence to prevent ValueError
-		for header in ["Folder", "Image", "Slice", "Comment", "Area", "Mean", "Min", "Max"]:
+		for header in ["Folder", "Image", "Slice", "Comment", "Roi", "Area", "Mean", "Min", "Max"]:
 			if header in headings: headings.remove(header)
 
 		# Also remove the measurement columns ?
