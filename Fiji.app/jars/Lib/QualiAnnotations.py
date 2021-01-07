@@ -333,9 +333,9 @@ class CustomDialog(GenericDialogPlus):
 		
 		elif self.browseMode == "directory":
 			# Add button previous/next
-			self.addButton(BrowseButton.labelPrevious, BrowseButton())
+			self.addButton(BrowseButton.LABEL_PREVIOUS, BrowseButton())
 			self.addToSameRow()
-			self.addButton(BrowseButton.labelNext, BrowseButton())
+			self.addButton(BrowseButton.LABEL_NEXT, BrowseButton())
 			
 		self.addMessage("Documentation and generic analysis workflows available on the GitHub repo (click Help)")
 		
