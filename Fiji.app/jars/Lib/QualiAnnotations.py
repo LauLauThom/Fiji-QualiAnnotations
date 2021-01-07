@@ -11,7 +11,10 @@ from java.awt 		import Label, Component
 from fiji.util.gui	import GenericDialogPlus
 
 hyperstackDim = ["time", "channel", "Z-slice"]
-
+nonCategory_headers = {"Folder", "Image", "Comment", "Roi", "Area","Mean","StdDev","Mode","Min","Max",
+					"X","Y","XM","YM","Perim.","BX","BY","Width","Height","Major","Minor","Angle",
+					"Circ.", "Feret", "IntDen", "Median","Skew","Kurt", "%Area", "RawIntDen", "Ch", "Slice", "Frame", 
+					 "FeretX", "FeretY", "FeretAngle", "MinFeret", "AR", "Round", "Solidity", "MinThr", "MaxThr"} # set of potential measurements header not corresponding to categories
 
 def getTable():
 	''' Check if a table exists otherwise open a new one'''
@@ -44,21 +47,21 @@ def getCategoriesFromTable():
 	or by reading the content of a column called "Category"
 	"""
 	table = getTable()
-	headings = table.getHeadings().tolist()
+	headings = table.getHeadings()
 	if not headings: return []
 	
 	if "Category" in headings: 
 		# parse the column category to a set
 		column = [str(item)[1:-1] for item in table.getColumnAsVariables("Category")] # convert from ij.macro.Variable to string + remove the " "
-		return list(set(column))
+		return list(set(column)) # use set to keep single occurence
 		
 	else:
-		# remove the columns File, Folder, Comment - Always test for presence to prevent ValueError
-		for header in ["Folder", "Image", "Slice", "Comment", "Roi", "Area", "Mean", "Min", "Max"]:
-			if header in headings: headings.remove(header)
-
+		# return columns headers except the non-category ones
+		headings = set(headings) # use set to be able to do a difference
+		headings = headings - nonCategory_headers
+		
 		# Also remove the measurement columns ?
-		return headings
+		return list(headings)
 
 def getRoiManager():
 	"""
