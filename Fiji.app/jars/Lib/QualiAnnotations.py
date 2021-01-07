@@ -18,8 +18,7 @@ def getTable():
 	
 	# Default case if none of the case match below, call a new results table with table "Annotations"
 	table = ResultsTable()
-	tableTitle  = "Annotations"
-	tableWindow = None # prevent issue if no case matc for if below
+	tableWindow = None # prevent issue if no case match for if below
 	
 	# Check if wecan get a table window
 	if IJ.getFullVersion() >= "1.53g":
@@ -35,17 +34,16 @@ def getTable():
 		elif  win2: tableWindow = win2
 	
 	if tableWindow: 
-		table      = tableWindow.getResultsTable()
-		tableTitle = table.getTitle()
+		table = tableWindow.getResultsTable()
 	
-	return tableTitle, table
+	return table
 	
 def getCategoriesFromTable():
 	"""
 	If a table is opened, this function will try to find the categories by either reading the column headers
 	or by reading the content of a column called "Category"
 	"""
-	title, table = getTable()
+	table = getTable()
 	headings = table.getHeadings().tolist()
 	if not headings: return []
 	
@@ -394,7 +392,7 @@ class CustomDialog(GenericDialogPlus):
 			return
 			
 		# Get current table
-		tableTitle, table = getTable()
+		table = getTable()
 		table.showRowNumbers(True)
 		
 		# Check options, use getCheckboxes(), because the checkbox plugin have other checkboxes
@@ -474,7 +472,7 @@ class CustomDialog(GenericDialogPlus):
 				table.addValue("Roi", roiName) # Add roi name to table
 				setRoiProperties(roiBis, table)
 		
-		table.show(tableTitle) # Update table		
+		table.show(table.getTitle()) # Update table
 		#table.updateResults() # only for result table but then addValue does not work !  
 		  
 		# Go to next slice
