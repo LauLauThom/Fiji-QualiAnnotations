@@ -143,21 +143,34 @@ def setRoiProperties(roi, table):
 		roi.setProperty(heading, value)
 
 class CategoryDialog(GenericDialog):
-	"""Dialog prompting the category names, used by the single class button and checkbox plugins"""
+	"""
+	Dialog prompting the category names, used by the single class button and checkbox plugins.
 	
-	def __init__(self, nCategories):
+	Parameters
+	----------
+	nCategories (int)    : number of string field to prompt category names
+	parseTable (boolean) :  if True,  get categories names from currently opened table 
+							if False, get categories names from persistence
+	"""
+	
+	def __init__(self, nCategories, parseTable=False):
 		
 		GenericDialog.__init__(self, "Category names")
 		self.nCategories = nCategories
 		
 		# Get previous categories from persistence
-		stringCat = Prefs.get("annot.listCat", "") # Retrieve the list of categories as a comma separated list
-		self.listCategories = stringCat.split(",") if stringCat else []
-		nOldCat = len(self.listCategories) 
+		if parseTable: 
+			listCategories = getCategoriesFromTable()
+		
+		else:
+			stringCat = Prefs.get("annot.listCat", "") # Retrieve the list of categories as a comma separated list
+			listCategories = stringCat.split(",") if stringCat else []
+		
+		nOldCat = len(listCategories) 
 		
 		for i in range(nCategories): 
-	 
-			if self.listCategories and i<=nOldCat-1:	catName = self.listCategories[i] 
+			
+			if listCategories and i<=nOldCat-1:	catName = listCategories[i] 
 			else:										catName = "Category_" + str(i+1) 
 			
 			# Add string input to GUI
