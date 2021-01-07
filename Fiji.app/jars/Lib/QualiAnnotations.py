@@ -266,13 +266,15 @@ class CustomDialog(GenericDialogPlus):
 		if sourceLabel == "  OK  ":
 			# Check options and save them in persistence
 			checkboxes	= self.getCheckboxes()
-			doMeasure	= checkboxes[-2].getState()
-			doNext		= checkboxes[-1].getState()
 			
-			# Save them in preference
+			doMeasure	= checkboxes[-2].getState()
 			Prefs.set("annot.doMeasure", doMeasure)
+			
+			doNext = checkboxes[-1].getState()
 			Prefs.set("annot.doNext", doNext)
-		
+			
+			# Save selected dimension if mode stack
+			if self.browseMode=="stack": Prefs.set("annot.dimension", self.getSelectedDimension())
 		
 		elif sourceLabel == "Add new category":
 			self.addCategoryComponent()
@@ -329,7 +331,9 @@ class CustomDialog(GenericDialogPlus):
 
 		if self.browseMode == "stack":
 			self.addToSameRow()
-			self.addChoice("- dimension (for hyperstack)", hyperstackDim, hyperstackDim[0])
+			self.addChoice("- dimension (for hyperstack)", 
+							hyperstackDim, 
+							Prefs.get("annot.dimension", hyperstackDim[0]) )
 		
 		elif self.browseMode == "directory":
 			# Add button previous/next
@@ -368,10 +372,10 @@ class CustomDialog(GenericDialogPlus):
 		'''
 		pass
 	
-	def getChosenDimension(self):
+	def getSelectedDimension(self):
 		"""Return 'time', 'channel' or 'Z-slice'"""
 		listChoices = self.getChoices()
-		return listChoices[0].getSelectedItem()
+		return listChoices[0].getSelectedItem() # listChoices[0] is the first drop down of the GUI
 	
 	def defaultActionSequence(self):
 		"""
@@ -479,7 +483,7 @@ class CustomDialog(GenericDialogPlus):
 		# Go to next slice
 		doNext    = checkboxes[-1].getState()
 		if doNext:
-			if   self.browseMode == "stack":     nextSlice(imp, self.getChosenDimension() )
+			if   self.browseMode == "stack":     nextSlice(imp, self.getSelectedDimension() )
 			elif self.browseMode == "directory": NextImageOpener().run("forward")
 		  
 		# Bring back the focus to the button window (otherwise the table is in the front)  
