@@ -1,15 +1,20 @@
 '''
 This script can be used to manually classify full images from a stack into N user-defined categories.  
-A first window pops up to request the number of categories.  
-A second window follows asking for the name to use for those categories.  
-Finally a third window will show up with one button per category.  
+A first window pops up to request:
+- the number of categories N
+- the structure of the table (single/multi category column)
+- the image browsing mode (stack or directory)
+- if the category names should be read from an active table (better than having a browse button, then I dont have to handle issue loading the table)
+
+A second window follows with N text fields for the category names.
+Finally the annotation GUI will show up with one button per category.  
 Clicking on the button will generate a new entry in a table with the image name and the category.  
 It will also skip to the next slice for stacks.  
 '''
-#@ Integer (Label = "Number of categories", value=2, min=1, stepSize=1) N_category  
-#@ String (Label="Table structure", choices={"single category column","one column per category"}) table_structure
-#@ String (Label="Browsing mode", choices={"stack", "directory"}) browse_mode
-
+#@ Integer (Label = "Number of categories", value=2, min=1, stepSize=1) N_category
+#@ Boolean (Label="Read categories from active table", value=False ) parse_table
+#@ String  (Label="Browsing mode", choices={"stack", "directory"}) browse_mode
+#@ String  (Label="Table structure", choices={"single category column","one column per category"}) table_structure
 from ij.gui			import GenericDialog
 from ij 			import IJ, WindowManager, Prefs
 from fiji.util.gui  import GenericDialogPlus
@@ -131,7 +136,7 @@ class ButtonDialog(CustomDialog):
 		return button
   
 ############### GUI - CATEGORY DIALOG - collect N classes names (N define at first line)  #############  
-catDialog = CategoryDialog(N_category)
+catDialog = CategoryDialog(N_category, parse_table)
 catDialog.showDialog()
 
 

@@ -11,15 +11,17 @@ from java.awt 		import Label, Component
 from fiji.util.gui	import GenericDialogPlus
 
 hyperstackDim = ["time", "channel", "Z-slice"]
-
+nonCategory_headers = {"Folder", "Image", "Comment", "Roi", "Area","Mean","StdDev","Mode","Min","Max",
+					"X","Y","XM","YM","Perim.","BX","BY","Width","Height","Major","Minor","Angle",
+					"Circ.", "Feret", "IntDen", "Median","Skew","Kurt", "%Area", "RawIntDen", "Ch", "Slice", "Frame", 
+					 "FeretX", "FeretY", "FeretAngle", "MinFeret", "AR", "Round", "Solidity", "MinThr", "MaxThr"} # set of potential measurements header not corresponding to categories
 
 def getTable():
 	''' Check if a table exists otherwise open a new one'''
 	
 	# Default case if none of the case match below, call a new results table with table "Annotations"
 	table = ResultsTable()
-	tableTitle  = "Annotations"
-	tableWindow = None # prevent issue if no case matc for if below
+	tableWindow = None # prevent issue if no case match for if below
 	
 	# Check if wecan get a table window
 	if IJ.getFullVersion() >= "1.53g":
@@ -35,10 +37,31 @@ def getTable():
 		elif  win2: tableWindow = win2
 	
 	if tableWindow: 
-		table      = tableWindow.getResultsTable()
-		tableTitle = table.getTitle()
+		table = tableWindow.getResultsTable()
 	
-	return tableTitle, table
+	return table
+	
+def getCategoriesFromTable():
+	"""
+	If a table is opened, this function will try to find the categories by either reading the column headers
+	or by reading the content of a column called "Category"
+	"""
+	table = getTable()
+	headings = table.getHeadings()
+	if not headings: return []
+	
+	if "Category" in headings: 
+		# parse the column category to a set
+		column = [str(item)[1:-1] for item in table.getColumnAsVariables("Category")] # convert from ij.macro.Variable to string + remove the " "
+		return list(set(column)) # use set to keep single occurence
+		
+	else:
+		# return columns headers except the non-category ones
+		headings = set(headings) # use set to be able to do a difference
+		headings = headings - nonCategory_headers
+		
+		# Also remove the measurement columns ?
+		return list(headings)
 
 def getRoiManager():
 	"""
@@ -121,59 +144,70 @@ def setRoiProperties(roi, table):
 		roi.setProperty(heading, value)
 
 class CategoryDialog(GenericDialog):
-	"""Dialog prompting the category names, used by the single class button and checkbox plugins"""
+	"""
+	Dialog prompting the category names, used by the single class button and checkbox plugins.
 	
-	def __init__(self, nCategories):
+	Parameters
+	----------
+	nCategories (int)    : number of string field to prompt category names
+	parseTable (boolean) :  if True,  get categories names from currently opened table 
+							if False, get categories names from persistence
+	"""
+	
+	def __init__(self, nCategories, parseTable=False):
 		
 		GenericDialog.__init__(self, "Category names")
 		self.nCategories = nCategories
 		
 		# Get previous categories from persistence
-		stringCat = Prefs.get("annot.listCat", "") # Retrieve the list of categories as a comma separated list
-		self.listCategories = stringCat.split(",") if stringCat else []
-		nOldCat = len(self.listCategories) 
+		if parseTable: 
+			listCategories = getCategoriesFromTable()
+			if not listCategories: IJ.showStatus("No opened table, try reading categories from persistence")
+		
+		if not parseTable or not listCategories: # fall back on persistence if no open table
+			stringCat = Prefs.get("annot.listCat", "") # Retrieve the list of categories as a comma separated list
+			listCategories = stringCat.split(",") if stringCat else []
+		
+		nOldCat = len(listCategories) 
 		
 		for i in range(nCategories): 
-	 
-			if self.listCategories and i<=nOldCat-1:	catName = self.listCategories[i] 
+			
+			if listCategories and i<=nOldCat-1:	catName = listCategories[i] 
 			else:										catName = "Category_" + str(i+1) 
 			
 			# Add string input to GUI
 			self.addStringField("Category: ", catName) 
 			self.addMessage("") # skip one line before the next input field
 	
-	
-	def actionPerformed(self, event):
-		"""Save categories names in memory if OKed"""
-		
-		sourceLabel = event.getSource().getLabel()
-		
-		if sourceLabel == "  OK  ": 
-			self.listCategories = [textField.getText() for textField in self.getStringFields()]
-			Prefs.set("annot.listCat", ",".join(self.listCategories) ) # save the new list of categories
-		
-		# Do the mother class usual action handling()
-		GenericDialogPlus.actionPerformed(self, event)
-		
-	
 	def getCategoryNames(self):
-		return self.listCategories
+		"""
+		Read the new category names as entered by user in the GUI, before the GUI was OKed.
+		"""
+		listCategories = []
+		for textField in self.getStringFields():
+				newCategory = textField.getText()
+				if newCategory: listCategories.append(newCategory)
+			
+		#self.listCategories = [textField.getText() for textField in self.getStringFields()]
+		Prefs.set("annot.listCat", ",".join(listCategories) ) # save the new list of categories
+		
+		return listCategories
 
 
 class BrowseButton(ActionListener):
 	"""Implement the action following click on Previous/Next image"""
 	
-	labelPrevious = "Previous image file"
-	labelNext     = "Next image file"
+	LABEL_PREVIOUS = "Previous image file"
+	LABEL_NEXT     = "Next image file"
 	imageOpener   =  NextImageOpener()
 
 	def actionPerformed(self, event):
 		label = event.getSource().getLabel()
 		
-		if label == self.labelPrevious:
+		if label == self.LABEL_PREVIOUS:
 			self.imageOpener.run("backward")
 		
-		elif label == self.labelNext:
+		elif label == self.LABEL_NEXT:
 			self.imageOpener.run("forward")
 
 
@@ -235,13 +269,15 @@ class CustomDialog(GenericDialogPlus):
 		if sourceLabel == "  OK  ":
 			# Check options and save them in persistence
 			checkboxes	= self.getCheckboxes()
-			doMeasure	= checkboxes[-2].getState()
-			doNext		= checkboxes[-1].getState()
 			
-			# Save them in preference
+			doMeasure	= checkboxes[-2].getState()
 			Prefs.set("annot.doMeasure", doMeasure)
+			
+			doNext = checkboxes[-1].getState()
 			Prefs.set("annot.doNext", doNext)
-		
+			
+			# Save selected dimension if mode stack
+			if self.browseMode=="stack": Prefs.set("annot.dimension", self.getSelectedDimension())
 		
 		elif sourceLabel == "Add new category":
 			self.addCategoryComponent()
@@ -298,13 +334,15 @@ class CustomDialog(GenericDialogPlus):
 
 		if self.browseMode == "stack":
 			self.addToSameRow()
-			self.addChoice("- dimension (for hyperstack)", hyperstackDim, hyperstackDim[0])
+			self.addChoice("- dimension (for hyperstack)", 
+							hyperstackDim, 
+							Prefs.get("annot.dimension", hyperstackDim[0]) )
 		
 		elif self.browseMode == "directory":
 			# Add button previous/next
-			self.addButton(BrowseButton.labelPrevious, BrowseButton())
+			self.addButton(BrowseButton.LABEL_PREVIOUS, BrowseButton())
 			self.addToSameRow()
-			self.addButton(BrowseButton.labelNext, BrowseButton())
+			self.addButton(BrowseButton.LABEL_NEXT, BrowseButton())
 			
 		self.addMessage("Documentation and generic analysis workflows available on the GitHub repo (click Help)")
 		
@@ -329,7 +367,7 @@ class CustomDialog(GenericDialogPlus):
 		'''
 		pass
 	
-	def keyPressed(self, event):
+	def keyPressed(self, keyEvent):
 		'''
 		Handle keyboard shortcuts (either + or F1-F12)
 		the method should be implemented in descendant classes
@@ -337,10 +375,10 @@ class CustomDialog(GenericDialogPlus):
 		'''
 		pass
 	
-	def getChosenDimension(self):
+	def getSelectedDimension(self):
 		"""Return 'time', 'channel' or 'Z-slice'"""
 		listChoices = self.getChoices()
-		return listChoices[0].getSelectedItem()
+		return listChoices[0].getSelectedItem() # listChoices[0] is the first drop down of the GUI
 	
 	def defaultActionSequence(self):
 		"""
@@ -362,7 +400,7 @@ class CustomDialog(GenericDialogPlus):
 			return
 			
 		# Get current table
-		tableTitle, table = getTable()
+		table = getTable()
 		table.showRowNumbers(True)
 		
 		# Check options, use getCheckboxes(), because the checkbox plugin have other checkboxes
@@ -442,13 +480,13 @@ class CustomDialog(GenericDialogPlus):
 				table.addValue("Roi", roiName) # Add roi name to table
 				setRoiProperties(roiBis, table)
 		
-		table.show(tableTitle) # Update table		
+		table.show(table.getTitle()) # Update table
 		#table.updateResults() # only for result table but then addValue does not work !  
 		  
 		# Go to next slice
 		doNext    = checkboxes[-1].getState()
 		if doNext:
-			if   self.browseMode == "stack":     nextSlice(imp, self.getChosenDimension() )
+			if   self.browseMode == "stack":     nextSlice(imp, self.getSelectedDimension() )
 			elif self.browseMode == "directory": NextImageOpener().run("forward")
 		  
 		# Bring back the focus to the button window (otherwise the table is in the front)  
