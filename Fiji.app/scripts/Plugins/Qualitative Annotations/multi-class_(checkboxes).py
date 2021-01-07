@@ -6,7 +6,8 @@ Finally a third window will show up with one button per category.
 Clicking on the button will generate a new entry in a table with the image name and the category.   
 It will also skip to the next slice for stacks.   
 '''
-#@ Integer (Label = "Number of categories", value=2, min=1, stepSize=1) N_category_   
+#@ Integer (Label = "Number of categories", value=2, min=1, stepSize=1) N_category_
+#@ Boolean (Label="Read categories from active table", value=False ) parse_table
 #@ String  (label = "Browsing mode", choices={"stack", "directory"}) browse_mode
 
 from ij.gui		    import GenericDialog
@@ -49,7 +50,7 @@ class MainDialog(CustomDialog):
 ############### GUI - CATEGORY DIALOG - collect N classes names (N define at first line)  #############
 
 # Initialize a category dialog with N categories
-catDialog = CategoryDialog(N_category_)   
+catDialog = CategoryDialog(N_category_, parse_table)   
 catDialog.showDialog()
  
  

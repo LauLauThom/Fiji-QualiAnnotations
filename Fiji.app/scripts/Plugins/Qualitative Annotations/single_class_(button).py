@@ -11,11 +11,10 @@ Finally the annotation GUI will show up with one button per category.
 Clicking on the button will generate a new entry in a table with the image name and the category.  
 It will also skip to the next slice for stacks.  
 '''
-#@ Integer (Label = "Number of categories", value=2, min=1, stepSize=1) N_category  
-#@ String (Label="Table structure", choices={"single category column","one column per category"}) table_structure
-#@ String (Label="Browsing mode", choices={"stack", "directory"}) browse_mode
-#@ Boolean(Label="Read categories from active table", value=False ) parse_table
-
+#@ Integer (Label = "Number of categories", value=2, min=1, stepSize=1) N_category
+#@ Boolean (Label="Read categories from active table", value=False ) parse_table
+#@ String  (Label="Browsing mode", choices={"stack", "directory"}) browse_mode
+#@ String  (Label="Table structure", choices={"single category column","one column per category"}) table_structure
 from ij.gui			import GenericDialog
 from ij 			import IJ, WindowManager, Prefs
 from fiji.util.gui  import GenericDialogPlus
@@ -137,7 +136,7 @@ class ButtonDialog(CustomDialog):
 		return button
   
 ############### GUI - CATEGORY DIALOG - collect N classes names (N define at first line)  #############  
-catDialog = CategoryDialog(N_category)
+catDialog = CategoryDialog(N_category, parse_table)
 catDialog.showDialog()
 
 
