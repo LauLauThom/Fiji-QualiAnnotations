@@ -195,17 +195,17 @@ class CategoryDialog(GenericDialog):
 class BrowseButton(ActionListener):
 	"""Implement the action following click on Previous/Next image"""
 	
-	labelPrevious = "Previous image file"
-	labelNext     = "Next image file"
+	LABEL_PREVIOUS = "Previous image file"
+	LABEL_NEXT     = "Next image file"
 	imageOpener   =  NextImageOpener()
 
 	def actionPerformed(self, event):
 		label = event.getSource().getLabel()
 		
-		if label == self.labelPrevious:
+		if label == self.LABEL_PREVIOUS:
 			self.imageOpener.run("backward")
 		
-		elif label == self.labelNext:
+		elif label == self.LABEL_NEXT:
 			self.imageOpener.run("forward")
 
 
