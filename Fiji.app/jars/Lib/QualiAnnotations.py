@@ -164,22 +164,19 @@ class CategoryDialog(GenericDialog):
 			self.addStringField("Category: ", catName) 
 			self.addMessage("") # skip one line before the next input field
 	
-	
-	def actionPerformed(self, event):
-		"""Save categories names in memory if OKed"""
-		
-		sourceLabel = event.getSource().getLabel()
-		
-		if sourceLabel == "  OK  ": 
-			self.listCategories = [textField.getText() for textField in self.getStringFields()]
-			Prefs.set("annot.listCat", ",".join(self.listCategories) ) # save the new list of categories
-		
-		# Do the mother class usual action handling()
-		GenericDialogPlus.actionPerformed(self, event)
-		
-	
 	def getCategoryNames(self):
-		return self.listCategories
+		"""
+		Read the new category names as entered by user in the GUI, before the GUI was OKed.
+		"""
+		listCategories = []
+		for textField in self.getStringFields():
+				newCategory = textField.getText()
+				if newCategory: listCategories.append(newCategory)
+			
+		#self.listCategories = [textField.getText() for textField in self.getStringFields()]
+		Prefs.set("annot.listCat", ",".join(listCategories) ) # save the new list of categories
+		
+		return listCategories
 
 
 class BrowseButton(ActionListener):
@@ -351,7 +348,7 @@ class CustomDialog(GenericDialogPlus):
 		'''
 		pass
 	
-	def keyPressed(self, event):
+	def keyPressed(self, keyEvent):
 		'''
 		Handle keyboard shortcuts (either + or F1-F12)
 		the method should be implemented in descendant classes
