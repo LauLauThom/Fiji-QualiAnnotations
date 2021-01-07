@@ -159,8 +159,9 @@ class CategoryDialog(GenericDialog):
 		# Get previous categories from persistence
 		if parseTable: 
 			listCategories = getCategoriesFromTable()
+			if not listCategories: IJ.showStatus("No opened table, try reading categories from persistence")
 		
-		else:
+		if not parseTable or not listCategories: # fall back on persistence if no open table
 			stringCat = Prefs.get("annot.listCat", "") # Retrieve the list of categories as a comma separated list
 			listCategories = stringCat.split(",") if stringCat else []
 		
