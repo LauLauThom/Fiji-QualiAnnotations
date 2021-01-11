@@ -1,3 +1,8 @@
+"""
+TO DO:
+- overwrite existing row
+-> Problem the run measure option automatically appends to the table therefore it's a mess to account for that
+"""
 from ij				import IJ, WindowManager, Prefs
 from ij.gui			import GenericDialog
 from ij.plugin		import NextImageOpener
