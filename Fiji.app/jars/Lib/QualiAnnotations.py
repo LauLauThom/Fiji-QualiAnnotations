@@ -361,16 +361,18 @@ class CustomDialog(GenericDialogPlus):
 		if not isinstance(newComponent, Component): raise TypeError("Expect a component to be added to the dialog")
 		self.getPanel().add(newComponent) # component 1 is the panel
 		self.validate() # recompute the layout and update the display
-	
+
 	def addDefaultOptions(self):
 		'''
 		Add default GUI items
+		- Overwrite existing row
 		- checkbox runMeasurement
 		- add to Manager, nextSlice, runMeasurement
-		- resource message
+		- ressource message
 		- help button
 		'''
 		# Checkbox next slice and run Measure 
+		self.addCheckbox("Overwrite existing row", bool(Prefs.get("annot.overwrite", False)) )
 		self.addCheckbox("run 'Measure'", bool(Prefs.get("annot.doMeasure", False)) )
 		self.addCheckbox("Auto next slice/image file", bool(Prefs.get("annot.doNext", True)) )
 
@@ -391,7 +393,28 @@ class CustomDialog(GenericDialogPlus):
 		# Add Help button pointing to the github
 		self.addHelp(r"https://github.com/LauLauThom/Fiji-QualiAnnotations")
 		self.hideCancelButton()
-	
+
+	def overwriteExistingRow(self):
+		"""
+		Return the state of the "Overwrite existing row" checkbox. 
+		The integer should match the position of the checkbox in the GUI
+		"""
+		return self.getCheckboxes()[0].getState()
+
+	def doMeasure(self):
+		"""
+		Return the state of the "run measure" checkbox. 
+		The integer should match the position of the checkbox in the GUI
+		"""
+		return self.getCheckboxes()[1].getState()
+
+	def doAutoNext(self):
+		"""
+		Return the state of the "Auto next slice" checkbox. 
+		The integer should match the position of the checkbox in the GUI
+		"""
+		return self.getCheckboxes()[2].getState()
+
 	def addCitation(self):
 		"""Add message about citation"""
 		self.addMessage("""If you use this plugin, please cite : 
@@ -445,11 +468,8 @@ class CustomDialog(GenericDialogPlus):
 		table = getTable()
 		table.showRowNumbers(True)
 		
-		# Check options, use getCheckboxes(), because the checkbox plugin have other checkboxes
-		checkboxes	= self.getCheckboxes()
-		
 		# Initialize Analyzer
-		doMeasure = checkboxes[-2].getState()
+		doMeasure = self.doMeasure()
 		if doMeasure:
 			analyzer = Analyzer(imp, table)
 			analyzer.setMeasurement(Measurements.LABELS, False) # dont add label to table
@@ -526,8 +546,7 @@ class CustomDialog(GenericDialogPlus):
 		#table.updateResults() # only for result table but then addValue does not work !  
 		  
 		# Go to next slice
-		doNext    = checkboxes[-1].getState()
-		if doNext:
+		if self.doAutoNext():
 			if   self.browseMode == "stack":     nextSlice(imp, self.getSelectedDimension() )
 			elif self.browseMode == "directory": NextImageOpener().run("forward")
 		  
