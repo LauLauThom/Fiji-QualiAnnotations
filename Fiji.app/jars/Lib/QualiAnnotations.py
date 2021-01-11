@@ -143,6 +143,48 @@ def setRoiProperties(roi, table):
 		value = table.getStringValue(heading, table.size()-1)
 		roi.setProperty(heading, value)
 
+def findRowIndex(table, folder, image, zSlice="", roi=""):
+	"""
+	Test if table contains a row with the provided folder, image and optionally slice and roi values
+	Return the row index of the 1st occurence of matching row or return -1 (no match)
+	"""
+	matchingRow = -1
+	if zSlice and not table.columnExists("Slice"): return matchingRow
+	
+	if roi and not table.columnExists("Roi"): return matchingRow
+	
+	for rowIndex in range(table.size()):
+		
+		sameFolder = folder == table.getStringValue("Folder", rowIndex)
+		sameImage  = image  == table.getStringValue("Image", rowIndex)
+		
+		if zSlice: 
+			sameSlice = zSlice == table.getStringValue("Slice", rowIndex)
+		
+		if roi:   
+			sameRoi   = roi   == table.getStringValue("Roi", rowIndex)
+		
+		# Check if all are identical
+		isExisting = sameFolder and sameImage
+		
+		if roi and zSlice: 
+			isExisting = isExisting and sameRoi and sameSlice
+		
+		elif roi:          
+			isExisting = isExisting and sameRoi
+		
+		elif zSlice:  
+			isExisting = isExisting and sameSlice
+		
+		# If found a matching row, stop the search and return the rowIndex, otherwise continue all the way
+		if isExisting: 
+			matchingRow = rowIndex
+			break
+	
+	# In any case return rowIndex
+	return matchingRow
+
+
 class CategoryDialog(GenericDialog):
 	"""
 	Dialog prompting the category names, used by the single class button and checkbox plugins.
