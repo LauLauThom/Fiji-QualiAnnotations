@@ -85,7 +85,7 @@ class ButtonDialog(CustomDialog):
 		self.browseMode = browseMode # important to define it before adding defaultOptions
 		self.addDefaultOptions()
 		#if choiceIndex == 0: self.addButton("Make PieChart from category column", PlotAction()) # Remov this button: risk of cherry picking to improve the plot
-		self.addCitation()
+		#self.addCitation()
 
 		# Variable used by instance methods
 		self.tableStructure = tableStructure 

@@ -34,7 +34,7 @@ class MainDialog(CustomDialog):
 		
 		self.browseMode = browseMode # important to define it before addDefaultOptions
 		self.addDefaultOptions()
-		self.addCitation()
+		#self.addCitation()
 		
 		
 	def fillTable(self, table):

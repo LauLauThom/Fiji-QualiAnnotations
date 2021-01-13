@@ -250,7 +250,7 @@ class CustomDialog(GenericDialogPlus):
 		
 		self.browseMode = browseMode # important to define it before addDefaultOptions and nextSlice...
 		self.addDefaultOptions()
-		self.addCitation()
+		#self.addCitation()
 		
 	
 	def getPanel(self):
