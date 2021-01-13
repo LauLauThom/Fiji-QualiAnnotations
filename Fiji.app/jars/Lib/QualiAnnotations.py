@@ -160,16 +160,25 @@ def findRowIndex(table, folder, image, zSlice="", roi=""):
 	
 	for rowIndex in range(table.size()):
 		
-		sameFolder = folder == table.getStringValue("Folder", rowIndex)
-		sameImage  = image  == table.getStringValue("Image", rowIndex)
+		if roi:   
+			sameRoi = roi == table.getStringValue("Roi", rowIndex)
+			if not sameRoi: continue # go for next row (ie loop iteration): no need to test other columns
 		
 		if zSlice: 
 			sameSlice = zSlice == table.getStringValue("Slice", rowIndex)
+			if not sameSlice: continue # no need to test other columns
 		
-		if roi:   
-			sameRoi   = roi   == table.getStringValue("Roi", rowIndex)
+		sameImage  = image  == table.getStringValue("Image", rowIndex)
+		if not sameImage: continue
+
+		sameFolder = folder == table.getStringValue("Folder", rowIndex)
+		if not sameFolder: continue
 		
-		# Check if all are identical
+		# If the execution reaches this point, then same folder, image and if present slice and rois
+		matchingRow = rowIndex
+		break # stop the row search (ie the for loop)
+		"""
+		# Check if all are identical, previous implementation not used anymore
 		isExisting = sameFolder and sameImage
 		
 		if roi and zSlice: 
@@ -185,7 +194,7 @@ def findRowIndex(table, folder, image, zSlice="", roi=""):
 		if isExisting: 
 			matchingRow = rowIndex
 			break
-	
+		"""
 	# In any case return rowIndex
 	return matchingRow
 
