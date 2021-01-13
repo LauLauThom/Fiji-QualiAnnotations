@@ -69,8 +69,11 @@ class ButtonDialog(CustomDialog):
 	Annotation dialog, also define keyboard shortcut and function to fill the table
 	defaultActionSequence() is defined in the mother class customDialog
 	'''
+	# define constant used for input (must match script parameters above)
+	TABLE_SINGLE_COLUMN = "single category column"
+	TABLE_MULTI_COLUMN  = "one column per category"
 	
-	def __init__(self, title, message, panel, browseMode="stack", tableStructure="single category column"): 
+	def __init__(self, title, message, panel, browseMode="stack", tableStructure=TABLE_SINGLE_COLUMN): 
 		"""
 		browseMode: "stack" or "directory"
 		tableStructure: "single category column" or anything else, such as "one column per category"
@@ -92,7 +95,7 @@ class ButtonDialog(CustomDialog):
 		self.selectedCategory = "" 
 	 
 	def fillTable(self, table): 
-		if self.tableStructure=="single category column": # single category column 
+		if self.tableStructure == self.TABLE_SINGLE_COLUMN: # single category column 
 			table.addValue("Category", self.selectedCategory) 
 		 
 		else: # 1 column/category with 0/1 
