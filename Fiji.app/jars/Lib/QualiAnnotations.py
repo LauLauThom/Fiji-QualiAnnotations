@@ -7,7 +7,7 @@ from ij.measure		  import ResultsTable, Measurements
 import os
 from collections	import OrderedDict
 from java.awt.event import ActionListener
-from java.awt 		import Label, Component
+from java.awt 		import Label, Component, Button
 from fiji.util.gui	import GenericDialogPlus
 
 hyperstackDim = ["time", "channel", "Z-slice"]
@@ -265,30 +265,35 @@ class CustomDialog(GenericDialogPlus):
 		Add: delegate to addAction()
 		NB: NEVER use getNext methods here, since we call them several time 
 		'''
-		sourceLabel = event.getSource().getLabel()
-		if sourceLabel == "  OK  ":
-			# Check options and save them in persistence
-			checkboxes	= self.getCheckboxes()
-			
-			doMeasure	= checkboxes[-2].getState()
-			Prefs.set("annot.doMeasure", doMeasure)
-			
-			doNext = checkboxes[-1].getState()
-			Prefs.set("annot.doNext", doNext)
-			
-			# Save selected dimension if mode stack
-			if self.browseMode=="stack": Prefs.set("annot.dimension", self.getSelectedDimension())
+		source = event.getSource() # test here if it is a button
 		
-		elif sourceLabel == "Add new category":
-			self.addCategoryComponent()
-		
-		elif sourceLabel == "Add":
-			self.addAction()
-		
-		else:
-			pass
+		if isinstance(source, Button): # if type is a button get label, and check command, otherwise pass to GenericDialogPlus.actionPeformed
 			
-		# Do the mother class usual action handling()
+			sourceLabel = source.getLabel()
+		
+			if sourceLabel == "  OK  ":
+				# Check options and save them in persistence
+				checkboxes	= self.getCheckboxes()
+				
+				doMeasure	= checkboxes[-2].getState()
+				Prefs.set("annot.doMeasure", doMeasure)
+				
+				doNext = checkboxes[-1].getState()
+				Prefs.set("annot.doNext", doNext)
+				
+				# Save selected dimension if mode stack
+				if self.browseMode=="stack": Prefs.set("annot.dimension", self.getSelectedDimension())
+			
+			elif sourceLabel == "Add new category":
+				self.addCategoryComponent()
+			
+			elif sourceLabel == "Add":
+				self.addAction()
+			
+			else:
+				pass
+			
+		# Anyway do the mother class usual action handling
 		GenericDialogPlus.actionPerformed(self, event)
 	
 	
