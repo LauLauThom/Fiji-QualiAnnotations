@@ -11,7 +11,7 @@ gd.addMessage("""If you use these plugins, please cite :
 		
 		Click the help button below to open the article page""")
 
-#URL = r"https://doi.org/10.12688/f1000research.26872.1" # strangely not working
+#URL = r"https://doi.org/10.12688/f1000research.26872.1/" # mind the last slash at the end of URL, otherwise not working
 URL = r"https://f1000research.com/articles/9-1248"
 gd.addHelp(URL)
 gd.hideCancelButton()
