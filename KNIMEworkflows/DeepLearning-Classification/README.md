@@ -15,8 +15,12 @@ The Binary folder contains the workflow to train a binary image-classifier, ie f
 The Multiclass folder is the same reasoning, except that the images get classified into 1 category out of multiple categories (2 or more).  
 The folder also contains the respective workflows for prediction.   
 The difference binary/multiclass is a difference in the classification layers:
-- binary : single network output (prbability for the first class) with sigmoid activation function and binary cross-entropy as loss function  
-- multiclass : multiple categorical outputs (1 proability per class) with softmax activation function and categorical cross-entropy as loss function
+
+-__binary__  
+single network output (prbability for the first class) with sigmoid activation function and binary cross-entropy as loss function  
+
+- __multiclass__  
+multiple categorical outputs (1 proability per class) with softmax activation function and categorical cross-entropy as loss function
 
 # Requirements
 This workflow requires both a KNIME installation with correct KNIME dependencies AND a python environment with also the right python packages (See below).  
