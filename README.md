@@ -14,6 +14,14 @@ To annotate ROI, either draw a new one before making a new annotation (it should
 
 __NB__: The plugins are not compatible with ImageJ, as they rely on some Fiji-specific funcitonalities (script parameters, GenericDialogPlus...)
 
+# Citation
+If you use these plugins, please cite:
+
+Thomas LSV, Schaefer F and Gehrig J.   
+_Fiji plugins for qualitative image annotations: routine analysis and application to image classification_ [version 1; peer review: awaiting peer review].   
+F1000Research 2020, 9:1248   
+https://doi.org/10.12688/f1000research.26872.1
+
 # Video Tutorials
 Check the dedicated [youtube playlist](https://www.youtube.com/playlist?list=PLbBgXlYof3_YVqR80jhFPCkc0M3GQMAq4) covering from the introduction of the plugins to the use of the analysis workflows.  
 Or click on the image below to open the first tuto in youtube.  
@@ -76,12 +84,3 @@ Allso see the wiki page about the [Keras Network learner node](https://github.co
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3997728.svg)](https://doi.org/10.5281/zenodo.3997728)  
 An example of images from a related screening project in Zebrafish is available on Zenodo.  
 The Zenodo repository contains a zip archive with the images, ground-truth category annotations for the images (generated with the plugins) and a trained deep-learening model for classification of the images.  
-
-
-# Citation
-If you use these plugins, please cite:
-
-Thomas LSV, Schaefer F and Gehrig J.   
-_Fiji plugins for qualitative image annotations: routine analysis and application to image classification_ [version 1; peer review: awaiting peer review].   
-F1000Research 2020, 9:1248   
-https://doi.org/10.12688/f1000research.26872.1
