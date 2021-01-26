@@ -19,28 +19,29 @@ nonCategory_headers = {"Folder", "Image", "Comment", "Roi", "Area","Mean","StdDe
 def getTable():
 	''' Check if a table exists otherwise open a new one'''
 	
-	# Default case if none of the case match below, call a new results table with table "Annotations"
-	table = ResultsTable()
-	tableWindow = None # prevent issue if no case match for if below
-	
-	# Check if wecan get a table window
+	## Check if we can get a table window
 	if IJ.getFullVersion() >= "1.53g":
-		tableWindow = WindowManager.getActiveTable() # this function requires the 1.53g (or at least not working with 1.53c)
-		# might return None
-	
+		# try to get any active table
+		tableWindow = WindowManager.getActiveTable() # this function requires 1.53g (or at least not working with 1.53c), return None if no table
+		
 	else:
-		# Fallback on fetching either a window called Annotations or Annotations.csv as in previous plugin versions
+		# Fallback on fetching either a window called Annotations or Annotations.csv as in previous plugin version
 		win  = WindowManager.getWindow("Annotations")
 		win2 = WindowManager.getWindow("Annotations.csv") # upon saving it adds this extension
 		
-		if    win : tableWindow = win
-		elif  win2: tableWindow = win2
+		if win: 
+			tableWindow = win
+		
+		elif  win2: 
+			tableWindow = win2
+		
+		else: 
+			tableWindow = None
 	
-	if tableWindow: 
-		table = tableWindow.getResultsTable()
-	
-	return table
-	
+	## If a table window then get its table, otherwise new table. In this case, its name is set later
+	return tableWindow.getResultsTable() if tableWindow else ResultsTable()
+
+
 def getCategoriesFromTable():
 	"""
 	If a table is opened, this function will try to find the categories by either reading the column headers
@@ -485,7 +486,8 @@ class CustomDialog(GenericDialogPlus):
 				table.addValue("Roi", roiName) # Add roi name to table
 				setRoiProperties(roiBis, table)
 		
-		table.show(table.getTitle()) # Update table
+		title = table.getTitle() if table.getTitle() else "Annotations" # getTitle is None for newly generated table
+		table.show(title) # Update table
 		#table.updateResults() # only for result table but then addValue does not work !  
 		  
 		# Go to next slice
