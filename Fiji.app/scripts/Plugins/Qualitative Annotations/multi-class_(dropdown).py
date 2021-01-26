@@ -30,7 +30,7 @@ class MainDialog(CustomDialog):
 		self.addPanel(panel)
 		#self.addButton("Add new category", self) # no add new category button for dropdown
 		self.addStringField("Comments", "")
-		self.addButton("Add", self)
+		self.addButton(CustomDialog.LABEL_ADD, self)
 		
 		self.browseMode = browseMode # important to define it before addDefaultOptions
 		self.addDefaultOptions()

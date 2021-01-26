@@ -235,6 +235,8 @@ class CustomDialog(GenericDialogPlus):
 	- addAction(), function when the button Add is pressed (add to table)
 	- fillTable(table), function stating how to add to the table
 	'''
+	nspace = 20
+	LABEL_ADD = nspace*" " + "Add" + nspace*" " # Adding 10 spaces before/after to increase the size of the button. quick workaround
 	
 	def __init__(self, title, message, panel, browseMode="stack"):
 		"""
@@ -247,7 +249,7 @@ class CustomDialog(GenericDialogPlus):
 		self.addPanel(panel)
 		self.addButton("Add new category", self) # the GUI also catches the event for this button too
 		self.addStringField("Comments", "")
-		self.addButton("Add", self)
+		self.addButton(self.LABEL_ADD, self)
 		
 		self.browseMode = browseMode # important to define it before addDefaultOptions and nextSlice...
 		self.addDefaultOptions()
@@ -288,7 +290,7 @@ class CustomDialog(GenericDialogPlus):
 			elif sourceLabel == "Add new category":
 				self.addCategoryComponent()
 			
-			elif sourceLabel == "Add":
+			elif sourceLabel == self.LABEL_ADD:
 				self.addAction()
 			
 			else:
