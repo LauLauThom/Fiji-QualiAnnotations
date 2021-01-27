@@ -48,7 +48,7 @@ This plugin allows to describe multiple features and for each features to have a
 When started, the plugin requires a comma-separated value (csv, with comma or semi-column separator) file or tsv (tab-separated) value file with the name of the features and the associated choices.  
 Such files can be easily generated in a tabular software like excel (just select "Saving as csv").  
 An example of csv is shipped with the update site, and should be in your Fiji installation at *Fiji.app/lib*.  
-Also see the [example input files](https://github.com/LauLauThom/Fiji-QualiAnnotations/tree/master/Fiji.app/lib) and the associated [wiki section ](https://github.com/LauLauThom/Fiji-QualiAnnotations/wiki/Input-for-the-dropdown-plugin).  
+Also see the [example input files](https://github.com/LauLauThom/Fiji-QualiAnnotations/tree/master/Fiji.app/lib) (click the "raw" button to see the file content) and the associated [wiki section ](https://github.com/LauLauThom/Fiji-QualiAnnotations/wiki/Input-for-the-dropdown-plugin).  
 <img src="https://github.com/LauLauThom/Fiji-QualiAnnotations/blob/master/images/Dropdown-plugin.png" alt="Plugin-dropdown" width="1000" height="300">     
 
 - __Pie Chart from data-column__  
