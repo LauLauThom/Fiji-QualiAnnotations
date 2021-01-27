@@ -15,7 +15,8 @@ To annotate ROI, either draw a new one before making a new annotation (it should
 __NB__: The plugins are not compatible with ImageJ, as they rely on some Fiji-specific funcitonalities (script parameters, GenericDialogPlus...)
 
 # Citation
-If you use these plugins, please cite:
+The plugins are extensisvely described in the following article (open-access).  
+Supplementary Figures are available on Zenodo (click the DOI badge at the top of this page).  
 
 Thomas LSV, Schaefer F and Gehrig J.   
 _Fiji plugins for qualitative image annotations: routine analysis and application to image classification_ [version 1; peer review: awaiting peer review].   
@@ -30,7 +31,7 @@ Or click on the image below to open the first tuto in youtube.
 
 
 # Description
-There are 3 plugins: 
+There are 4 plugins: 
 
 - __Single class (buttons)__  
 A single class is associated to each image.  
@@ -48,6 +49,11 @@ When started, the plugin requires a comma-separated value (csv, with comma or se
 Such files can be easily generated in a tabular software like excel (just select saving as csv).  
 See the [example input files](https://github.com/LauLauThom/Fiji-QualiAnnotations/tree/master/Fiji.app/lib) and the associated [wiki section ](https://github.com/LauLauThom/Fiji-QualiAnnotations/wiki/Input-for-the-dropdown-plugin).  
 <img src="https://github.com/LauLauThom/Fiji-QualiAnnotations/blob/master/images/Dropdown-plugin.png" alt="Plugin-dropdown" width="1000" height="300">     
+
+- __Pie Chart from data-column__  
+Allows the visualization of the data-distribution from a table column in Fiji.  
+The plugin uses the JFreeChart library and is macro-recrodable.  
+See Supplementary Figure 2 on Zenodo.  
 
 # Annotate image-regions with ROI
 You can annotate image-regions by either drawing a new roi or selecting one or multiple existing ROI stored in the RoiManager before clicking the "Add" or category button.  
@@ -78,7 +84,7 @@ View the distribution of the qualitative features as concentric circles (like a 
 -  [__Deep learning classification__](https://github.com/LauLauThom/Fiji-QualiAnnotations/tree/master/KNIMEworkflows/DeepLearning-Classification)    
 Workflows for the training of a deep-learning model for image-classification (1 class per image), there are 2 subfolders wether the images can be classified into 1 class out 2 classes (binary) or into 1 class out of 2 or more classes (multi-class).     
 Workflows for the prediction given a trained network are also provided.  
-Allso see the wiki page about the [Keras Network learner node](https://github.com/LauLauThom/Fiji-QualiAnnotations/wiki/Keras-Network-Learner-node). 
+Also see the wiki page about the [Keras Network learner node](https://github.com/LauLauThom/Fiji-QualiAnnotations/wiki/Keras-Network-Learner-node), and Supplementary Figure 4 and 5 on Zenodo.   
 
 # Example dataset  
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3997728.svg)](https://doi.org/10.5281/zenodo.3997728)  
