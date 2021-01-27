@@ -1,6 +1,6 @@
 # Visualizing data-distribution using Sunburst chart
 
-__Supplementary Figure 2: Visualizing data-distribution using sunburst charts in KNIME.__    
+__Supplementary Figure 3: Visualizing data-distribution using sunburst charts in KNIME.__    
 
 __(Top)__: The workflow counts the occurrence for each combination of features occurring in the dataset. The number of samples with a particular combination of qualitative features is reported in the column “Sum”. Here the table depicts the occurrence for the annotations of the table in Figure 3 (see article).    
 
