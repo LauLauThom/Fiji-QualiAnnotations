@@ -11,6 +11,7 @@ Broken, ,
 '''
 #@ File   (label="CSV file for category and choice", style="extension:csv") csvpath
 #@ String (label="Browsing mode", choices={"stack", "directory"}) browse_mode
+#@ String (visibility=MESSAGE, value="Example of input csv at Fiji.app/lib/QualiAnnotations-ExampleDropDown.csv", required=false) comment
 from java.awt 		import Panel, Choice, Label, GridLayout
 from fiji.util.gui	import GenericDialogPlus
 from QualiAnnotations import CustomDialog
