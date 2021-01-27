@@ -14,6 +14,7 @@ It will also skip to the next slice for stacks.
 #@ Integer (Label = "Number of categories", value=2, min=1, stepSize=1) N_category
 #@ Boolean (Label="Read categories from active table", value=False ) parse_table
 #@ String  (Label="Browsing mode", choices={"stack", "directory"}) browse_mode
+#@ Boolean (label="Run measure", value=false) run_measure
 #@ String  (Label="Table structure", choices={"single category column","one column per category"}) table_structure
 from ij.gui			import GenericDialog
 from ij 			import IJ, WindowManager, Prefs
@@ -73,7 +74,7 @@ class ButtonDialog(CustomDialog):
 	TABLE_SINGLE_COLUMN = "single category column"
 	TABLE_MULTI_COLUMN  = "one column per category"
 	
-	def __init__(self, title, message, panel, browseMode="stack", tableStructure=TABLE_SINGLE_COLUMN): 
+	def __init__(self, title, message, panel, browseMode="stack", runMeasure=False, tableStructure=TABLE_SINGLE_COLUMN): 
 		"""
 		browseMode: "stack" or "directory"
 		tableStructure: "single category column" or anything else, such as "one column per category"
@@ -86,6 +87,7 @@ class ButtonDialog(CustomDialog):
 		self.addStringField("Comments", "")
 		#self.addButton("Add", self) # no add button for button-plugin
 		self.browseMode = browseMode # important to define it before adding defaultOptions
+		self.runMeasure = runMeasure
 		self.addDefaultOptions()
 		#if choiceIndex == 0: self.addButton("Make PieChart from category column", PlotAction()) # Remov this button: risk of cherry picking to improve the plot
 		#self.addCitation()
@@ -171,5 +173,5 @@ if catDialog.wasOKed():
 	# Initialize classification gui
 	title = "Qualitative Annotations - single class (buttons)"
 	message = "Click the category of the current image or ROI, or use the F1-F12 keyboard shortcuts.\nTo annotate ROI, draw a new ROI or select some ROI in the RoiManager before clicking the category button." 
-	winButton = ButtonDialog(title, message, catPanel, browse_mode, table_structure)
+	winButton = ButtonDialog(title, message, catPanel, browse_mode, run_measure, table_structure)
 	winButton.showDialog()

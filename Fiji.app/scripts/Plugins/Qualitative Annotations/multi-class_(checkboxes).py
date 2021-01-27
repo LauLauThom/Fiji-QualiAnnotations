@@ -9,6 +9,7 @@ It will also skip to the next slice for stacks.
 #@ Integer (Label = "Number of categories", value=2, min=1, stepSize=1) N_category_
 #@ Boolean (Label="Read categories from active table", value=False ) parse_table
 #@ String  (label = "Browsing mode", choices={"stack", "directory"}) browse_mode
+#@ Boolean (label="Run measure", value=false) run_measure
 
 from ij.gui		    import GenericDialog
 from ij 			import IJ, Prefs
@@ -76,5 +77,5 @@ if catDialog.wasOKed():
 	message = """Tick the categories corresponding to the current image, then click 'Add' or press the '+' key.
 	To annotate ROI, draw a new ROI or select some ROI(s) in the RoiManager before clicking 'Add'/pressing '+'."""
 	
-	winButton = MainDialog(title, message, catPanel, browse_mode) 
+	winButton = MainDialog(title, message, catPanel, browse_mode, run_measure) 
 	winButton.showDialog()

@@ -238,7 +238,7 @@ class CustomDialog(GenericDialogPlus):
 	nspace = 20
 	LABEL_ADD = nspace*" " + "Add" + nspace*" " # Adding 10 spaces before/after to increase the size of the button. quick workaround
 	
-	def __init__(self, title, message, panel, browseMode="stack"):
+	def __init__(self, title, message, panel, browseMode="stack", runMeasure=False):
 		"""
 		This can be overwritten to readjust the order or if some components are not needed
 		The browseMode is either "stack" or "directory"
@@ -252,6 +252,7 @@ class CustomDialog(GenericDialogPlus):
 		self.addButton(self.LABEL_ADD, self)
 		
 		self.browseMode = browseMode # important to define it before addDefaultOptions and nextSlice...
+		self.runMeasure = runMeasure
 		self.addDefaultOptions()
 		#self.addCitation()
 		
@@ -277,9 +278,6 @@ class CustomDialog(GenericDialogPlus):
 			if sourceLabel == "  OK  ":
 				# Check options and save them in persistence
 				checkboxes	= self.getCheckboxes()
-				
-				doMeasure	= checkboxes[-2].getState()
-				Prefs.set("annot.doMeasure", doMeasure)
 				
 				doNext = checkboxes[-1].getState()
 				Prefs.set("annot.doNext", doNext)
@@ -337,7 +335,6 @@ class CustomDialog(GenericDialogPlus):
 		- help button
 		'''
 		# Checkbox next slice and run Measure 
-		self.addCheckbox("run 'Measure'", bool(Prefs.get("annot.doMeasure", False)) )
 		self.addCheckbox("Auto next slice/image file", bool(Prefs.get("annot.doNext", True)) )
 
 		if self.browseMode == "stack":
@@ -415,8 +412,7 @@ class CustomDialog(GenericDialogPlus):
 		checkboxes	= self.getCheckboxes()
 		
 		# Initialize Analyzer
-		doMeasure = checkboxes[-2].getState()
-		if doMeasure:
+		if self.runMeasure:
 			analyzer = Analyzer(imp, table)
 			analyzer.setMeasurement(Measurements.LABELS, False) # dont add label to table
 		
@@ -433,11 +429,11 @@ class CustomDialog(GenericDialogPlus):
 				imp.setRoi(roi)
 				
 				# Run measure for the ROI
-				if doMeasure: # Automatically increment counter
+				if self.runMeasure: # Automatically increment counter
 					analyzer.measure() # as selected in Set Measurements
 					
 				else:
-					table.incrementCounter() # Automatically done if doMeasure 
+					table.incrementCounter() # Automatically done if runMeasure 
 				
 				#table.addValue("Index", table.getCounter() )  
 				for key, value in getImageDirAndName(imp).iteritems():
@@ -453,15 +449,15 @@ class CustomDialog(GenericDialogPlus):
 				# Add roi name to the table + set its property
 				table.addValue("Roi", roi.getName()) # Add roi name to table
 				setRoiProperties(roi, table)
-					
+				
 		# No roi selected in the Manager
 		else:
 		
-			if doMeasure: # also automatically increment counter
+			if self.runMeasure: # also automatically increment counter
 				analyzer.measure() # as selected in Set Measurements
 				
 			else:
-				table.incrementCounter() # Automatically done if doMeasure 
+				table.incrementCounter() # Automatically done if runMeasure 
 			
 			#table.addValue("Index", table.getCounter() )  
 			for key, value in getImageDirAndName(imp).iteritems():
