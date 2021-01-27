@@ -237,8 +237,10 @@ class CustomDialog(GenericDialogPlus):
 	'''
 	nspace = 20
 	LABEL_ADD = nspace*" " + "Add" + nspace*" " # Adding 10 spaces before/after to increase the size of the button. quick workaround
+	STACK_MODE = "stack"
+	DIR_MODE   = "directory" 
 	
-	def __init__(self, title, message, panel, browseMode="stack"):
+	def __init__(self, title, message, panel, browseMode=CustomDialog.STACK_MODE):
 		"""
 		This can be overwritten to readjust the order or if some components are not needed
 		The browseMode is either "stack" or "directory"
@@ -285,7 +287,7 @@ class CustomDialog(GenericDialogPlus):
 				Prefs.set("annot.doNext", doNext)
 				
 				# Save selected dimension if mode stack
-				if self.browseMode=="stack": Prefs.set("annot.dimension", self.getSelectedDimension())
+				if self.browseMode==self.STACK_MODE: Prefs.set("annot.dimension", self.getSelectedDimension())
 			
 			elif sourceLabel == "Add new category":
 				self.addCategoryComponent()
@@ -340,13 +342,13 @@ class CustomDialog(GenericDialogPlus):
 		self.addCheckbox("run 'Measure'", bool(Prefs.get("annot.doMeasure", False)) )
 		self.addCheckbox("Auto next slice/image file", bool(Prefs.get("annot.doNext", True)) )
 
-		if self.browseMode == "stack":
+		if self.browseMode == self.STACK_MODE:
 			self.addToSameRow()
 			self.addChoice("- dimension (for hyperstack)", 
 							hyperstackDim, 
 							Prefs.get("annot.dimension", hyperstackDim[0]) )
 		
-		elif self.browseMode == "directory":
+		elif self.browseMode == self.DIR_MODE:
 			# Add button previous/next
 			self.addButton(BrowseButton.LABEL_PREVIOUS, BrowseButton())
 			self.addToSameRow()
@@ -495,8 +497,8 @@ class CustomDialog(GenericDialogPlus):
 		# Go to next slice
 		doNext    = checkboxes[-1].getState()
 		if doNext:
-			if   self.browseMode == "stack":     nextSlice(imp, self.getSelectedDimension() )
-			elif self.browseMode == "directory": NextImageOpener().run("forward")
+			if   self.browseMode == self.STACK_MODE: nextSlice(imp, self.getSelectedDimension() )
+			elif self.browseMode == self.DIR_MODE  : NextImageOpener().run("forward")
 		  
 		# Bring back the focus to the button window (otherwise the table is in the front)  
 		if not IJ.getFullVersion().startswith("1.52p"): WindowManager.toFront(self)	 # prevent some ImageJ bug with 1.52p

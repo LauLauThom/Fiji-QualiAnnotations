@@ -9,9 +9,11 @@ Straight, Gross
 Bent, Slim
 Broken, , 
 '''
-#@ File   (label="CSV file for category and choice", style="extension:csv") csvpath
+#@ PrefService prefs
+#@ File   (label="CSV file for category and choice", style="extension:csv", value="C:\Users\Laurent Thomas\Desktop\Fiji.app\lib\QualiAnnotations-ExampleDropDown.csv") csvpath
 #@ String (label="Browsing mode", choices={"stack", "directory"}) browse_mode
 from java.awt 		import Panel, Choice, Label, GridLayout
+from ij import IJ
 from fiji.util.gui	import GenericDialogPlus
 from QualiAnnotations import CustomDialog
 import os, csv, codecs
@@ -53,6 +55,22 @@ class MainDialog(CustomDialog):
 		Could return a new dropdown, but not implemented
 		"""
 		return None
+
+#### MAIN ####
+firstDialog = GenericDialogPlus("Configuration")
+defaultCSV = os.path.join(ij.getDirectory("imagej"), 
+							"lib", 
+							"QualiAnnotations-ExampleDropDown.csv")
+
+firstDialog.addFileField("CSV file with category header and choices", 
+							prefs.get("inputCSV", defaultCSV))
+							
+firstDialog.addChoice("Image-browsing mode", 
+						[CustomDialog.STACK_MODE, CustomDialog.DIR_MODE], 
+						prefs.get("browseMode", CustomDialog.STACK_MODE) )
+
+firstDialog.addHelp("Hi")
+firstDialog.showDialog()
 
 if firstDialog.wasOKed
 
