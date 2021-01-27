@@ -46,7 +46,7 @@ The result table contains 1 column per category with 0 if the image is not in th
 This plugin allows to describe multiple features and for each features to have a list of choices.  
 When started, the plugin requires a comma-separated value (csv, with comma or semi-column separator) file or tsv (tab-separated) value file with the name of the features and the associated choices.  
 Such files can be easily generated in a tabular software like excel (just select saving as csv).  
-See the [example csv](https://github.com/LauLauThom/Fiji-QualiAnnotations/blob/master/KNIMEworkflows/SunburstPlot/DropDownChoices.csv) and the associated [wiki section ](https://github.com/LauLauThom/Fiji-QualiAnnotations/wiki/Input-for-the-dropdown-plugin).  
+See the [example input files](https://github.com/LauLauThom/Fiji-QualiAnnotations/tree/master/Fiji.app/lib) and the associated [wiki section ](https://github.com/LauLauThom/Fiji-QualiAnnotations/wiki/Input-for-the-dropdown-plugin).  
 <img src="https://github.com/LauLauThom/Fiji-QualiAnnotations/blob/master/images/Dropdown-plugin.png" alt="Plugin-dropdown" width="1000" height="300">     
 
 # Annotate image-regions with ROI
