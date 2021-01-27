@@ -23,7 +23,7 @@ class MainDialog(CustomDialog):
 	"""
 
 	def __init__(self, title, message, panel, browseMode):
-		"""Custom constructor instead of the CustomDialog constructor: does not have the "Add" button"""
+		"""Custom constructor instead of the CustomDialog constructor: does not have the "Add new category" button"""
 		GenericDialogPlus.__init__(self, title)
 		self.setModalityType(None) # like non-blocking generic dialog
 		self.addMessage(message)
