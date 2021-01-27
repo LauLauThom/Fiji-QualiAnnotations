@@ -8,8 +8,8 @@ It will also skip to the next slice for stacks.
 '''
 #@ Integer (Label = "Number of categories", value=2, min=1, stepSize=1) N_category_
 #@ Boolean (Label="Read categories from active table", value=False ) parse_table
-#@ String  (label = "Browsing mode", choices={"stack", "directory"}) browse_mode
 #@ Boolean (label="Run measure", value=false) run_measure
+#@ String  (label = "Browsing mode", choices={"stack", "directory"}) browse_mode
 
 from ij.gui		    import GenericDialog
 from ij 			import IJ, Prefs
