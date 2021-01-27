@@ -2,9 +2,9 @@
 ![Twitter Follow](https://img.shields.io/twitter/follow/LauLauThom?style=social)
 [![Say Thanks!](https://img.shields.io/badge/Say%20Thanks-!-1EAEDB.svg)](https://saythanks.io/to/laurent132.thomas@laposte.net)
 
-Those Fiji plugins allow to __describe images or image-regions (outlined by ROI) to 1 or a set of user-defined keywords (or categories/classes)__.  
+Those Fiji plugins allow the __annotations of images or image-regions (outlined by ROI) with user-defined keywords (categories/classes)__.  
 They can be used to perform routine description of sample images, or to generate ground-truth category annotations for the training of a classifier for instance.  
-Besides qualitative annotations, any measurement as selected in the Fiji `Analyze > set Measurements`menu is reported to the table if the option `run Measure` is selected in the plugin.  
+Besides qualitative annotations, any measurement as selected in the Fiji `Analyze > set Measurements`menu is reported to the table if the option `run Measure` is selected in the initial configuration window.  
 The measurements and annotations are reported for the full-image by default.  
 To annotate ROI, either draw a new one before making a new annotation (it should be the actively selected ROI), or select existing Roi in the RoiManager before annotating. 
 
@@ -15,7 +15,7 @@ To annotate ROI, either draw a new one before making a new annotation (it should
 __NB__: The plugins are not compatible with ImageJ, as they rely on some Fiji-specific funcitonalities (script parameters, GenericDialogPlus...)
 
 # Citation
-The plugins are extensisvely described in the following article (open-access).  
+The plugins are extensively described in the following article (open-access).  
 Supplementary Figures are available on Zenodo (click the DOI badge at the top of this page).  
 
 Thomas LSV, Schaefer F and Gehrig J.   
@@ -31,7 +31,7 @@ Or click on the image below to open the first tuto in youtube.
 
 
 # Description
-There are 4 plugins: 
+The update site provides 3 annotations plugins and 1 visualization plugin (pie chart): 
 
 - __Single class (buttons)__  
 A single class is associated to each image.  
@@ -46,14 +46,15 @@ The result table contains 1 column per category with 0 if the image is not in th
 - __Multi-class (dropdown)__  
 This plugin allows to describe multiple features and for each features to have a list of choices.  
 When started, the plugin requires a comma-separated value (csv, with comma or semi-column separator) file or tsv (tab-separated) value file with the name of the features and the associated choices.  
-Such files can be easily generated in a tabular software like excel (just select saving as csv).  
-See the [example input files](https://github.com/LauLauThom/Fiji-QualiAnnotations/tree/master/Fiji.app/lib) and the associated [wiki section ](https://github.com/LauLauThom/Fiji-QualiAnnotations/wiki/Input-for-the-dropdown-plugin).  
+Such files can be easily generated in a tabular software like excel (just select "Saving as csv").  
+An example of csv is shipped with the update site, and should be in your Fiji installation at *Fiji.app/lib*.  
+Also see the [example input files](https://github.com/LauLauThom/Fiji-QualiAnnotations/tree/master/Fiji.app/lib) and the associated [wiki section ](https://github.com/LauLauThom/Fiji-QualiAnnotations/wiki/Input-for-the-dropdown-plugin).  
 <img src="https://github.com/LauLauThom/Fiji-QualiAnnotations/blob/master/images/Dropdown-plugin.png" alt="Plugin-dropdown" width="1000" height="300">     
 
 - __Pie Chart from data-column__  
 Allows the visualization of the data-distribution from a table column in Fiji.  
 The plugin uses the JFreeChart library and is macro-recrodable.  
-See Supplementary Figure 2 on Zenodo.  
+See Supplementary Figure 2 on Zenodo (click the DOI link at the top of this page).   
 
 # Annotate image-regions with ROI
 You can annotate image-regions by either drawing a new roi or selecting one or multiple existing ROI stored in the RoiManager before clicking the "Add" or category button.  
