@@ -55,6 +55,7 @@ Also see the [example input files](https://github.com/LauLauThom/Fiji-QualiAnnot
 Allows the visualization of the data-distribution from a table column in Fiji.  
 The plugin uses the JFreeChart library and is macro-recrodable.  
 See Supplementary Figure 2 on Zenodo (click the DOI link at the top of this page).   
+__NOTE__: As pointed out on [Twitter](https://twitter.com/MarionLouveaux/status/1362145060922482689), it's difficult to distinguish pie charts section with similar sizes, while it's more obvious with a bar chart. A bar chart plugin might come in future versions of the tool. Stay tuned !    
 
 # Annotate image-regions with ROI
 You can annotate image-regions by either drawing a new roi or selecting one or multiple existing ROI stored in the RoiManager before clicking the "Add" or category button.  
