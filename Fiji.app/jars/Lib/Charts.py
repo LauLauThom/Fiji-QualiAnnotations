@@ -2,10 +2,9 @@ from javax.swing             import JPanel, JFrame
 from org.jfree.chart.plot    import PiePlot
 from org.jfree.chart         import JFreeChart, ChartPanel, ChartFactory
 from org.jfree.data.general  import DefaultPieDataset
-from org.jfree.data.category import DefaultCategoryDataset; 
-
-from org.jfree.ui import ApplicationFrame, RefineryUtilities 
-from collections import Counter
+from org.jfree.data.category import DefaultCategoryDataset
+from org.jfree.ui            import ApplicationFrame, RefineryUtilities 
+from collections             import Counter
 
 class PieChart(JFrame): 
 	"""
