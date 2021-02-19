@@ -31,7 +31,7 @@ else:
 		# Get the data column as string
 		selectedHeader = dialog.getNextChoice()
 		column         = table.getColumnAsVariables(selectedHeader)
-		columnString   = [str(item) for item in column]
+		columnString   = [str(item)[1:-1] for item in column] # [1:-1] to remove the ""
 	
 		# Make the PieChart for this data column
 		if columnString:
