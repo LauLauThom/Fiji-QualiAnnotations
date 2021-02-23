@@ -22,7 +22,10 @@ else:
 	# Generate dialog with dropdown for column selection
 	dialog = GenericDialog("PieChart from table column")
 	dialog.addChoice("Data column", headers, headers[0])
-	dialog.addMessage("Hover the mouse over the plot to view absolute and relative (%) values\nRight-click to set colors, export to PNG...")
+	dialog.addMessage("""Hover the mouse over the plot to view absolute and relative (%) values\n
+	Right-click to set colors, export to PNG...\n
+	Note: BarCharts usually provide better distinction than PieCharts for sectors with similar sizes (see Help).""")
+	dialog.addHelp(r"https://www.data-to-viz.com/caveat/pie.html")
 	dialog.showDialog()
 	
 	# Generate PieChart with data column
