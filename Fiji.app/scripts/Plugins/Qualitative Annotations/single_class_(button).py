@@ -23,7 +23,7 @@ from java.awt 		import GridLayout, Button, Panel
 from java.awt.event import ActionListener
 from javax.swing import JButton
 from QualiAnnotations import CustomDialog, CategoryDialog, getTable
-from PieChart 		  import PieChart
+from Charts 		  import PieChart
 import os  
 
 # Make a dictionary for keycode and shortcut name for button F1-F12
