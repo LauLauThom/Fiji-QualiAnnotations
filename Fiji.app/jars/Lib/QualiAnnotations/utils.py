@@ -96,13 +96,13 @@ def getCategoriesFrom(categorySource, filepath=""):
 		- CATEGORY_FROM_MEMORY, read persistence or generate "CategoryX"
 	This list of categories is used to prepopulate the CategoryDialog
 	"""
-	if source == CATEGORY_FROM_FILE:
+	if categorySource == CATEGORY_FROM_FILE:
 		return getCategoriesFromFile(filepath)
 	
-	if source == CATEGORY_FROM_TABLE:
+	if categorySource == CATEGORY_FROM_TABLE:
 		return getCategoriesFromTable()
 	
-	elif source == CATEGORY_FROM_MEMORY:
+	if categorySource == CATEGORY_FROM_MEMORY:
 		return getCategoriesFromPersistence()
 
 def getRoiManager():
