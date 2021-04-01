@@ -16,6 +16,10 @@ nonCategory_headers = {"Folder", "Image", "Comment", "Roi", "Area","Mean","StdDe
 					"Circ.", "Feret", "IntDen", "Median","Skew","Kurt", "%Area", "RawIntDen", "Ch", "Slice", "Frame", 
 					 "FeretX", "FeretY", "FeretAngle", "MinFeret", "AR", "Round", "Solidity", "MinThr", "MaxThr"} # set of potential measurements header not corresponding to categories
 
+CATEGORY_FROM_MEMORY = "Memory"
+CATEGORY_FROM_FILE   = "Text file"
+CATEGORY_FROM_TABLE  = "Active table"
+
 def getTable():
 	''' Check if a table exists otherwise open a new one'''
 	
@@ -41,6 +45,10 @@ def getTable():
 	## If a table window then get its table, otherwise new table. In this case, its name is set later
 	return tableWindow.getResultsTable() if tableWindow else ResultsTable()
 
+def getCategoriesFromPersistence():
+	"""Return categories saved in memory as a list."""
+	stringCat = Prefs.get("annot.listCat", "Category1") # Retrieve the list of categories as a comma separated list, if not defined default to Category1
+	return stringCat.split(",") if stringCat else []
 
 def getCategoriesFromTable():
 	"""
@@ -63,6 +71,39 @@ def getCategoriesFromTable():
 		
 		# Also remove the measurement columns ?
 		return list(headings)
+
+def getCategoriesFromFile(filepath):
+	"""
+	Read the categories from a text file. 
+	There should be 1 cateogory per line in this text file.
+	"""
+	try:
+		textFile = open(filepath, "r")
+	
+	except IOError:
+		IJ.error("Could not open the category text file")
+		return
+	
+	listCategories = [line.rstrip() for line in textFile] #rstrip permettant de virer le \n
+	textFile.close()
+	return listCategories
+
+def getCategoriesFrom(categorySource, filepath=""):
+	"""
+	Return the list of categories from one of the following source:
+		- CATEGORY_FROM_FILE, read the filepath in this case
+		- CATEGORY_FROM_TABLE, parse the active table
+		- CATEGORY_FROM_MEMORY, read persistence or generate "CategoryX"
+	This list of categories is used to prepopulate the CategoryDialog
+	"""
+	if source == CATEGORY_FROM_FILE:
+		return getCategoriesFromFile(filepath)
+	
+	if source == CATEGORY_FROM_TABLE:
+		return getCategoriesFromTable()
+	
+	elif source == CATEGORY_FROM_MEMORY:
+		return getCategoriesFromPersistence()
 
 def getRoiManager():
 	"""
