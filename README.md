@@ -9,7 +9,7 @@ The measurements and annotations are reported for the full-image by default.
 To annotate ROI, either draw a new one before making a new annotation (it should be the actively selected ROI), or select existing Roi in the RoiManager before annotating. 
 
 # Installation
-- Activate the `Qualitative Annotations` update site in Fiji
+- Activate the `Qualitative Annotations` update site in Fiji (Help > Update > Manage Update sites)
 - The plugins appear in the `Plugins > Qualitative Annotations` menu
 
 __NB__: The plugins are not compatible with ImageJ, as they rely on some Fiji-specific funcitonalities (script parameters, GenericDialogPlus...)
@@ -31,7 +31,15 @@ Or click on the image below to open the first tuto in youtube.
 
 
 # Description
-The update site provides 3 annotations plugins and 1 visualization plugin (pie chart): 
+The update site provides 3 annotations plugins and 2 visualization plugins: 
+
+## Annotation plugins
+__NOTE__  
+For the single-class and checkbox plugins, you can now specify if you want to populate the initial set of categories by :  
+- recalling the values from the previous session (memory)
+- parsing a previous annotation table currently opened in Fiji
+- reading a text file containing 1 category name per row (see [example](https://github.com/LauLauThom/Fiji-QualiAnnotations/blob/category-dialog/Fiji.app/lib/CategoryTextFile.txt))
+
 
 - __Single class (buttons)__  
 A single class is associated to each image.  
@@ -51,11 +59,16 @@ An example of csv is shipped with the update site, and should be in your Fiji in
 Also see the [example input files](https://github.com/LauLauThom/Fiji-QualiAnnotations/tree/master/Fiji.app/lib) (click the "raw" button to see the file content) and the associated [wiki section ](https://github.com/LauLauThom/Fiji-QualiAnnotations/wiki/Input-for-the-dropdown-plugin).  
 <img src="https://github.com/LauLauThom/Fiji-QualiAnnotations/blob/master/images/Dropdown-plugin.png" alt="Plugin-dropdown" width="1000" height="300">     
 
+## Visualization plugins
+
 - __Pie Chart from data-column__  
 Allows the visualization of the data-distribution from a table column in Fiji.  
 The plugin uses the JFreeChart library and is macro-recrodable.  
 See Supplementary Figure 2 on Zenodo (click the DOI link at the top of this page).   
-__NOTE__: As pointed out on [Twitter](https://twitter.com/MarionLouveaux/status/1362145060922482689), it's difficult to distinguish pie charts section with similar sizes, while it's more obvious with a bar chart. A bar chart plugin might come in future versions of the tool. Stay tuned !    
+__NOTE__: As pointed out on [Twitter](https://twitter.com/MarionLouveaux/status/1362145060922482689), it's difficult to distinguish pie charts section with similar sizes, while it's more obvious with a bar chart
+
+- __Bar Chart from data-column__  
+Similar to the Pie chart plotting. With this one you get one bar per category, which is a bit more readable if the population for each bar have similar sizes.  
 
 # Annotate image-regions with ROI
 You can annotate image-regions by either drawing a new roi or selecting one or multiple existing ROI stored in the RoiManager before clicking the "Add" or category button.  
