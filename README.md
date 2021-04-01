@@ -40,6 +40,8 @@ For the single-class and checkbox plugins, you can now specify if you want to po
 - parsing a previous annotation table currently opened in Fiji
 - reading a text file containing 1 category name per row (see [example](https://github.com/LauLauThom/Fiji-QualiAnnotations/blob/category-dialog/Fiji.app/lib/CategoryTextFile.txt))
 
+---
+
 
 - __Single class (buttons)__  
 A single class is associated to each image.  
