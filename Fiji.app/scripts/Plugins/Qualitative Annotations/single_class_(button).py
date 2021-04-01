@@ -11,24 +11,25 @@ Finally the annotation GUI will show up with one button per category.
 Clicking on the button will generate a new entry in a table with the image name and the category.  
 It will also skip to the next slice for stacks.  
 '''
-#@ Integer (Label = "Number of categories", value=2, min=1, stepSize=1) N_category
-#@ Boolean (Label="Read categories from active table", value=False ) parse_table
-#@ Boolean (label="Run measure", value=false) run_measure
-#@ String  (Label="Browsing mode", choices={"stack", "directory"}) browse_mode
+#@ String  (Label="Read categories from", choices={"Text file", "Active table", "Memory"}, value="Memory" ) categorySource 
+#@ File    (label="Text file (if selected above)", style="file", required=false) textFile
+#@ String  (label="Browsing mode", choices={"stack", "directory"}) browse_mode
 #@ String  (Label="Table structure", choices={"single category column","one column per category"}) table_structure
-from ij.gui			import GenericDialog
+#@ Boolean (label="Run measure", value=false) run_measure 
+
 from ij 			import IJ, WindowManager, Prefs
 from fiji.util.gui  import GenericDialogPlus
 from java.awt 		import GridLayout, Button, Panel 
 from java.awt.event import ActionListener
-from javax.swing import JButton
-from QualiAnnotations import CustomDialog, CategoryDialog, getTable
-from Charts 		  import PieChart
+from javax.swing    import JButton
+from QualiAnnotations.utils          import CustomDialog, getTable, getCategoriesFrom
+from QualiAnnotations.CategoryDialog import CategoryDialog
+from QualiAnnotations.Charts         import PieChart
 import os  
 
 # Make a dictionary for keycode and shortcut name for button F1-F12
-listKeyCodes = range(112, 124) # see https://docs.oracle.com/javase/7/docs/api/constant-values.html#java.awt.event.KeyEvent.VK_F1
-listF1_F12 = ["F"+str(x) for x in range(1,13) ]      # simply F1-F12
+listKeyCodes  = range(112, 124) # see https://docs.oracle.com/javase/7/docs/api/constant-values.html#java.awt.event.KeyEvent.VK_F1
+listF1_F12    = ["F"+str(x) for x in range(1,13) ]      # simply F1-F12
 dicoShortcuts = dict(zip(listKeyCodes, listF1_F12))  # keyCode:"FX" value
 
 class PlotAction(ActionListener):
@@ -74,15 +75,16 @@ class ButtonDialog(CustomDialog):
 	TABLE_SINGLE_COLUMN = "single category column"
 	TABLE_MULTI_COLUMN  = "one column per category"
 	
-	def __init__(self, title, message, panel, browseMode="stack", runMeasure=False, tableStructure=TABLE_SINGLE_COLUMN): 
+	def __init__(self, panel, browseMode="stack", runMeasure=False, tableStructure=TABLE_SINGLE_COLUMN): 
 		"""
 		browseMode: "stack" or "directory"
 		tableStructure: "single category column" or anything else, such as "one column per category"
 		"""
-		GenericDialogPlus.__init__(self, title)
+		GenericDialogPlus.__init__(self, "Qualitative Annotations - single class (buttons)")
 		self.setModalityType(None) # like non-blocking generic dialog
+		message = "Click the category of the current image or ROI, or use the F1-F12 keyboard shortcuts.\nTo annotate ROI, draw a new ROI or select some ROI in the RoiManager before clicking the category button." 
 		self.addMessage(message)
-		self.addPanel(panel) # cannot be replaced by a JPanel
+		self.addPanel(panel) # custom panel, here holding the buttons. cannot be replaced by a JPanel
 		self.addButton("Add new category", self) 
 		self.addStringField("Comments", "")
 		#self.addButton("Add", self) # no add button for button-plugin
@@ -141,7 +143,9 @@ class ButtonDialog(CustomDialog):
 		return button
   
 ############### GUI - CATEGORY DIALOG - collect N classes names (N define at first line)  #############  
-catDialog = CategoryDialog(N_category, parse_table)
+textFilePath   = textFile.getPath() if textFile else "" 
+listCategories = getCategoriesFrom(categorySource, textFilePath) # initial list, before user-edit
+catDialog      = CategoryDialog(listCategories)
 catDialog.showDialog()
 
 
@@ -153,8 +157,8 @@ if catDialog.wasOKed():
 	# Loop over categories and add a button to the panel for each  
 	catPanel = Panel(GridLayout(0,4)) # Unlimited number of rows - fix to 4 columns - not possible to use a JPanel, not supported by GenericDialog
 	
-	listCat = catDialog.getCategoryNames()
-	listShortcut = range(112, 112+N_category)
+	listCat = catDialog.getListCategories()
+	listShortcut = range( 112, 112+len(listCat) )
 	
 	for index, category in enumerate(listCat): 
 		  
@@ -171,7 +175,5 @@ if catDialog.wasOKed():
 	
 	
 	# Initialize classification gui
-	title = "Qualitative Annotations - single class (buttons)"
-	message = "Click the category of the current image or ROI, or use the F1-F12 keyboard shortcuts.\nTo annotate ROI, draw a new ROI or select some ROI in the RoiManager before clicking the category button." 
-	winButton = ButtonDialog(title, message, catPanel, browse_mode, run_measure, table_structure)
+	winButton = ButtonDialog(catPanel, browse_mode, run_measure, table_structure)
 	winButton.showDialog()
