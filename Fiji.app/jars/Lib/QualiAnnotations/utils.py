@@ -57,7 +57,9 @@ def getCategoriesFromTable():
 	"""
 	table = getTable()
 	headings = table.getHeadings()
-	if not headings: return []
+	if not headings: # empty table
+		IJ.error("No active table")
+		return ["Category1"]
 	
 	if "Category" in headings: 
 		# parse the column category to a set
@@ -82,10 +84,15 @@ def getCategoriesFromFile(filepath):
 	
 	except IOError:
 		IJ.error("Could not open the category text file")
-		return
+		return ["Category1"]
 	
 	listCategories = [line.rstrip() for line in textFile] #rstrip permettant de virer le \n
 	textFile.close()
+	
+	if not listCategories:
+		IJ.error("Empty text file")
+		listCategories = ["Category1"]
+	
 	return listCategories
 
 def getCategoriesFrom(categorySource, filepath=""):
