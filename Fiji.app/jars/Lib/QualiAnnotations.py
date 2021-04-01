@@ -185,57 +185,6 @@ def setRoiProperties(roi, table):
 		value = table.getStringValue(heading, table.size()-1)
 		roi.setProperty(heading, value)
 
-class CategoryDialog(GenericDialog):
-	"""
-	Dialog prompting the category names, used by the single class button and checkbox plugins.
-	
-	Parameters
-	----------
-	nCategories (int)    : number of string field to prompt category names
-	parseTable (boolean) :  if True,  get categories names from currently opened table 
-							if False, get categories names from persistence
-	"""
-	
-	def __init__(self, nCategories, parseTable=False):
-		
-		GenericDialog.__init__(self, "Category names")
-		self.nCategories = nCategories
-		
-		# Get previous categories from persistence
-		if parseTable: 
-			listCategories = getCategoriesFromTable()
-			if not listCategories: IJ.showStatus("No opened table, try reading categories from persistence")
-		
-		if not parseTable or not listCategories: # fall back on persistence if no open table
-			stringCat = Prefs.get("annot.listCat", "") # Retrieve the list of categories as a comma separated list
-			listCategories = stringCat.split(",") if stringCat else []
-		
-		nOldCat = len(listCategories) 
-		
-		for i in range(nCategories): 
-			
-			if listCategories and i<=nOldCat-1:	catName = listCategories[i] 
-			else:										catName = "Category_" + str(i+1) 
-			
-			# Add string input to GUI
-			self.addStringField("Category: ", catName) 
-			self.addMessage("") # skip one line before the next input field
-	
-	def getCategoryNames(self):
-		"""
-		Read the new category names as entered by user in the GUI, before the GUI was OKed.
-		"""
-		listCategories = []
-		for textField in self.getStringFields():
-				newCategory = textField.getText()
-				if newCategory: listCategories.append(newCategory)
-			
-		#self.listCategories = [textField.getText() for textField in self.getStringFields()]
-		Prefs.set("annot.listCat", ",".join(listCategories) ) # save the new list of categories
-		
-		return listCategories
-
-
 class BrowseButton(ActionListener):
 	"""Implement the action following click on Previous/Next image"""
 	
