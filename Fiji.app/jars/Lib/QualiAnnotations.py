@@ -228,25 +228,6 @@ class CustomDialog(GenericDialogPlus):
 	nspace = 20
 	LABEL_ADD = nspace*" " + "Add" + nspace*" " # Adding 10 spaces before/after to increase the size of the button. quick workaround
 	
-	def __init__(self, title, message, panel, browseMode="stack", runMeasure=False):
-		"""
-		This can be overwritten to readjust the order or if some components are not needed
-		The browseMode is either "stack" or "directory"
-		"""
-		GenericDialogPlus.__init__(self, title)
-		self.setModalityType(None) # like non-blocking generic dialog
-		self.addMessage(message)
-		self.addPanel(panel)
-		self.addButton("Add new category", self) # the GUI also catches the event for this button too
-		self.addStringField("Comments", "")
-		self.addButton(self.LABEL_ADD, self)
-		
-		self.browseMode = browseMode # important to define it before addDefaultOptions and nextSlice...
-		self.runMeasure = runMeasure
-		self.addDefaultOptions()
-		#self.addCitation()
-		
-	
 	def getPanel(self):
 		"""Return the panel contained in the GenericDialog"""
 		return self.getComponent(1) # Might need to adapt it, if we add more items before the panel
