@@ -314,7 +314,7 @@ class CustomDialog(GenericDialogPlus):
 		if newComponent is None: return
 		if not isinstance(newComponent, Component): raise TypeError("Expect a component to be added to the dialog")
 		self.getPanel().add(newComponent) # component 1 is the panel
-		self.validate() # recompute the layout and update the display
+		self.pack() # recompute the layout and update the display
 	
 	def addDefaultOptions(self):
 		'''
