@@ -107,4 +107,4 @@ Also see the wiki page about the [Keras Network learner node](https://github.com
 # Example dataset  
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3997728.svg)](https://doi.org/10.5281/zenodo.3997728)  
 An example of images from a related screening project in Zebrafish is available on Zenodo.  
-The Zenodo repository contains a zip archive with the images, ground-truth category annotations for the images (generated with the plugins) and a trained deep-learening model for classification of the images.  
+The Zenodo repository contains a zip archive with the images, ground-truth category annotations for the images (generated with the plugins) and a trained deep-learning model for classification of the images.  
