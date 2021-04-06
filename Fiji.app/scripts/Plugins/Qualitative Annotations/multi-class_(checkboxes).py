@@ -6,7 +6,7 @@ Mutliple categories can be assigned to an image using the checkboxes.
 A first window pops up asking where to get the categories:
 - Memory       : read persisted values from memory
 - Active table : parse a prevous annotation table
-- Text fiele   : read a text file with one category per row
+- Text file    : read a text file with one category per row
      
 A second window follows with text fields to edit the category names
 Leaving a field empty results in removing this category.
