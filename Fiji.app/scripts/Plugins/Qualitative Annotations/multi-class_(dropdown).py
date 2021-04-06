@@ -24,12 +24,13 @@ class MainDialog(CustomDialog):
 	In this case the panel contains dropdowns
 	"""
 
-	def __init__(self, title, message, panel, browseMode, runMeasure):
-		"""Custom constructor instead of the CustomDialog constructor: does not have the "Add new category" button"""
-		GenericDialogPlus.__init__(self, title)
-		self.setModalityType(None) # like non-blocking generic dialog
-		self.addMessage(message)
-		self.addPanel(panel)
+	def __init__(self, panel, browseMode, runMeasure):
+		
+		title   = "Qualitative Annotations - multi-classes (dropdown)"
+		message = """Select the descriptors corresponding to the current image, then click 'Add' or press one of the '+' key.
+		To annotate ROI, draw a new ROI or select some ROI(s) from the RoiManager before clicking 'Add'/pressing '+'."""
+		CustomDialog.__init__(self, title, message, panel)
+
 		#self.addButton("Add new category", self) # no add new category button for dropdown
 		self.addStringField("Comments", "")
 		self.addButton(CustomDialog.LABEL_ADD, self)
@@ -65,7 +66,7 @@ with open(csvPath, "r") as csvFile:
 	
 	# Check extension (script parameter extension filtering above not functionnal)
 	if csvPath.endswith("csv"):
-
+		
 		# Guess , or ; separator
 		s = csv.Sniffer()
 		dialect = s.sniff(csvFile.readline())
@@ -113,9 +114,5 @@ for i in range(n):
 
 
 # Initialize classification GUI
-title   = "Qualitative Annotations - multi-classes (dropdown)"
-message = """Select the descriptors corresponding to the current image, then click 'Add' or press one of the '+' key.
-To annotate ROI, draw a new ROI or select some ROI(s) from the RoiManager before clicking 'Add'/pressing '+'."""
-
-win = MainDialog(title, message, panel, browse_mode, run_measure)
+win = MainDialog(panel, browse_mode, run_measure)
 win.showDialog()

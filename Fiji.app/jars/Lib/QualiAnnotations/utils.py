@@ -224,16 +224,22 @@ class CustomDialog(GenericDialogPlus):
 		-- add to Manager, nextSlice, runMeasurement
 		-- online ressource message
 		-- help button
-	- Citation
 	
 	Daughter class should implement the following methods:
-	- __init__ , if the plugin should have a different structure than the backbone above
+	- __init__ , to define the dialog structure
 	- makeCategoryComponent(category) which should return a new category component to add to the main dialog
 	- addAction(), function when the button Add is pressed (add to table)
 	- fillTable(table), function stating how to add to the table
 	'''
 	nspace = 20
 	LABEL_ADD = nspace*" " + "Add" + nspace*" " # Adding 10 spaces before/after to increase the size of the button. quick workaround
+	
+	def __init__(self, title, message, panel):
+		GenericDialogPlus.__init__(self, title)
+		self.setModalityType(None) # like non-blocking generic dialog
+		message = "Click the category of the current image or ROI, or use the F1-F12 keyboard shortcuts.\nTo annotate ROI, draw a new ROI or select some ROI in the RoiManager before clicking the category button." 
+		self.addMessage(message)
+		self.addPanel(panel) # custom panel, cannot be replaced by a JPanel
 	
 	def getPanel(self):
 		"""Return the panel contained in the GenericDialog"""

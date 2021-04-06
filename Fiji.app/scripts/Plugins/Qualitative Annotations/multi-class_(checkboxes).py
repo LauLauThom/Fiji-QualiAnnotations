@@ -33,13 +33,16 @@ class MainDialog(CustomDialog):
 	In this case the panel contains checkboxes 
 	"""
 	 
-	def __init__(self, panel, browseMode="stack", runMeasure=False): 
-		GenericDialogPlus.__init__(self, "Qualitative Annotations - multi-classes (checkboxes)") 
-		self.setModalityType(None) # like non-blocking generic dialog 
+	def __init__(self,
+				 panel,
+				 browseMode="stack",
+				 runMeasure=False):
+		
+		title = "Qualitative Annotations - multi-classes (checkboxes)"
 		message = """Tick the categories corresponding to the current image, then click 'Add' or press the '+' key.
 		To annotate ROI, draw a new ROI or select some ROI(s) in the RoiManager before clicking 'Add'/pressing '+'."""
-		self.addMessage(message) 
-		self.addPanel(panel) 
+		CustomDialog.__init__(self, title, message, panel) 
+		
 		self.addButton("Add new category", self) # the GUI also catches the event for this button too 
 		self.addStringField("Comments", "") 
 		self.addButton(CustomDialog.LABEL_ADD, self) 

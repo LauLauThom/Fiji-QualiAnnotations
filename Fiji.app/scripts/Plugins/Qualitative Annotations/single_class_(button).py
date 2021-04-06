@@ -75,16 +75,18 @@ class ButtonDialog(CustomDialog):
 	TABLE_SINGLE_COLUMN = "single category column"
 	TABLE_MULTI_COLUMN  = "one column per category"
 	
-	def __init__(self, panel, browseMode="stack", runMeasure=False, tableStructure=TABLE_SINGLE_COLUMN): 
+	def __init__(self,
+				 panel,
+				 browseMode="stack",
+				 runMeasure=False,
+				 tableStructure=TABLE_SINGLE_COLUMN):
 		"""
 		browseMode: "stack" or "directory"
 		tableStructure: "single category column" or anything else, such as "one column per category"
 		"""
-		GenericDialogPlus.__init__(self, "Qualitative Annotations - single class (buttons)")
-		self.setModalityType(None) # like non-blocking generic dialog
+		title   = "Qualitative Annotations - single class (buttons)"
 		message = "Click the category of the current image or ROI, or use the F1-F12 keyboard shortcuts.\nTo annotate ROI, draw a new ROI or select some ROI in the RoiManager before clicking the category button." 
-		self.addMessage(message)
-		self.addPanel(panel) # custom panel, here holding the buttons. cannot be replaced by a JPanel
+		CustomDialog.__init__(self, title, message, panel)
 		self.addButton("Add new category", self) 
 		self.addStringField("Comments", "")
 		#self.addButton("Add", self) # no add button for button-plugin
