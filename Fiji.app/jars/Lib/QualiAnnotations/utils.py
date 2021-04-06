@@ -337,7 +337,7 @@ class CustomDialog(GenericDialogPlus):
 		self.addMessage("Documentation and generic analysis workflows available on the GitHub repo (click Help)")
 		
 		# Add Help button pointing to the github
-		self.addHelp(r"https://github.com/LauLauThom/Fiji-QualiAnnotations")
+		self.addHelp(r"https://github.com/LauLauThom/Fiji-QualiAnnotations#readme")
 		self.hideCancelButton()
 	
 	def addCitation(self):
