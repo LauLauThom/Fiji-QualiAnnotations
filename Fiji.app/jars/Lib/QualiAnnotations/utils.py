@@ -233,10 +233,12 @@ class CustomDialog(GenericDialogPlus):
 	'''
 	nspace = 20
 	LABEL_ADD = nspace*" " + "Add" + nspace*" " # Adding 10 spaces before/after to increase the size of the button. quick workaround
+	LABEL_OK = "Close"
 	
 	def __init__(self, title, message, panel):
 		GenericDialogPlus.__init__(self, title)
 		self.setModalityType(None) # like non-blocking generic dialog
+		self.setOKLabel(CustomDialog.LABEL_OK)
 		message = "Click the category of the current image or ROI, or use the F1-F12 keyboard shortcuts.\nTo annotate ROI, draw a new ROI or select some ROI in the RoiManager before clicking the category button." 
 		self.addMessage(message)
 		self.addPanel(panel) # custom panel, cannot be replaced by a JPanel
@@ -259,7 +261,7 @@ class CustomDialog(GenericDialogPlus):
 			
 			sourceLabel = source.getLabel()
 		
-			if sourceLabel == "  OK  ":
+			if sourceLabel == CustomDialog.LABEL_OK:
 				# Check options and save them in persistence
 				checkboxes	= self.getCheckboxes()
 				
