@@ -9,7 +9,7 @@ The measurements and annotations are reported for the full-image by default.
 To annotate ROI, either draw a new one before making a new annotation (it should be the actively selected ROI), or select existing Roi in the RoiManager before annotating. 
 
 # Installation
-- Activate the `Qualitative Annotations` update site in Fiji
+- Activate the `Qualitative Annotations` update site in Fiji (see [Following an update site](https://imagej.net/Following_an_update_site)).
 - The plugins appear in the `Plugins > Qualitative Annotations` menu
 
 __NB__: The plugins are not compatible with ImageJ, as they rely on some Fiji-specific funcitonalities (script parameters, GenericDialogPlus...)
