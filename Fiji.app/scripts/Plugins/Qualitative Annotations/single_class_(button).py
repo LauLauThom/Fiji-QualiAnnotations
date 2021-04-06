@@ -67,8 +67,21 @@ class SaveAction(ActionListener):
 	"""Define what happens when the save category button is pressed."""
 	
 	def actionPerformed(self, event):
-		pass
 
+		outDir   = IJ.getDirectory("Save category file in directory...")
+		if not outDir: return # when cancelled
+		
+		filename = IJ.getString("Filename", "categories.txt")
+		if not filename: return # when cancelled
+		
+		outPath  = os.path.join(outDir, filename)
+
+		listButtons = winButton.getPanel().getComponents()
+		with open(outPath, "w") as catFile:
+			for button in listButtons:
+				catFile.write(button.getLabel().encode("utf-8") + "\n") # important to use UTF-8 otherwise troubles
+
+		
 # Define global button action listener
 # Need to be global since the panel is built out of the dialog constructor (ie no access to self)
 # Surely not the cleanest but it works
@@ -97,7 +110,10 @@ class ButtonDialog(CustomDialog):
 		message = "Click the category of the current image or ROI, or use the F1-F12 keyboard shortcuts.\nTo annotate ROI, draw a new ROI or select some ROI in the RoiManager before clicking the category button." 
 		CustomDialog.__init__(self, title, message, panel)
 		self.addButton("Add new category", self) 
+		self.addToSameRow()
+		self.addButton("Save categories to file", saveAction)
 		self.addStringField("Comments", "")
+		
 		#self.addButton("Add", self) # no add button for button-plugin
 		self.browseMode = browseMode # important to define it before adding defaultOptions
 		self.runMeasure = runMeasure

@@ -21,12 +21,36 @@ It will also skip to the next slice for stacks.
 #@ Boolean (label="Run measure", value=false) run_measure 
 
 from fiji.util.gui    import GenericDialogPlus
-from ij 			  import Prefs 
+from ij 			  import IJ, Prefs 
 from java.awt 		  import GridLayout, Button, Panel, Checkbox 
+from java.awt.event   import ActionListener
+
 from QualiAnnotations.utils          import getCategoriesFrom, CustomDialog
 from QualiAnnotations.CategoryDialog import CategoryDialog
 import os  
-  
+
+class SaveAction(ActionListener):
+	"""Define what happens when the save category button is pressed."""
+	
+	def __init__(self, dialog):
+		self.dialog = dialog
+	
+	def actionPerformed(self, event):
+
+		outDir   = IJ.getDirectory("Save category file in directory...")
+		if not outDir: return # when cancelled
+		
+		filename = IJ.getString("Filename", "categories.txt")
+		if not filename: return # when cancelled
+		
+		outPath  = os.path.join(outDir, filename)
+
+		listCheckboxes = self.dialog.getPanel().getComponents()
+		with open(outPath, "w") as catFile:
+			for checkbox in listCheckboxes:
+				catFile.write(checkbox.getLabel().encode("utf-8") + "\n") # important to use UTF-8 otherwise troubles
+
+
 class MainDialog(CustomDialog): 
 	"""
 	Main annotation dialog for this plugin 
@@ -44,6 +68,9 @@ class MainDialog(CustomDialog):
 		CustomDialog.__init__(self, title, message, panel) 
 		
 		self.addButton("Add new category", self) # the GUI also catches the event for this button too 
+		self.addToSameRow()
+		self.addButton("Save categories to file", SaveAction(self))
+		
 		self.addStringField("Comments", "") 
 		self.addButton(CustomDialog.LABEL_ADD, self) 
 		 
