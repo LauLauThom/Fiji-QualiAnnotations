@@ -1,4 +1,4 @@
-from Charts import PieChart
+from QualiAnnotations.Charts import PieChart
 from ij.gui import GenericDialog
 from ij import IJ, WindowManager
 

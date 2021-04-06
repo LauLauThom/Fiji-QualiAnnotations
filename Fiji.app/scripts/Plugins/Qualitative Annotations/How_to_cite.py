@@ -3,11 +3,11 @@ from ij.gui import GenericDialog
 gd = GenericDialog("How to cite the plugins")
 gd.addMessage("""If you use these plugins, please cite : 
 		
-		Thomas LSV, Schaefer F and Gehrig J.
+		Thomas LSV, Schaefer F and Gehrig J. 
 		Fiji plugins for qualitative image annotations: routine analysis and application to image classification
-		[version 1; peer review: awaiting peer review]
-		F1000Research 2020, 9:1248
-		https://doi.org/10.12688/f1000research.26872.1
+		[version 2; peer review: 2 approved, 1 approved with reservations]. 
+		F1000Research 2021, 9:1248 
+		doi : 10.12688/f1000research.26872.2
 		
 		Click the help button below to open the article page""")
 

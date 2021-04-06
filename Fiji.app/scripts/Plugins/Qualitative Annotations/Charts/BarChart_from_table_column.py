@@ -1,4 +1,4 @@
-from Charts import BarChart
+from QualiAnnotations.Charts import BarChart
 from ij.gui import GenericDialog, Plot
 from ij import IJ, WindowManager
 

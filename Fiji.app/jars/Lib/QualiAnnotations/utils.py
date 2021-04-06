@@ -4,7 +4,7 @@ from ij.plugin		import NextImageOpener
 from ij.plugin.filter import Analyzer
 from ij.plugin.frame  import RoiManager
 from ij.measure		  import ResultsTable, Measurements
-import os
+import os, codecs
 from collections	import OrderedDict
 from java.awt.event import ActionListener
 from java.awt 		import Label, Component, Button
@@ -15,6 +15,10 @@ nonCategory_headers = {"Folder", "Image", "Comment", "Roi", "Area","Mean","StdDe
 					"X","Y","XM","YM","Perim.","BX","BY","Width","Height","Major","Minor","Angle",
 					"Circ.", "Feret", "IntDen", "Median","Skew","Kurt", "%Area", "RawIntDen", "Ch", "Slice", "Frame", 
 					 "FeretX", "FeretY", "FeretAngle", "MinFeret", "AR", "Round", "Solidity", "MinThr", "MaxThr"} # set of potential measurements header not corresponding to categories
+
+CATEGORY_FROM_MEMORY = "Memory"
+CATEGORY_FROM_FILE   = "Text file"
+CATEGORY_FROM_TABLE  = "Active table"
 
 def getTable():
 	''' Check if a table exists otherwise open a new one'''
@@ -41,6 +45,10 @@ def getTable():
 	## If a table window then get its table, otherwise new table. In this case, its name is set later
 	return tableWindow.getResultsTable() if tableWindow else ResultsTable()
 
+def getCategoriesFromPersistence():
+	"""Return categories saved in memory as a list."""
+	stringCat = Prefs.get("annot.listCat", "Category1") # Retrieve the list of categories as a comma separated list, if not defined default to Category1
+	return stringCat.split(",") if stringCat else []
 
 def getCategoriesFromTable():
 	"""
@@ -49,7 +57,9 @@ def getCategoriesFromTable():
 	"""
 	table = getTable()
 	headings = table.getHeadings()
-	if not headings: return []
+	if not headings: # empty table
+		IJ.error("No active table")
+		return ["Category1"]
 	
 	if "Category" in headings: 
 		# parse the column category to a set
@@ -63,6 +73,44 @@ def getCategoriesFromTable():
 		
 		# Also remove the measurement columns ?
 		return list(headings)
+
+def getCategoriesFromFile(filepath):
+	"""
+	Read the categories from a text file. 
+	There should be 1 cateogory per line in this text file.
+	"""
+	try:
+		textFile = codecs.open(filepath, "r", "utf-8")
+	
+	except IOError:
+		IJ.error("Could not open the category text file")
+		return ["Category1"]
+	
+	listCategories = [line.rstrip() for line in textFile] #rstrip permettant de virer le \n
+	textFile.close()
+	
+	if not listCategories:
+		IJ.error("Empty text file")
+		listCategories = ["Category1"]
+	
+	return listCategories
+
+def getCategoriesFrom(categorySource, filepath=""):
+	"""
+	Return the list of categories from one of the following source:
+		- CATEGORY_FROM_FILE, read the filepath in this case
+		- CATEGORY_FROM_TABLE, parse the active table
+		- CATEGORY_FROM_MEMORY, read persistence or generate "CategoryX"
+	This list of categories is used to prepopulate the CategoryDialog
+	"""
+	if categorySource == CATEGORY_FROM_FILE:
+		return getCategoriesFromFile(filepath)
+	
+	if categorySource == CATEGORY_FROM_TABLE:
+		return getCategoriesFromTable()
+	
+	if categorySource == CATEGORY_FROM_MEMORY:
+		return getCategoriesFromPersistence()
 
 def getRoiManager():
 	"""
@@ -144,57 +192,6 @@ def setRoiProperties(roi, table):
 		value = table.getStringValue(heading, table.size()-1)
 		roi.setProperty(heading, value)
 
-class CategoryDialog(GenericDialog):
-	"""
-	Dialog prompting the category names, used by the single class button and checkbox plugins.
-	
-	Parameters
-	----------
-	nCategories (int)    : number of string field to prompt category names
-	parseTable (boolean) :  if True,  get categories names from currently opened table 
-							if False, get categories names from persistence
-	"""
-	
-	def __init__(self, nCategories, parseTable=False):
-		
-		GenericDialog.__init__(self, "Category names")
-		self.nCategories = nCategories
-		
-		# Get previous categories from persistence
-		if parseTable: 
-			listCategories = getCategoriesFromTable()
-			if not listCategories: IJ.showStatus("No opened table, try reading categories from persistence")
-		
-		if not parseTable or not listCategories: # fall back on persistence if no open table
-			stringCat = Prefs.get("annot.listCat", "") # Retrieve the list of categories as a comma separated list
-			listCategories = stringCat.split(",") if stringCat else []
-		
-		nOldCat = len(listCategories) 
-		
-		for i in range(nCategories): 
-			
-			if listCategories and i<=nOldCat-1:	catName = listCategories[i] 
-			else:										catName = "Category_" + str(i+1) 
-			
-			# Add string input to GUI
-			self.addStringField("Category: ", catName) 
-			self.addMessage("") # skip one line before the next input field
-	
-	def getCategoryNames(self):
-		"""
-		Read the new category names as entered by user in the GUI, before the GUI was OKed.
-		"""
-		listCategories = []
-		for textField in self.getStringFields():
-				newCategory = textField.getText()
-				if newCategory: listCategories.append(newCategory)
-			
-		#self.listCategories = [textField.getText() for textField in self.getStringFields()]
-		Prefs.set("annot.listCat", ",".join(listCategories) ) # save the new list of categories
-		
-		return listCategories
-
-
 class BrowseButton(ActionListener):
 	"""Implement the action following click on Previous/Next image"""
 	
@@ -227,35 +224,24 @@ class CustomDialog(GenericDialogPlus):
 		-- add to Manager, nextSlice, runMeasurement
 		-- online ressource message
 		-- help button
-	- Citation
 	
 	Daughter class should implement the following methods:
-	- __init__ , if the plugin should have a different structure than the backbone above
+	- __init__ , to define the dialog structure
 	- makeCategoryComponent(category) which should return a new category component to add to the main dialog
 	- addAction(), function when the button Add is pressed (add to table)
 	- fillTable(table), function stating how to add to the table
 	'''
 	nspace = 20
 	LABEL_ADD = nspace*" " + "Add" + nspace*" " # Adding 10 spaces before/after to increase the size of the button. quick workaround
+	LABEL_OK = "Close"
 	
-	def __init__(self, title, message, panel, browseMode="stack", runMeasure=False):
-		"""
-		This can be overwritten to readjust the order or if some components are not needed
-		The browseMode is either "stack" or "directory"
-		"""
+	def __init__(self, title, message, panel):
 		GenericDialogPlus.__init__(self, title)
 		self.setModalityType(None) # like non-blocking generic dialog
+		self.setOKLabel(CustomDialog.LABEL_OK)
+		message = "Click the category of the current image or ROI, or use the F1-F12 keyboard shortcuts.\nTo annotate ROI, draw a new ROI or select some ROI in the RoiManager before clicking the category button." 
 		self.addMessage(message)
-		self.addPanel(panel)
-		self.addButton("Add new category", self) # the GUI also catches the event for this button too
-		self.addStringField("Comments", "")
-		self.addButton(self.LABEL_ADD, self)
-		
-		self.browseMode = browseMode # important to define it before addDefaultOptions and nextSlice...
-		self.runMeasure = runMeasure
-		self.addDefaultOptions()
-		#self.addCitation()
-		
+		self.addPanel(panel) # custom panel, cannot be replaced by a JPanel
 	
 	def getPanel(self):
 		"""Return the panel contained in the GenericDialog"""
@@ -275,7 +261,7 @@ class CustomDialog(GenericDialogPlus):
 			
 			sourceLabel = source.getLabel()
 		
-			if sourceLabel == "  OK  ":
+			if sourceLabel == CustomDialog.LABEL_OK:
 				# Check options and save them in persistence
 				checkboxes	= self.getCheckboxes()
 				
@@ -324,7 +310,7 @@ class CustomDialog(GenericDialogPlus):
 		if newComponent is None: return
 		if not isinstance(newComponent, Component): raise TypeError("Expect a component to be added to the dialog")
 		self.getPanel().add(newComponent) # component 1 is the panel
-		self.validate() # recompute the layout and update the display
+		self.pack() # recompute the layout and update the display
 	
 	def addDefaultOptions(self):
 		'''
