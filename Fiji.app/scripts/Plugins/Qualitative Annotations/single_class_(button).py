@@ -55,16 +55,25 @@ class PlotAction(ActionListener):
 		pieChart.showFrame("Data-distribution")
 
 
-class ButtonAction(ActionListener): 
+class CategoryAction(ActionListener): 
 	'''Define what happens when a category button is clicked'''
 	
 	def actionPerformed(self, event): 
 		'''Update the selected category and defaultActionSequence to fill the table'''
 		winButton.selectedCategory = event.getSource().getLabel() 
 		winButton.defaultActionSequence() 
-		 
-# Define global actionListener for buttons: they share the same one, associated to the dialog
-buttonAction = ButtonAction()
+
+class SaveAction(ActionListener):
+	"""Define what happens when the save category button is pressed."""
+	
+	def actionPerformed(self, event):
+		pass
+
+# Define global button action listener
+# Need to be global since the panel is built out of the dialog constructor (ie no access to self)
+# Surely not the cleanest but it works
+categoryAction = CategoryAction()
+saveAction     = SaveAction()
 
 class ButtonDialog(CustomDialog): 
 	'''
@@ -97,8 +106,8 @@ class ButtonDialog(CustomDialog):
 		#self.addCitation()
 
 		# Variable used by instance methods
-		self.tableStructure = tableStructure 
-		self.selectedCategory = "" 
+		self.tableStructure = tableStructure
+		self.selectedCategory = ""		
 	 
 	def fillTable(self, table): 
 		if self.tableStructure == self.TABLE_SINGLE_COLUMN: # single category column 
@@ -135,7 +144,7 @@ class ButtonDialog(CustomDialog):
 		Prefs.set("annot.listCat", ",".join(listCat) )
 		
 		button = JButton(category)
-		button.addActionListener(buttonAction)
+		button.addActionListener(categoryAction)
 		button.setFocusable(False)
 
 		# Add button tooltip if fit in the F1-F12 button range
@@ -169,7 +178,7 @@ if catDialog.wasOKed():
 		if index<12: button.setToolTipText( "Keyboard shortcut: F" + str(index+1) ) # index is 0-based, F shortcut are 1-based
 		
 		# Bind action to button  
-		button.addActionListener(buttonAction)  
+		button.addActionListener(categoryAction)  
 		
 		# Add a button to the gui for this category  
 		button.setFocusable(False) # prevent the button to take the focus, only the window should be able to take the keyboard shortcut
