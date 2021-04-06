@@ -10,8 +10,8 @@ Bent, Slim
 Broken, , 
 '''
 #@ File    (label="CSV file for category and choice", style="extension:csv") csvpath
-#@ Boolean (label="Run measure", value=false) run_measure
 #@ String  (label="Browsing mode", choices={"stack", "directory"}) browse_mode
+#@ Boolean (label="Run measure", value=false) run_measure
 #@ String  (visibility=MESSAGE, value="Example of input csv at Fiji.app/lib/QualiAnnotations-ExampleDropDown.csv", required=false) comment
 from java.awt 		        import Panel, Choice, Label, GridLayout
 from fiji.util.gui	        import GenericDialogPlus
