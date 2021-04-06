@@ -239,7 +239,6 @@ class CustomDialog(GenericDialogPlus):
 		GenericDialogPlus.__init__(self, title)
 		self.setModalityType(None) # like non-blocking generic dialog
 		self.setOKLabel(CustomDialog.LABEL_OK)
-		message = "Click the category of the current image or ROI, or use the F1-F12 keyboard shortcuts.\nTo annotate ROI, draw a new ROI or select some ROI in the RoiManager before clicking the category button." 
 		self.addMessage(message)
 		self.addPanel(panel) # custom panel, cannot be replaced by a JPanel
 	
