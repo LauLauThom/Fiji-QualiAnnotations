@@ -232,7 +232,7 @@ class CustomDialog(GenericDialogPlus):
 	- fillTable(table), function stating how to add to the table
 	'''
 	nspace = 20
-	LABEL_ADD = nspace*" " + "Add" + nspace*" " # Adding 10 spaces before/after to increase the size of the button. quick workaround
+	LABEL_ADD = nspace*" " + "Add to table" + nspace*" " # Adding 10 spaces before/after to increase the size of the button. quick workaround
 	LABEL_OK = "Close"
 	
 	def __init__(self, title, message, panel):
