@@ -19,9 +19,10 @@ The plugins are extensively described in the following article (open-access).
 Supplementary Figures are available on Zenodo (click the DOI badge at the top of this page).  
 
 Thomas LSV, Schaefer F and Gehrig J.   
-_Fiji plugins for qualitative image annotations: routine analysis and application to image classification_ [version 1; peer review: awaiting peer review].   
-F1000Research 2020, 9:1248   
-https://doi.org/10.12688/f1000research.26872.1
+_Fiji plugins for qualitative image annotations: routine analysis and application to image classification_   
+[version 2; peer review: 2 approved, 1 approved with reservations]  
+F1000Research 2021, 9:1248   
+https://f1000research.com/articles/9-1248  
 
 # Video Tutorials
 Check the dedicated [youtube playlist](https://www.youtube.com/playlist?list=PLbBgXlYof3_YVqR80jhFPCkc0M3GQMAq4) covering from the introduction of the plugins to the use of the analysis workflows.  
