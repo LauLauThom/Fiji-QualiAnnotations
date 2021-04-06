@@ -4,7 +4,7 @@ from ij.plugin		import NextImageOpener
 from ij.plugin.filter import Analyzer
 from ij.plugin.frame  import RoiManager
 from ij.measure		  import ResultsTable, Measurements
-import os
+import os, codecs
 from collections	import OrderedDict
 from java.awt.event import ActionListener
 from java.awt 		import Label, Component, Button
@@ -80,7 +80,7 @@ def getCategoriesFromFile(filepath):
 	There should be 1 cateogory per line in this text file.
 	"""
 	try:
-		textFile = open(filepath, "r")
+		textFile = codecs.open(filepath, "r", "utf-8")
 	
 	except IOError:
 		IJ.error("Could not open the category text file")
